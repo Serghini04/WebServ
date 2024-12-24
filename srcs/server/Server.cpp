@@ -1,4 +1,4 @@
-#include "Server.hpp"
+#include "../includes/Server.hpp"
 
 Server::Server()
 {
@@ -55,7 +55,7 @@ int Server::SendData(int clientSocket)
     int bytesRead;
 
     bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
-    //buffer should be parsed and 
+    //buffer should be parsed and retuerned
     // 
     if (bytesRead == -1)
         perror("Read Error");
@@ -64,7 +64,7 @@ int Server::SendData(int clientSocket)
     else
     {
         std::string message(buffer);
-        std::string response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n" + message;
+        std::string response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n Salam w3alikom " + message;
         send(clientSocket, response.c_str(), response.size(), 0);
     }
     return 0;
@@ -123,5 +123,6 @@ int Server::CreateServer()
         }
     }
     close(serverSocket);
+    close(clientSocket);
     return 0;
 }
