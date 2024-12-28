@@ -50,12 +50,13 @@ int Server::prepareTheSocket()
 
 int Server::SendData(int clientSocket)
 {
-    char buffer[1024];
+    char buffer[1025];
     int bytesRead;
 
-    bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
+    bytesRead = recv(clientSocket, buffer, sizeof(buffer) + 1, 0);
     //buffer should be parsed and retuerned
     // 
+    buffer[1024] = '\0';
     std::cout << buffer;
 
     if (bytesRead == -1)
@@ -87,9 +88,7 @@ int Server::SendData(int clientSocket)
     return 0;
 }
 
-
-
-void Server::connectWithClient(int serverEpoll)
+void Server::connectWithClient(int kq)
 {
     sockaddr_in clientAddress;
     socklen_t clientAddrLen;
@@ -103,46 +102,44 @@ void Server::connectWithClient(int serverEpoll)
     else
     {
         std::cout << "Connection occurs" << std::endl;
-        event.events = EPOLLIN;
-        event.data.fd = clientSocket;
-        if (epoll_ctl(serverEpoll, EPOLL_CTL_ADD, clientSocket, &event) == -1)
-            errorMsg("epoll_ctl Error", serverSocket);
+        EV_SET(&event, clientSocket, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
+        kevent(kq, &event, 1, NULL, 0, NULL);
     }
 }
 
 
 int Server::CreateServer()
 {
-    int serverEpoll;
-
     serverSocket = prepareTheSocket();
     if (serverSocket == -1)
         errorMsg("Socket Creation Fails", serverSocket);
-    if ((serverEpoll = epoll_create1(0)) == -1)
-        errorMsg("Epoll Creation Fails", serverEpoll);
 
-    event.data.fd = serverSocket;
-    event.events = EPOLLIN;
-    if (epoll_ctl(serverEpoll, EPOLL_CTL_ADD, serverSocket, &event))
-        errorMsg("epoll_ctl Fails", serverSocket);
+    int kq = kqueue();
+    if (kq == -1)
+        errorMsg("kqueue creation failed", serverSocket);
+
+    EV_SET(&event, serverSocket, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
+    if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
+        errorMsg("kqueue registration failed", clientSocket);
+
     while (true)
     {
-        std::cout << "Server is Wating .." << std::endl;
-        int n = epoll_wait(serverEpoll, eventResults, 10, -1);
+        struct kevent events[10];
+        int n = kevent(kq, NULL, 0, events, 10, NULL);
         if (n == -1)
             errorMsg("epoll_wait Fails", serverSocket);
         for (int i = 0; i < n; i++)
         {
-            if (eventResults[i].data.fd == serverSocket)
-                connectWithClient(serverEpoll);
+            if (events[i].ident == static_cast<uintptr_t>(serverSocket))
+                connectWithClient(kq);
             else
             {
-                clientSocket = eventResults[i].data.fd;
+                clientSocket = events[i].ident;
                 SendData(clientSocket);
             }
         }
     }
     close(serverSocket);
-    close(serverEpoll);
+    close(kq);
     return 0;
 }
