@@ -10,7 +10,10 @@
 #include <cstring>
 #include <fstream>
 #include <sstream>
-
+#include <vector>
+#ifdef __APPLE__ // macOS and BSD-based systems
+#include <sys/event.h>
+#endif
 class Server
 {
 private:
@@ -18,9 +21,12 @@ private:
     epoll_event event;
     epoll_event eventResults[10];
     int clientSocket;
-    void connectWithClient(int serverEpoll);
+    // void connectWithClient(int serverEpoll);
+    void    connectWithClient(int serverEpoll);
     int     prepareTheSocket();
+    // int     SendData(int clientSocket);
     int     SendData(int clientSocket);
+    std::vector<int> clients;
 public:
     Server();
     int CreateServer();
