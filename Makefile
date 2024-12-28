@@ -1,6 +1,6 @@
 CC = c++
 
-CFLAGS = -Wall -Wextra -Werror -std=c++98 -I./includes
+CFLAGS = -Wall -Wextra -Werror -I./includes
 
 SRC_S = srcs/server
 HPATH = includes
