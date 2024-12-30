@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2024/12/30 20:06:07 by meserghi         ###   ########.fr       */
+/*   Updated: 2024/12/30 20:22:19 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,5 +86,4 @@ void    RequestParse::readBuffer(std::string buff)
 			return ;
 		isHeaderDone = parseHeader(header);
 	}
-	e
 }
