@@ -2,10 +2,13 @@ CC = c++
 
 CFLAGS = -Wall -Wextra -Werror -I./includes
 
-SRC_S = srcs/server
-HPATH = includes
+REQ_FILES = srcs/request/RequestParse.cpp
 
-SRCS		=	main.cpp $(SRC_S)/Server.cpp 
+SRC_S = srcs/server
+
+HPATH = includes/Server.hpp includes/RequestParse.hpp
+
+SRCS = main.cpp $(SRC_S)/Server.cpp  $(REQ_FILES)
 
 OBJS = $(SRCS:.cpp=.o)
 
@@ -16,7 +19,7 @@ all: $(TARGET)
 $(TARGET): $(OBJS) 
 	$(CC) $(CFLAGS) -o $@ $(OBJS)
 	
-%.o: %.cpp $(HPATH)/Server.hpp
+%.o: %.cpp $(HPATH)
 	$(CC) $(CFLAGS) -c $< -o $@
 	
 clean:

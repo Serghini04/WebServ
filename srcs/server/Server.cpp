@@ -1,4 +1,5 @@
-#include "../includes/Server.hpp"
+#include <Server.hpp>
+#include <RequestParse.hpp>
 
 Server::Server()
 {
@@ -52,13 +53,11 @@ int Server::SendData(int clientSocket)
 {
     char buffer[1025];
     int bytesRead;
+    RequestParse    request;
 
     bytesRead = recv(clientSocket, buffer, sizeof(buffer) + 1, 0);
-    //buffer should be parsed and retuerned
-    // 
     buffer[1024] = '\0';
-    std::cout << buffer;
-
+    request.readBuffer(buffer);
     if (bytesRead == -1)
     {
         if (errno == EAGAIN || errno == EWOULDBLOCK)
