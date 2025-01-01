@@ -10,6 +10,7 @@ void errorMsg(std::string str, int fd)
 {
     std::cerr << str << std::endl;
     close(fd);
+    // exit(1);
 }
 
 int make_socket_nonblocking(int sockfd)
@@ -47,15 +48,15 @@ int Server::prepareTheSocket()
         return -1;
     return serverSocket;
 }
-void Server::RecivData()
+void Server::RecivData(int clientSocket)
 {
     char buffer[MAX_BUFFER] = {0};
     int bytesRead;
     RequestParse    request;
 
-    bytesRead = recv(clientSocket, buffer, sizeof(buffer) + 1, 0);
-    buffer[1024] = '\0';
+    bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
     request.readBuffer(buffer);
+    std::cout << buffer << std::endl;
     if (bytesRead == -1)
     {
         if (errno == EAGAIN || errno == EWOULDBLOCK)
@@ -74,7 +75,7 @@ void Server::RecivData()
             errorMsg("kqueue registration failed", clientSocket);
     }
 }
-void Server::SendData()
+void Server::SendData(int clientSocket)
 {
     std::string responseBody = "Salam w3alikom ";
     std::ostringstream oss;
@@ -87,13 +88,14 @@ void Server::SendData()
                     "\r\n" +
         responseBody;
     if (int n = send(clientSocket, response.c_str(), response.size(), 0) == -1)
-        perror("Send Error");
+        errorMsg("Send Error", clientSocket);
 }
 
 void Server::connectWithClient(int kq)
 {
     sockaddr_in clientAddress;
     socklen_t clientAddrLen;
+    int clientSocket;
 
     clientAddrLen = sizeof(clientAddress);
     clientSocket = accept(serverSocket, (struct sockaddr *)&clientAddress, &clientAddrLen);
@@ -110,6 +112,8 @@ void Server::connectWithClient(int kq)
 }
 void Server::handelEvents(int n, struct kevent events[])
 {
+    int clientSocket;
+
     for (int i = 0; i < n; i++)
     {
         if (events[i].ident == static_cast<uintptr_t>(serverSocket))
@@ -117,13 +121,14 @@ void Server::handelEvents(int n, struct kevent events[])
         else if (events[i].filter == EVFILT_READ)
         {
             clientSocket = events[i].ident;
-            RecivData();
+            RecivData(clientSocket);
         }
         else if (events[i].filter == EVFILT_WRITE)
         {
             clientSocket = events[i].ident;
-            SendData();
-        }else
+            SendData(clientSocket);
+        }
+        else
             perror("Event Error");
     }
 }
@@ -139,7 +144,7 @@ int Server::CreateServer()
         errorMsg("kqueue creation failed", serverSocket);
     EV_SET(&event, serverSocket, EVFILT_READ, EV_ADD, 0, 0, NULL);
     if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
-        errorMsg("kqueue registration failed", clientSocket);
+        errorMsg("kqueue registration failed", serverSocket);
     while (true)
     {
         int n = kevent(kq, NULL, 0, events, MAX_CLIENTS, NULL);

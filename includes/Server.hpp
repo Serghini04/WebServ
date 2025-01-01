@@ -21,7 +21,6 @@ class Server
 {
 private:
     int serverSocket;
-    int clientSocket;
     int kq;
     struct kevent event;
     std::vector<int> clients;
@@ -29,8 +28,9 @@ private:
     void    connectWithClient(int serverEpoll);
     void    handelEvents(int n, struct kevent events[]);
     int     prepareTheSocket();
-    void    SendData();
-    void    RecivData();
+    void    SendData(int clientSocket);
+    void    RecivData(int clientSocket);
+
 public:
     Server();
     int CreateServer();
