@@ -13,7 +13,7 @@
 #include <sys/event.h>
 #define MAX_BUFFER 4096
 #define MAX_CLIENTS 128
-#define PORT 3978
+#define PORT 3938
 
 
 
@@ -30,7 +30,6 @@ private:
     int     prepareTheSocket();
     void    SendData(int clientSocket);
     void    RecivData(int clientSocket);
-
 public:
     Server();
     int CreateServer();

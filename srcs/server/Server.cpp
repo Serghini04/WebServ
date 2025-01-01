@@ -56,7 +56,7 @@ void Server::RecivData(int clientSocket)
 
     bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
     request.readBuffer(buffer);
-    std::cout << buffer << std::endl;
+    // std::cout << buffer << std::endl;
     if (bytesRead == -1)
     {
         if (errno == EAGAIN || errno == EWOULDBLOCK)
@@ -69,13 +69,7 @@ void Server::RecivData(int clientSocket)
     else if (bytesRead == 0)
         close(clientSocket);
     else
-    {
-        std::cout << "hello" << std::endl;
-        EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
-        if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
-            errorMsg("kqueue registration failed", clientSocket);
-        std::cout << "hello" << std::endl;
-    }
+        SendData(clientSocket);
 }
 void Server::SendData(int clientSocket)
 {
@@ -97,6 +91,8 @@ void Server::SendData(int clientSocket)
     {
         std::cout << "end" << std::endl;
     }
+    if (int n = send(clientSocket, response.c_str(), response.size(), 0) == -1)
+        errorMsg("Send Error", clientSocket);
 }
 
 void Server::connectWithClient(int kq)
@@ -104,6 +100,7 @@ void Server::connectWithClient(int kq)
     sockaddr_in clientAddress;
     socklen_t clientAddrLen;
     int clientSocket;
+    int     clientSocket;
 
     clientAddrLen = sizeof(clientAddress);
     clientSocket = accept(serverSocket, (struct sockaddr *)&clientAddress, &clientAddrLen);
@@ -131,14 +128,6 @@ void Server::handelEvents(int n, struct kevent events[])
             clientSocket = events[i].ident;
             RecivData(clientSocket);
         }
-        else if (events[i].filter == EVFILT_WRITE)
-        {
-            clientSocket = events[i].ident;
-            std::cout << "hello2" << std::endl;
-            SendData(clientSocket);
-        }
-        else
-            perror("Event Error");
     }
 }
 int Server::CreateServer()
