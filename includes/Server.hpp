@@ -11,6 +11,8 @@
 #include <sstream>
 #include <vector>
 #include <sys/event.h>
+# include <csignal>
+
 class Server
 {
 private:
