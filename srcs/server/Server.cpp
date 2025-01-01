@@ -2,6 +2,7 @@
 
 Server::Server()
 {
+    
 }
 
 void errorMsg(std::string str, int fd)
@@ -23,13 +24,11 @@ int make_socket_nonblocking(int sockfd)
 int Server::prepareTheSocket()
 {
     sockaddr_in addressSocket;
-        int opt = 1;
+    int opt = 1;
 
-    // AF_INET stands for IPV4, SOCK_STREAM means i create a TCP Socket
     serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (serverSocket == -1)
         return -1;
-
     if (setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == -1)
     {
         perror("setsockopt");
@@ -37,7 +36,7 @@ int Server::prepareTheSocket()
     }
     addressSocket.sin_addr.s_addr = INADDR_ANY;
     addressSocket.sin_family = AF_INET;
-    addressSocket.sin_port = htons(3789);
+    addressSocket.sin_port = htons(PORT);
 
     if (make_socket_nonblocking(serverSocket) == -1)
         return 1;
@@ -47,24 +46,19 @@ int Server::prepareTheSocket()
         return -1;
     return serverSocket;
 }
-
-int Server::SendData(int clientSocket)
+void Server::RecivData()
 {
-    char buffer[1025];
+    char buffer[MAX_BUFFER] = {0};
     int bytesRead;
 
-    bytesRead = recv(clientSocket, buffer, sizeof(buffer) + 1, 0);
-    //buffer should be parsed and retuerned
-    // 
-    buffer[1024] = '\0';
-    std::cout << buffer;
-
+    bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
+    std::cout << buffer << std::endl;
     if (bytesRead == -1)
     {
         if (errno == EAGAIN || errno == EWOULDBLOCK)
         {
             std::cout << "No data available for now (non-blocking).\n";
-            return 0;
+            return;
         }
         perror("Read Error");
     }
@@ -72,20 +66,25 @@ int Server::SendData(int clientSocket)
         close(clientSocket);
     else
     {
-        std::string responseBody = "Salam w3alikom ";
-        std::ostringstream oss;
-        oss << responseBody.size();
-        std::string response =
-            "HTTP/1.1 200 OK\r\n"
-            "Content-Type: text/plain\r\n"
-            "Content-Length: " +
-            oss.str() + "\r\n"
-                        "\r\n" +
-            responseBody;
-
-        send(clientSocket, response.c_str(), response.size(), 0);
+        EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
+        if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
+            errorMsg("kqueue registration failed", clientSocket);
     }
-    return 0;
+}
+void Server::SendData()
+{
+    std::string responseBody = "Salam w3alikom ";
+    std::ostringstream oss;
+    oss << responseBody.size();
+    std::string response =
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: text/plain\r\n"
+        "Content-Length: " +
+        oss.str() + "\r\n"
+                    "\r\n" +
+        responseBody;
+    if (int n = send(clientSocket, response.c_str(), response.size(), 0) == -1)
+        perror("Send Error");
 }
 
 void Server::connectWithClient(int kq)
@@ -101,43 +100,49 @@ void Server::connectWithClient(int kq)
         errorMsg("Non-Blocking Error", clientSocket);
     else
     {
-        std::cout << "Connection occurs" << std::endl;
-        EV_SET(&event, clientSocket, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
-        kevent(kq, &event, 1, NULL, 0, NULL);
+        EV_SET(&event, clientSocket, EVFILT_READ, EV_ADD, 0, 0, NULL);
+        if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
+            errorMsg("kevent Error", clientSocket);
     }
 }
-
-
+void Server::handelEvents(int n, struct kevent events[])
+{
+    for (int i = 0; i < n; i++)
+    {
+        if (events[i].ident == static_cast<uintptr_t>(serverSocket))
+            connectWithClient(kq);
+        else if (events[i].filter == EVFILT_READ)
+        {
+            clientSocket = events[i].ident;
+            RecivData();
+        }
+        else if (events[i].filter == EVFILT_WRITE)
+        {
+            clientSocket = events[i].ident;
+            SendData();
+        }else
+            perror("Event Error");
+    }
+}
 int Server::CreateServer()
 {
     serverSocket = prepareTheSocket();
+    struct kevent events[MAX_CLIENTS];
+
     if (serverSocket == -1)
         errorMsg("Socket Creation Fails", serverSocket);
-
-    int kq = kqueue();
+    kq = kqueue();
     if (kq == -1)
         errorMsg("kqueue creation failed", serverSocket);
-
-    EV_SET(&event, serverSocket, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
+    EV_SET(&event, serverSocket, EVFILT_READ, EV_ADD, 0, 0, NULL);
     if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
         errorMsg("kqueue registration failed", clientSocket);
-
     while (true)
     {
-        struct kevent events[10];
-        int n = kevent(kq, NULL, 0, events, 10, NULL);
+        int n = kevent(kq, NULL, 0, events, MAX_CLIENTS, NULL);
         if (n == -1)
-            errorMsg("epoll_wait Fails", serverSocket);
-        for (int i = 0; i < n; i++)
-        {
-            if (events[i].ident == static_cast<uintptr_t>(serverSocket))
-                connectWithClient(kq);
-            else
-            {
-                clientSocket = events[i].ident;
-                SendData(clientSocket);
-            }
-        }
+            errorMsg("kevent Fails", serverSocket);
+        handelEvents(n, events);
     }
     close(serverSocket);
     close(kq);
