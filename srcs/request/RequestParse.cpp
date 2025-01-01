@@ -86,5 +86,4 @@ void    RequestParse::readBuffer(std::string buff)
 			return ;
 		isHeaderDone = parseHeader(header);
 	}
-	e
 }
