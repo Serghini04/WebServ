@@ -70,13 +70,17 @@ void Server::RecivData(int clientSocket)
         close(clientSocket);
     else
     {
+        std::cout << "hello" << std::endl;
         EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
         if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
             errorMsg("kqueue registration failed", clientSocket);
+        std::cout << "hello" << std::endl;
     }
 }
 void Server::SendData(int clientSocket)
 {
+    int n;
+
     std::string responseBody = "Salam w3alikom ";
     std::ostringstream oss;
     oss << responseBody.size();
@@ -87,8 +91,12 @@ void Server::SendData(int clientSocket)
         oss.str() + "\r\n"
                     "\r\n" +
         responseBody;
-    if (int n = send(clientSocket, response.c_str(), response.size(), 0) == -1)
+    if ((n = send(clientSocket, response.c_str(), response.size(), 0)) == -1)
         errorMsg("Send Error", clientSocket);
+    if(n == 0)
+    {
+        std::cout << "end" << std::endl;
+    }
 }
 
 void Server::connectWithClient(int kq)
@@ -126,6 +134,7 @@ void Server::handelEvents(int n, struct kevent events[])
         else if (events[i].filter == EVFILT_WRITE)
         {
             clientSocket = events[i].ident;
+            std::cout << "hello2" << std::endl;
             SendData(clientSocket);
         }
         else
