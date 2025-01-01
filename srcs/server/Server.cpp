@@ -10,7 +10,7 @@ void errorMsg(std::string str, int fd)
 {
     std::cerr << str << std::endl;
     close(fd);
-    exit(1);
+    // exit(1);
 }
 
 int make_socket_nonblocking(int sockfd)
@@ -56,6 +56,7 @@ void Server::RecivData(int clientSocket)
 
     bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
     request.readBuffer(buffer);
+    // std::cout << buffer << std::endl;
     if (bytesRead == -1)
     {
         if (errno == EAGAIN || errno == EWOULDBLOCK)
@@ -117,11 +118,6 @@ void Server::handelEvents(int n, struct kevent events[])
         {
             clientSocket = events[i].ident;
             RecivData(clientSocket);
-        }
-        else if (events[i].filter == EVFILT_WRITE)
-        {
-            clientSocket = events[i].ident;
-            SendData(clientSocket);
         }
     }
 }
