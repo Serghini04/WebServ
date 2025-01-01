@@ -84,6 +84,9 @@ void    RequestParse::readBuffer(std::string buff)
 		header.append(buff);
 		if (buff.find("\r\n\r\n") == std::string::npos)
 			return ;
+		std::cout << "===================\n";
+		std::cout << header << "\n";
+		std::cout << "===================\n";
 		isHeaderDone = parseHeader(header);
 	}
 }
