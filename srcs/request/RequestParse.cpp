@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2024/12/30 20:22:19 by meserghi         ###   ########.fr       */
+/*   Updated: 2024/12/31 18:31:02 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,11 @@ void	RequestParse::parseFirstLine(std::string  header)
 		throw std::runtime_error("400 Bad Request");
 	if (_httpVersion != "HTTP/1.1")
 		throw std::runtime_error("400 Bad Request");
+}
+
+std::map<std::string, std::string>	&RequestParse::getMetaData()
+{
+	return (_metaData);
 }
 
 void	RequestParse::parseMetaData(std::string header)
@@ -78,12 +83,22 @@ void    RequestParse::readBuffer(std::string buff)
 {
 	static std::string	header;
 	static int isHeaderDone = 0;
+	static	BodyType type = eNone;
     
+	header.append(buff);
 	if (!isHeaderDone)
 	{	
-		header.append(buff);
 		if (buff.find("\r\n\r\n") == std::string::npos)
 			return ;
 		isHeaderDone = parseHeader(header);
+		header = header.substr(isHeaderDone);
+		puts("\n>>>>>>>>>>>>>>>header parse done<<<<<<<<<<<<<\n");
+	}
+	{
+		//		body parse :
+		type = Body.getTypeOfBody(this->getMetaData());
+		std::cout << "\n********************************************\n";
+		std::cout << buff;
+		std::cout << "\n********************************************\n";
 	}
 }
