@@ -23,7 +23,7 @@ $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) -c $< -o $@
 	
 clean:
-	rm -rf $(OBJS)
+	rm -rf $(OBJS) output.txt
 
 fclean: clean
 	rm -rf $(TARGET)
