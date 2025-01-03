@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/03 15:30:16 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/03 18:06:47 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,25 @@
 # include <BodyParse.hpp>
 # include <map>
 
+enum	methods
+{
+	ePOST,
+	eGET,
+	eDELETE
+};
+
+enum	status
+{
+	eOK,
+	eBodRequest
+};
+
 class   RequestParse
 {
 	private :
 		std::map<std::string, std::string>  _metaData;
 		// i need to change this string to enum? 
+		methods		_enumMethod;
 		std::string _method;
 		std::string	_httpVersion;
 		std::string _url;
@@ -29,6 +43,7 @@ class   RequestParse
 		std::ofstream	_fdOut;
 		std::ofstream	_fd;
 		// add if request done.
+		bool			_requestIsDone;
 		
 		std::string	trimSpace(std::string line);
 

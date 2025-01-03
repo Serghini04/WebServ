@@ -6,7 +6,7 @@ public:
     Utility()
     {
     }
-    static inline void ShowErrorExit(std::string const &errorMsg)
+    static void ShowErrorExit(std::string const &errorMsg)
     {
         std::cout << errorMsg << std::endl;
         exit(1);

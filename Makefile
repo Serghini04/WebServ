@@ -7,7 +7,7 @@ REQ_FILES = srcs/request/RequestParse.cpp srcs/request/BodyParse.cpp
 SRC_S = srcs/server/Server.cpp  
 SRC_RES = srcs/response/Response.cpp
 
-HPATH = includes/Server.hpp includes/RequestParse.hpp includes/BodyParse.hpp
+HPATH = includes/Server.hpp includes/RequestParse.hpp includes/BodyParse.hpp includes/Utility.hpp
 
 SRCS = main.cpp $(SRC_S) $(SRC_RES) $(REQ_FILES)
 
