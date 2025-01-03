@@ -4,11 +4,12 @@ CFLAGS = -Wall -Wextra -Werror -I./includes
 
 REQ_FILES = srcs/request/RequestParse.cpp
 
-SRC_S = srcs/server
+SRC_S = srcs/server/Server.cpp  
+SRC_RES = srcs/response/Response.cpp
 
 HPATH = includes/Server.hpp includes/RequestParse.hpp
 
-SRCS = main.cpp $(SRC_S)/Server.cpp  $(REQ_FILES)
+SRCS = main.cpp $(SRC_S) $(SRC_RES) $(REQ_FILES)
 
 OBJS = $(SRCS:.cpp=.o)
 

@@ -1,9 +1,19 @@
-#include <Server.hpp>
-#include <RequestParse.hpp>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Server.cpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mal-mora <mal-mora@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
+/*   Updated: 2025/01/03 17:13:24 by mal-mora         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/Server.hpp"
 
 Server::Server()
 {
-    
 }
 
 void errorMsg(std::string str, int fd)
@@ -52,47 +62,57 @@ void Server::RecivData(int clientSocket)
 {
     char buffer[MAX_BUFFER] = {0};
     int bytesRead;
-    RequestParse    request;
-
-    bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
-    request.readBuffer(buffer);
-    // std::cout << buffer << std::endl;
-    if (bytesRead == -1)
+    RequestParse request;
+    std::string fullData;
+    while (true)
     {
-        if (errno == EAGAIN || errno == EWOULDBLOCK)
+        bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
+        if (bytesRead == -1)
         {
-            std::cout << "No data available for now (non-blocking).\n";
+            if (errno == EAGAIN || errno == EWOULDBLOCK)
+                break;
+            perror("Read Error");
+            break;
+        }
+        else if (bytesRead == 0)
+        {
+            close(clientSocket);
             return;
         }
-        perror("Read Error");
+        else
+            fullData.append(buffer, bytesRead);
     }
-    else if (bytesRead == 0)
-        close(clientSocket);
-    else
-        SendData(clientSocket);
+    request.readBuffer(fullData);
+    SendData(clientSocket);
 }
 void Server::SendData(int clientSocket)
 {
-    int n;
+    size_t totalSent = 0;
+    size_t dataSize;
 
-    std::string responseBody = "Salam w3alikom ";
+    std::string responseBody = Response::FileToString("index.html");
     std::ostringstream oss;
     oss << responseBody.size();
     std::string response =
         "HTTP/1.1 200 OK\r\n"
-        "Content-Type: text/plain\r\n"
+        "Content-Type: text/html\r\n"
         "Content-Length: " +
         oss.str() + "\r\n"
                     "\r\n" +
         responseBody;
-    if ((n = send(clientSocket, response.c_str(), response.size(), 0)) == -1)
-        errorMsg("Send Error", clientSocket);
-    if(n == 0)
+    dataSize = response.size();
+    while (totalSent < dataSize)
     {
-        std::cout << "end" << std::endl;
+        ssize_t bytesSent = send(clientSocket, response.c_str() + totalSent, dataSize - totalSent, 0);
+        if (bytesSent <= 0)
+        {
+            if (errno == EAGAIN || errno == EWOULDBLOCK)
+                continue;
+            perror("Send Error");
+            break;
+        }
+        totalSent += bytesSent;
     }
-    if (int n = send(clientSocket, response.c_str(), response.size(), 0) == -1)
-        errorMsg("Send Error", clientSocket);
 }
 
 void Server::connectWithClient(int kq)
@@ -100,7 +120,6 @@ void Server::connectWithClient(int kq)
     sockaddr_in clientAddress;
     socklen_t clientAddrLen;
     int clientSocket;
-    int     clientSocket;
 
     clientAddrLen = sizeof(clientAddress);
     clientSocket = accept(serverSocket, (struct sockaddr *)&clientAddress, &clientAddrLen);
@@ -123,7 +142,7 @@ void Server::handelEvents(int n, struct kevent events[])
     {
         if (events[i].ident == static_cast<uintptr_t>(serverSocket))
             connectWithClient(kq);
-        else if (events[i].filter == EVFILT_READ)
+        else
         {
             clientSocket = events[i].ident;
             RecivData(clientSocket);
