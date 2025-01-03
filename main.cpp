@@ -25,7 +25,8 @@ int main()
 	// {
 	// 	std::cerr << e.what() << "\n";
 	// }
-	    std::signal(SIGPIPE, SIG_IGN);
+	
+	std::signal(SIGPIPE, SIG_IGN);
     Server server;
     server.CreateServer();
 	return 0;

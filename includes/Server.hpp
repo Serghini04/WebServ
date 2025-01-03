@@ -11,11 +11,12 @@
 #include <sstream>
 #include <vector>
 #include <sys/event.h>
+#include <Utility.hpp>
+#include <Response.hpp>
+#include <RequestParse.hpp>
 #define MAX_BUFFER 4096
 #define MAX_CLIENTS 128
 #define PORT 3938
-
-
 
 class Server
 {

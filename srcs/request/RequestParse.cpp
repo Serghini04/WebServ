@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RequestParse.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mal-mora <mal-mora@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2024/12/30 20:06:07 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/03 17:31:17 by mal-mora         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,12 +81,12 @@ void    RequestParse::readBuffer(std::string buff)
     
 	if (!isHeaderDone)
 	{	
+		std::cout << "===================\n";
+		std::cout << buff << std::endl;
+		std::cout << "===================\n";
 		header.append(buff);
 		if (buff.find("\r\n\r\n") == std::string::npos)
 			return ;
-		std::cout << "===================\n";
-		std::cout << header << "\n";
-		std::cout << "===================\n";
 		isHeaderDone = parseHeader(header);
 	}
 }
