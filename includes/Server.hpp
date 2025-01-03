@@ -12,6 +12,7 @@
 #include <vector>
 #include <sys/event.h>
 #include <Utility.hpp>
+#include <csignal>
 #include <Response.hpp>
 #include <RequestParse.hpp>
 #define MAX_BUFFER 4096
@@ -35,5 +36,4 @@ public:
     Server();
     int CreateServer();
 };
-
 
