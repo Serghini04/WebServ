@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:38:49 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/03 15:11:11 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/03 17:52:49 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,6 @@ void BodyParse::openFileBasedOnContentType()
 	Extensions["application/octet-stream"] = ".bin";
 
 	std::cout << Extensions["Content-Type"] << "\n";
-	(void)Extensions;
 }
 
 void	BodyParse::ChunkedBoundaryParse(std::string &buff)
