@@ -6,19 +6,11 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:38:49 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/02 16:07:39 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/03 15:11:11 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <BodyParse.hpp>
-
-// for (std::map<std::string, std::string>::iterator it = data.begin(); it != data.end(); it++)
-// {
-//     std::cout << "\n#######################\n";
-//     std::cout << it->first << "\n";
-//     std::cout << it->second << "\n";
-//     std::cout << "\n#######################\n";
-// }
 
 BodyParse::BodyParse()
 {
@@ -26,24 +18,60 @@ BodyParse::BodyParse()
 	_len = 0;
 }
 
-    // chunked && boundray ==>
-    // "Content-Type" = "multipart/form-data" && "Transfer-Encoding" == "chunked"
-    // chunked ==>
-    //  "Transfer-Encoding" == "chunked"
-    // boundray ==>
-    // "Content-Type" == "multipart/form-data" && "Transfer-Encoding" != "chunked"
-    //  Content-Length ==>
-    // Content-Length || !Content-Length
+// chunked && boundray ==>
+// "Content-Type" = "multipart/form-data" && "Transfer-Encoding" == "chunked"
+// chunked ==>
+//  "Transfer-Encoding" == "chunked"
+// boundray ==>
+// "Content-Type" == "multipart/form-data" && "Transfer-Encoding" != "chunked"
+//  Content-Length ==>
+// Content-Length || !Content-Length
 
-BodyType	BodyParse::getTypeOfBody(std::map<std::string, std::string> &data)
+void		BodyParse::setMetaData(std::map<std::string, std::string> &data)
 {
-    if (data["Transfer-Encoding"] == "chunked" && data["Content-Type"].find("multipart/form-data") != std::string::npos)
+	_metaData = data;
+}
+
+BodyType	BodyParse::getTypeOfBody()
+{
+    if (_metaData["Transfer-Encoding"] == "chunked" && _metaData["Content-Type"].find("multipart/form-data") != std::string::npos)
 		return eChunkedBoundary;
-	else if (data["Transfer-Encoding"] == "chunked")
+	else if (_metaData["Transfer-Encoding"] == "chunked")
 		return eChunked;
-	else if (data["Content-Type"].find("multipart/form-data") != std::string::npos)
+	else if (_metaData["Content-Type"].find("multipart/form-data") != std::string::npos)
 		return eBoundary;
+	// case : POST
+	// 411 Length Required
+	// 400 Bad Request if Content type is not define
 	return eContentLength;
+}
+
+void BodyParse::openFileBasedOnContentType()
+{
+	std::map<std::string, std::string> Extensions;
+
+	Extensions["image/jpeg"] = ".jpg";
+	Extensions["image/png"] = ".png";
+	Extensions["image/gif"] = ".gif";
+	Extensions["image/bmp"] = ".bmp";
+	Extensions["image/webp"] = ".webp";
+	Extensions["text/plain"] = ".txt";
+	Extensions["text/html"] = ".html";
+	Extensions["text/css"] = ".css";
+	Extensions["text/javascript"] = ".js";
+	Extensions["application/json"] = ".json";
+	Extensions["application/pdf"] = ".pdf";
+	Extensions["application/xml"] = ".xml";
+	Extensions["application/zip"] = ".zip";
+	Extensions["audio/mpeg"] = ".mp3";
+	Extensions["audio/wav"] = ".wav";
+	Extensions["video/mp4"] = ".mp4";
+	Extensions["video/mpeg"] = ".mpeg";
+	Extensions["video/webm"] = ".webm";
+	Extensions["application/octet-stream"] = ".bin";
+
+	std::cout << Extensions["Content-Type"] << "\n";
+	(void)Extensions;
 }
 
 void	BodyParse::ChunkedBoundaryParse(std::string &buff)
@@ -59,11 +87,11 @@ void	BodyParse::BoundaryParse(std::string &buff)
 
 void	BodyParse::ChunkedParse(std::string &buff)
 {
-	(void)buff;	
+	(void)buff;
+	
 }
 
 void	BodyParse::ContentLengthParse(std::string &buff)
 {
 	(void)buff;
-	puts("ffff");
 }

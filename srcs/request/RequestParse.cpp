@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/02 16:02:51 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/03 15:07:08 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,8 @@ void    RequestParse::readBuffer(std::string buff)
 			return ;
 		isHeaderDone = parseHeader(header);
 		buff = header.substr(isHeaderDone);
-		type = _body.getTypeOfBody(this->getMetaData());
+		type = _body.getTypeOfBody();
+		_body.getTypeOfBody();
 	}
 	switch (type)
 	{
