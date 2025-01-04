@@ -13,6 +13,7 @@
 #include <sys/event.h>
 #include <Utility.hpp>
 #include <csignal>
+#include <map>
 #include <Response.hpp>
 #include <RequestParse.hpp>
 #define MAX_BUFFER 40960
@@ -27,11 +28,11 @@ private:
     struct kevent event;
     std::vector<int> clients;
 
-    void    connectWithClient(int serverEpoll);
-    void    handelEvents(int n, struct kevent events[]);
-    int     prepareTheSocket();
-    void    SendData(int clientSocket);
-    void    RecivData(int clientSocket);
+    void            connectWithClient(int serverEpoll);
+    void            handelEvents(int n, struct kevent events[]);
+    int             prepareTheSocket();
+    void            SendData(int clientSocket, RequestParse &request);
+    void            RecivData(int clientSocket, RequestParse &request);
 public:
     Server();
     int CreateServer();

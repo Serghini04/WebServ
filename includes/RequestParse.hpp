@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/04 11:03:17 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/04 16:12:30 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ class   RequestParse
 		std::map<std::string, std::string>  _metaData;
 		// i need to change this string to enum? 
 		methods			_enumMethod;
-		status			_requestStatus;
+		status			_statusCode;
 		std::string 	_method;
 		std::string		_httpVersion;
 		std::string 	_url;
@@ -70,6 +70,13 @@ class   RequestParse
 
 		// Get :
 		std::map<std::string, std::string>	&getMetaData();
+		status	statusCode();
+		bool	requestIsDone();
+
+		// set :
+		
+		void	SetStatusCode(status s);
+		void	SetRequestIsDone(bool s);
 
 		void    readBuffer(std::string buff);
 		int    	parseHeader(std::string &header);

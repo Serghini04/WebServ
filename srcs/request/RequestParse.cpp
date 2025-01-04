@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/04 15:03:11 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/04 16:30:58 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,26 @@ void	RequestParse::parseFirstLine(std::string  header)
 std::map<std::string, std::string>	&RequestParse::getMetaData()
 {
 	return (_metaData);
+}
+
+bool RequestParse::requestIsDone()
+{
+	return this->_requestIsDone;
+}
+
+status	RequestParse::statusCode()
+{
+	return this->_statusCode;
+}
+
+void	RequestParse::SetStatusCode(status s)
+{
+	_statusCode = s;
+}
+
+void	RequestParse::SetRequestIsDone(bool s)
+{
+	_requestIsDone = s;
 }
 
 bool	isNotSpace(int ch)
@@ -101,7 +121,7 @@ RequestParse::RequestParse()
 {
 	_fd.open("output.txt", std::ios::binary | std::ios::app);
 	_requestIsDone = false;
-	_requestStatus = eOK;
+	_statusCode = eOK;
 }
 
 void    RequestParse::readBuffer(std::string buff)
@@ -110,14 +130,8 @@ void    RequestParse::readBuffer(std::string buff)
 	static int isHeaderDone = 0;
 	static	BodyType type = eNone;
 
-	_fd << "\n=======================\n";
-    _fd << buff ;
-	_fd << "\n=======================\n";
 	if (_requestIsDone)
-	{
-		puts("fff");
-		exit(0) ;
-	}
+		return ;
 	if (!isHeaderDone)
 	{	
 		header.append(buff);
@@ -126,9 +140,13 @@ void    RequestParse::readBuffer(std::string buff)
 		isHeaderDone = parseHeader(header);
 		_body.setMetaData(_metaData);
 		buff = header.substr(isHeaderDone);
+		_body.setMetaData(_metaData);
 		type = _body.getTypeOfBody();
 		_body.openFileBasedOnContentType();
 	}
+	_fd << "\n======================\n";
+	_fd << buff; 
+	_fd << "\n======================\n";
 	switch (type)
 	{
 		case eBoundary :
