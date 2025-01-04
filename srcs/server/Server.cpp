@@ -6,7 +6,7 @@
 /*   By: mal-mora <mal-mora@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/01/03 17:36:28 by mal-mora         ###   ########.fr       */
+/*   Updated: 2025/01/04 15:45:40 by mal-mora         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,14 +59,17 @@ int Server::prepareTheSocket()
         return -1;
     return serverSocket;
 }
-void Server::RecivData(int clientSocket)
+
+void Server::RecivData(int clientSocket, RequestParse &request)
 {
-    char buffer[MAX_BUFFER] = {0};
     int bytesRead;
-    RequestParse request;
     std::string fullData;
+    
+    char buffer[1024 * 5];
+
     while (true)
     {
+        memset(buffer, 0, sizeof(buffer));
         bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
         if (bytesRead == -1)
         {
@@ -78,21 +81,32 @@ void Server::RecivData(int clientSocket)
         else if (bytesRead == 0)
         {
             close(clientSocket);
-            return;
+            break;
         }
-        else
-            fullData.append(buffer, bytesRead);
+        fullData.assign(buffer, bytesRead);
+        request.readBuffer(fullData);
+        // if (request.getRequestIsDone() == 0)
+        // {
+        //     EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
+        //     if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
+        //         errorMsg("kevent Error", clientSocket);
+        //      close(clientSocket);
+        // }  
     }
-    request.readBuffer(fullData);
-    SendData(clientSocket);
 }
-void Server::SendData(int clientSocket)
+void Server::SendData(int clientSocket, RequestParse &request)
 {
     size_t totalSent = 0;
     size_t dataSize;
-
-    std::string responseBody = Response::FileToString("index.html");
     std::ostringstream oss;
+    std::string responseBody;
+    std::string header;
+    (void)request;
+    // if(request._state == status::eBadRequest)
+
+    responseBody = Response::FileToString("index.html");
+    //if is babrequest --> show 404 error html
+    //else check which method is 
     oss << responseBody.size();
     std::string response =
         "HTTP/1.1 200 OK\r\n"
@@ -101,6 +115,7 @@ void Server::SendData(int clientSocket)
         oss.str() + "\r\n"
                     "\r\n" +
         responseBody;
+    ////sending
     dataSize = response.size();
     while (totalSent < dataSize)
     {
@@ -138,16 +153,22 @@ void Server::connectWithClient(int kq)
 void Server::handelEvents(int n, struct kevent events[])
 {
     int clientSocket;
+    RequestParse req;
 
     for (int i = 0; i < n; i++)
     {
         if (events[i].ident == static_cast<uintptr_t>(serverSocket))
             connectWithClient(kq);
-        else
+        else if(events[i].filter == EVFILT_READ)
         {
             clientSocket = events[i].ident;
-            RecivData(clientSocket);
+            RecivData(clientSocket, req);
         }
+        // else if(events[i].filter == EVFILT_WRITE)
+        // {
+        //     clientSocket = events[i].ident;
+        //     SendData(clientSocket, req);
+        // }
     }
 }
 int Server::CreateServer()
