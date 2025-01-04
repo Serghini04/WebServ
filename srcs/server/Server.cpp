@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mal-mora <mal-mora@student.42.fr>          +#+  +:+       +#+        */
+/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/01/03 17:36:28 by mal-mora         ###   ########.fr       */
+/*   Updated: 2025/01/04 15:44:40 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,9 +81,8 @@ void Server::RecivData(int clientSocket)
             return;
         }
         else
-            fullData.append(buffer, bytesRead);
+            request.readBuffer(buffer);
     }
-    request.readBuffer(fullData);
     SendData(clientSocket);
 }
 void Server::SendData(int clientSocket)

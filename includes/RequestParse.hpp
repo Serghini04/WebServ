@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/03 18:06:47 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/04 11:03:17 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,28 @@ enum	methods
 	eDELETE
 };
 
-enum	status
+enum status
 {
-	eOK,
-	eBodRequest
+	eOK = 200,
+    eCreated = 201,
+	eNotFound = 404,
+    eNoContent = 204,
+    eFORBIDDEN = 403,
+    eBadGateway = 502,
+	eBadRequest = 400,
+	eGetwayTimeout = 504,
+	eRequestTimeout = 408,
+	eLengthRequired = 411,
+    ePartialContent = 206,
+	eNotImplemented = 501,
+	eMovedPermanently = 301,
+	eMethodNotAllowed = 405,
+	eRequestURITooLong = 414,
+	eRequestEntityTooLarge = 413,
+	// if fail system call :
+    eInternalServerError = 500,
+	eHTTPVersionNotSupported = 505,
+    eRequestedRangeNotSatisfiable = 416
 };
 
 class   RequestParse
@@ -35,12 +53,12 @@ class   RequestParse
 	private :
 		std::map<std::string, std::string>  _metaData;
 		// i need to change this string to enum? 
-		methods		_enumMethod;
-		std::string _method;
-		std::string	_httpVersion;
-		std::string _url;
-		BodyParse	_body;
-		std::ofstream	_fdOut;
+		methods			_enumMethod;
+		status			_requestStatus;
+		std::string 	_method;
+		std::string		_httpVersion;
+		std::string 	_url;
+		BodyParse		_body;
 		std::ofstream	_fd;
 		// add if request done.
 		bool			_requestIsDone;
@@ -48,9 +66,11 @@ class   RequestParse
 		std::string	trimSpace(std::string line);
 
 	public :
+		RequestParse();
+
+		// Get :
 		std::map<std::string, std::string>	&getMetaData();
 
-		RequestParse();
 		void    readBuffer(std::string buff);
 		int    	parseHeader(std::string &header);
 		void	parseFirstLine(std::string  header);
