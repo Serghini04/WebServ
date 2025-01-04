@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RequestParse.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mal-mora <mal-mora@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/03 18:06:47 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/04 15:32:50 by mal-mora         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ enum	methods
 enum	status
 {
 	eOK,
-	eBodRequest
+	eBadRequest
 };
 
 class   RequestParse
@@ -35,7 +35,6 @@ class   RequestParse
 	private :
 		std::map<std::string, std::string>  _metaData;
 		// i need to change this string to enum? 
-		methods		_enumMethod;
 		std::string _method;
 		std::string	_httpVersion;
 		std::string _url;
@@ -43,13 +42,15 @@ class   RequestParse
 		std::ofstream	_fdOut;
 		std::ofstream	_fd;
 		// add if request done.
-		bool			_requestIsDone;
 		
 		std::string	trimSpace(std::string line);
 
 	public :
+		methods		_enumMethod;
+		status		_state;
+		bool		_requestIsDone;
 		std::map<std::string, std::string>	&getMetaData();
-
+		bool getRequestIsDone();
 		RequestParse();
 		void    readBuffer(std::string buff);
 		int    	parseHeader(std::string &header);

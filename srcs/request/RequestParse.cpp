@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RequestParse.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mal-mora <mal-mora@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/03 18:07:38 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/04 15:38:37 by mal-mora         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,10 @@ std::map<std::string, std::string>	&RequestParse::getMetaData()
 {
 	return (_metaData);
 }
-
+bool RequestParse::getRequestIsDone()
+{
+	return this->_requestIsDone;
+}
 bool	isNotSpace(int ch)
 {
 	return !std::isspace(ch);
@@ -119,8 +122,8 @@ void    RequestParse::readBuffer(std::string buff)
 			return ;
 		isHeaderDone = parseHeader(header);
 		buff = header.substr(isHeaderDone);
+		_body.setMetaData(_metaData);
 		type = _body.getTypeOfBody();
-		_body.getTypeOfBody();
 	}
 	switch (type)
 	{
