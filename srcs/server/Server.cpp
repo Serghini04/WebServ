@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/01/04 15:57:05 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/04 22:09:03 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ void Server::RecivData(int clientSocket, RequestParse &request)
 {
     int bytesRead;
     std::string fullData;
+    static int isHeader = 1;
     
     char buffer[1024 * 5];
 
@@ -84,14 +85,17 @@ void Server::RecivData(int clientSocket, RequestParse &request)
             break;
         }
         fullData.assign(buffer, bytesRead);
-        request.readBuffer(fullData);
-        // if (request.getRequestIsDone() == 0)
-        // {
-        //     EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
-        //     if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
-        //         errorMsg("kevent Error", clientSocket);
-        //      close(clientSocket);
-        // }  
+        request.readBuffer(fullData, isHeader);
+        if (request.requestIsDone())
+        {
+            isHeader = 1;
+            // std::cout << "request is done : " << request.requestIsDone() << "\n";
+            // EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
+            // if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
+            //     errorMsg("kevent Error", clientSocket);
+            //  close(clientSocket);
+        }  
+
     }
 }
 void Server::SendData(int clientSocket, RequestParse &request)

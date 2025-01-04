@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:38:49 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/04 16:41:52 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/04 21:59:26 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ BodyType	BodyParse::getTypeOfBody()
 void BodyParse::openFileBasedOnContentType()
 {
 	std::map<std::string, std::string> Extensions;
+	static int index = 1;
 
 	Extensions["image/jpeg"] = ".jpg";
 	Extensions["image/png"] = ".png";
@@ -69,15 +70,19 @@ void BodyParse::openFileBasedOnContentType()
 	Extensions["video/mpeg"] = ".mpeg";
 	Extensions["video/webm"] = ".webm";
 	Extensions["application/octet-stream"] = ".bin";
-	
-	std::string namefile = "RequestPOSTS/Output";
-	if ( _metaData["Content-Type"] == "")
+    
+	std::ostringstream oss;
+	oss << "RequestPOSTS/Output" << index;
+	std::string namefile = oss.str();
+    
+	if (_metaData["Content-Type"] == "")
 		namefile += ".txt";
 	else
 		namefile += Extensions[_metaData["Content-Type"]];
-	_fileOutput.open(namefile, std::ios::binary);
+	_fileOutput.open(namefile.c_str(), std::ios::binary);
 	if (_fileOutput.fail())
 		throw std::runtime_error("open failed !");
+	index++;
 }
 
 void	BodyParse::ChunkedBoundaryParse(std::string &buff)
@@ -105,9 +110,10 @@ bool BodyParse::ChunkedParse(std::string &buff)
 			    return false;
 			std::string lengthStr = buff.substr(0, pos);
 			length = std::strtol(lengthStr.c_str(), &trash, 16);
+			// std::cout << length << "\n";
 			if (*trash)
 			{
-				std::cerr << "Invalid chunk size: " << lengthStr << "\n";
+				// _fileOutput << "\n=====================================================\n";
 				exit(1);
 			}
 			buff = buff.substr(pos + 2);
