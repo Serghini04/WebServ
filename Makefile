@@ -1,4 +1,4 @@
-CC = c++
+CC = c++ 
 
 CFLAGS = -Wall -Wextra -Werror -I./includes
 
