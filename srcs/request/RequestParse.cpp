@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/03 18:07:38 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/04 15:03:11 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,7 @@ RequestParse::RequestParse()
 {
 	_fd.open("output.txt", std::ios::binary | std::ios::app);
 	_requestIsDone = false;
+	_requestStatus = eOK;
 }
 
 void    RequestParse::readBuffer(std::string buff)
@@ -112,15 +113,21 @@ void    RequestParse::readBuffer(std::string buff)
 	_fd << "\n=======================\n";
     _fd << buff ;
 	_fd << "\n=======================\n";
+	if (_requestIsDone)
+	{
+		puts("fff");
+		exit(0) ;
+	}
 	if (!isHeaderDone)
 	{	
 		header.append(buff);
 		if (buff.find("\r\n\r\n") == std::string::npos)
 			return ;
 		isHeaderDone = parseHeader(header);
+		_body.setMetaData(_metaData);
 		buff = header.substr(isHeaderDone);
 		type = _body.getTypeOfBody();
-		_body.getTypeOfBody();
+		_body.openFileBasedOnContentType();
 	}
 	switch (type)
 	{
@@ -128,7 +135,7 @@ void    RequestParse::readBuffer(std::string buff)
 			_body.BoundaryParse(buff);
 			break;
 		case eChunked :
-			_body.ChunkedParse(buff);
+			_requestIsDone = _body.ChunkedParse(buff);
 			break;
 		case eChunkedBoundary :
 			_body.ChunkedBoundaryParse(buff);

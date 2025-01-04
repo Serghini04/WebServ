@@ -15,7 +15,7 @@
 #include <csignal>
 #include <Response.hpp>
 #include <RequestParse.hpp>
-#define MAX_BUFFER 4096
+#define MAX_BUFFER 40960
 #define MAX_CLIENTS 128
 #define PORT 3938
 
