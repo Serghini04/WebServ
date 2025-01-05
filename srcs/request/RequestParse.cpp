@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RequestParse.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mal-mora <mal-mora@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/04 16:30:58 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/04 17:46:20 by mal-mora         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,8 +130,6 @@ void    RequestParse::readBuffer(std::string buff)
 	static int isHeaderDone = 0;
 	static	BodyType type = eNone;
 
-	if (_requestIsDone)
-		return ;
 	if (!isHeaderDone)
 	{	
 		header.append(buff);
@@ -144,9 +142,9 @@ void    RequestParse::readBuffer(std::string buff)
 		type = _body.getTypeOfBody();
 		_body.openFileBasedOnContentType();
 	}
-	_fd << "\n======================\n";
-	_fd << buff; 
-	_fd << "\n======================\n";
+	// _fd << "\n======================\n";
+	// _fd << buff; 
+	// _fd << "\n======================\n";
 	switch (type)
 	{
 		case eBoundary :
@@ -164,4 +162,5 @@ void    RequestParse::readBuffer(std::string buff)
 		case eNone :
 			break;
 	}
+	// isHeaderDone = !_requestIsDone;
 }
