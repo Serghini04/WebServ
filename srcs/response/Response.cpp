@@ -25,7 +25,7 @@ std::string Response::getHeader(RequestParse &request)
     if(request.statusCode() == eOK)
         header = "HTTP/1.1 200 OK";
     else
-        header = "HTTP/1.1 400 Bad";
+        header = "HTTP/1.1" + request.statusCode();
     headerMap["Date"] = Utility::GetCurrentTime();
     headerMap["Server"] = request.getMetaData()["Server"];
     headerMap["Content-Type"] = request.getMetaData()["Content-Type"];

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mal-mora <mal-mora@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/01/04 15:57:05 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/04 17:43:39 by mal-mora         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,13 +85,12 @@ void Server::RecivData(int clientSocket, RequestParse &request)
         }
         fullData.assign(buffer, bytesRead);
         request.readBuffer(fullData);
-        // if (request.getRequestIsDone() == 0)
-        // {
-        //     EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
-        //     if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
-        //         errorMsg("kevent Error", clientSocket);
-        //      close(clientSocket);
-        // }  
+        if (request.requestIsDone())
+        {
+            EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
+            if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
+                errorMsg("kevent Error", clientSocket);
+        }  
     }
 }
 void Server::SendData(int clientSocket, RequestParse &request)
@@ -103,8 +102,8 @@ void Server::SendData(int clientSocket, RequestParse &request)
     std::string header;
     (void)request;
     // if(request._state == status::eBadRequest)
+    // Response::
 
-    responseBody = Response::FileToString("index.html");
     //if is babrequest --> show 404 error html
     //else check which method is 
     oss << responseBody.size();
@@ -129,6 +128,7 @@ void Server::SendData(int clientSocket, RequestParse &request)
         }
         totalSent += bytesSent;
     }
+    close(clientSocket);
 }
 
 void Server::connectWithClient(int kq)
@@ -164,11 +164,11 @@ void Server::handelEvents(int n, struct kevent events[])
             clientSocket = events[i].ident;
             RecivData(clientSocket, req);
         }
-        // else if(events[i].filter == EVFILT_WRITE)
-        // {
-        //     clientSocket = events[i].ident;
-        //     SendData(clientSocket, req);
-        // }
+        else if(events[i].filter == EVFILT_WRITE)
+        {
+            clientSocket = events[i].ident;
+            SendData(clientSocket, req);
+        }
     }
 }
 int Server::CreateServer()
