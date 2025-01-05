@@ -6,7 +6,7 @@
 /*   By: mal-mora <mal-mora@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/04 17:46:20 by mal-mora         ###   ########.fr       */
+/*   Updated: 2025/01/05 10:44:44 by mal-mora         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,11 +111,11 @@ int RequestParse::parseHeader(std::string &header)
 			else
 			    parseMetaData(header.substr(start, i - start - 1));
 			if (i + 2 < header.size() && header[i + 1] == '\r' && header[i + 2] == '\n')
-				return i + 3;
+				return 0;
 			start = i + 1; 
 		}
 	}
-    return 0;
+	return 1;
 }
 RequestParse::RequestParse()
 {
@@ -124,23 +124,25 @@ RequestParse::RequestParse()
 	_statusCode = eOK;
 }
 
-void    RequestParse::readBuffer(std::string buff)
+void    RequestParse::readBuffer(std::string buff, int &isHeader)
 {
 	static std::string	header;
-	static int isHeaderDone = 0;
 	static	BodyType type = eNone;
 
-	if (!isHeaderDone)
-	{	
+	if (_requestIsDone)
+		return ;
+	if (isHeader)
+	{
 		header.append(buff);
 		if (buff.find("\r\n\r\n") == std::string::npos)
 			return ;
-		isHeaderDone = parseHeader(header);
+		isHeader = parseHeader(header);
+		std::cout << isHeader << "\n";
 		_body.setMetaData(_metaData);
-		buff = header.substr(isHeaderDone);
-		_body.setMetaData(_metaData);
+		buff = header.substr(header.find("\r\n\r\n") + 4);
 		type = _body.getTypeOfBody();
 		_body.openFileBasedOnContentType();
+		header.clear();
 	}
 	// _fd << "\n======================\n";
 	// _fd << buff; 
