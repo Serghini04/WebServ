@@ -6,7 +6,7 @@
 /*   By: mal-mora <mal-mora@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/01/07 10:34:47 by mal-mora         ###   ########.fr       */
+/*   Updated: 2025/01/07 14:49:25 by mal-mora         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,8 @@ void Server::SendData(int clientSocket, RequestParse &request)
 
     response = responseObj.getResponse(request);
     dataSize = response.size();
+    std::cout << dataSize << std::endl;
+    exit(0);
     while (totalSent < dataSize)
     {
         ssize_t bytesSent = send(clientSocket, response.c_str() + totalSent, dataSize - totalSent, 0);
