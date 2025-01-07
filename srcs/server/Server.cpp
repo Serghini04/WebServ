@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/01/04 22:09:03 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/07 16:08:56 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,32 +70,31 @@ void Server::RecivData(int clientSocket, RequestParse &request)
 
     while (true)
     {
-        memset(buffer, 0, sizeof(buffer));
-        bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
-        if (bytesRead == -1)
-        {
-            if (errno == EAGAIN || errno == EWOULDBLOCK)
-                break;
-            perror("Read Error");
-            break;
-        }
-        else if (bytesRead == 0)
-        {
-            close(clientSocket);
-            break;
-        }
-        fullData.assign(buffer, bytesRead);
-        request.readBuffer(fullData, isHeader);
-        if (request.requestIsDone())
-        {
-            isHeader = 1;
-            // std::cout << "request is done : " << request.requestIsDone() << "\n";
-            // EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
-            // if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
-            //     errorMsg("kevent Error", clientSocket);
-            //  close(clientSocket);
-        }  
-
+		memset(buffer, 0, sizeof(buffer));
+		bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
+		if (bytesRead == -1)
+		{
+		    if (errno == EAGAIN || errno == EWOULDBLOCK)
+		        break;
+		    perror("Read Error");
+		    break;
+		}
+		else if (bytesRead == 0)
+		{
+		    close(clientSocket);
+		    break;
+		}
+		fullData.assign(buffer, bytesRead);
+		request.readBuffer(fullData, isHeader);
+		if (request.requestIsDone())
+		{
+		    isHeader = 1;
+		    // std::cout << "request is done : " << request.requestIsDone() << "\n";
+		    // EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
+		    // if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
+		    //     errorMsg("kevent Error", clientSocket);
+		    //  close(clientSocket);
+		}
     }
 }
 void Server::SendData(int clientSocket, RequestParse &request)
@@ -154,10 +153,9 @@ void Server::connectWithClient(int kq)
             errorMsg("kevent Error", clientSocket);
     }
 }
-void Server::handelEvents(int n, struct kevent events[])
+void Server::handelEvents(int n, struct kevent events[], RequestParse &req)
 {
     int clientSocket;
-    RequestParse req;
 
     for (int i = 0; i < n; i++)
     {
@@ -177,6 +175,7 @@ void Server::handelEvents(int n, struct kevent events[])
 }
 int Server::CreateServer()
 {
+    RequestParse req;
     serverSocket = prepareTheSocket();
     struct kevent events[MAX_CLIENTS];
 
@@ -193,7 +192,7 @@ int Server::CreateServer()
         int n = kevent(kq, NULL, 0, events, MAX_CLIENTS, NULL);
         if (n == -1)
             errorMsg("kevent Fails", serverSocket);
-        handelEvents(n, events);
+        handelEvents(n, events, req);
     }
     close(serverSocket);
     close(kq);

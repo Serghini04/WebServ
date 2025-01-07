@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:38:49 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/04 21:59:26 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/07 15:56:13 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,43 +98,55 @@ void	BodyParse::BoundaryParse(std::string &buff)
 
 bool BodyParse::ChunkedParse(std::string &buff)
 {
+	static std::string data;
 	static size_t length = 0;
-	char *trash = NULL;
+	char *trash = NULL;    
 
+	if (!data.empty())
+	{
+		buff = data.append(buff);
+		data.clear();
+	}
 	while (!buff.empty())
 	{
-		if (!length)
+		if (length == 0)
 		{
 			size_t pos = buff.find("\r\n");
 			if (pos == std::string::npos)
-			    return false;
+				return data = buff, false;
 			std::string lengthStr = buff.substr(0, pos);
 			length = std::strtol(lengthStr.c_str(), &trash, 16);
-			// std::cout << length << "\n";
 			if (*trash)
 			{
-				// _fileOutput << "\n=====================================================\n";
-				exit(1);
+				std::cerr << "Invalid chunk size format!" << std::endl;
+				return false;
 			}
 			buff = buff.substr(pos + 2);
-			if (!length)
+			if (length == 0)
+			{
+				puts("Request Done");
+				_fileOutput.flush();
 				return true;
+			}
 		}
 		if (buff.size() >= length + 2)
 		{
 			_fileOutput.write(buff.c_str(), length);
+			_fileOutput.flush();
 			buff = buff.substr(length + 2);
 			length = 0;
 		}
 		else
 		{
 			_fileOutput.write(buff.c_str(), buff.size());
+			_fileOutput.flush();
 			length -= buff.size();
 			buff.clear();
 		}
 	}
 	return false;
 }
+
 
 
 
