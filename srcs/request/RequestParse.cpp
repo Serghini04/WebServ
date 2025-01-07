@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/04 21:59:04 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/07 16:06:53 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,14 @@ void	RequestParse::parseFirstLine(std::string  header)
 	std::stringstream    ss(header);
 
 	if (!std::isalpha(header[0]))
-		throw std::runtime_error("400 Bad Request");
+		throw std::runtime_error("400 Bad Request1");
 	ss >> _method >> _url >> _httpVersion;
 	if (_method != "GET" && _method != "POST" && _method != "DELETE")
-		throw std::runtime_error("400 Bad Request");
+		throw std::runtime_error("400 Bad Request2");
 	if (_url.empty() || _httpVersion.empty())
-		throw std::runtime_error("400 Bad Request"); 
+		throw std::runtime_error("400 Bad Request3"); 
 	if (_httpVersion != "HTTP/1.1")
-		throw std::runtime_error("400 Bad Request");
+		throw std::runtime_error("400 Bad Request4");
 	if (_method == "GET")
 		_enumMethod = eGET;
 	else if (_method == "POST")
@@ -120,8 +120,18 @@ int RequestParse::parseHeader(std::string &header)
 RequestParse::RequestParse()
 {
 	_fd.open("output.txt", std::ios::binary | std::ios::app);
+	if (_fd.fail())
+	{
+		puts("open failed");
+		exit(1);
+	}
 	_requestIsDone = false;
 	_statusCode = eOK;
+}
+
+std::string	RequestParse::URL()
+{
+	return (_url);
 }
 
 void    RequestParse::readBuffer(std::string buff, int &isHeader)
@@ -131,22 +141,22 @@ void    RequestParse::readBuffer(std::string buff, int &isHeader)
 
 	if (_requestIsDone)
 		return ;
+	_fd << "\n===========" << type << "===========\n";
+	_fd << buff; 
+	_fd << "\n======================\n";
+	_fd.flush();
 	if (isHeader)
 	{
 		header.append(buff);
 		if (buff.find("\r\n\r\n") == std::string::npos)
 			return ;
 		isHeader = parseHeader(header);
-		std::cout << isHeader << "\n";
 		_body.setMetaData(_metaData);
 		buff = header.substr(header.find("\r\n\r\n") + 4);
 		type = _body.getTypeOfBody();
 		_body.openFileBasedOnContentType();
 		header.clear();
 	}
-	_fd << "\n======================\n";
-	_fd << buff; 
-	_fd << "\n======================\n";
 	switch (type)
 	{
 		case eBoundary :
