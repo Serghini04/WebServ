@@ -14,7 +14,8 @@ std::string Response::FileToString(std::string const &fileName)
     if (!file.is_open())
         Utility::ShowErrorExit("Error in Open File"); //should response error 404
     ostr << file.rdbuf();
-    size_t pos = fileName.find("."); 
+    size_t pos = fileName.find(".");
+    ostr.flush();
     if (pos != std::string::npos)
         format = fileName.substr(pos + 1); 
     else
@@ -33,12 +34,13 @@ std::string Response::processGetResponse(RequestParse &request)
     this->contentType = "image/jpeg";
     return data;
 }
+
 std::string Response::processResponse(RequestParse &request, int isSuccess)
 {
     std::string statusLine;
     std::string body;
     std::ostringstream bodySize;
-    std::stringstream respons;
+    std::ostringstream respons;
 
     if (!isSuccess)
         body = FileToString("error.html");
@@ -66,10 +68,12 @@ std::string Response::processResponse(RequestParse &request, int isSuccess)
     }
     respons << "\r\n";
     respons << body;
-      std::ofstream mfile("test");
+    std::ofstream mfile("test");
     mfile << respons.str();
+    mfile.flush();
     return respons.str();
 }
+
 
 // std::string Response::getHeader(RequestParse &request)
 // {
