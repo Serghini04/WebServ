@@ -17,7 +17,7 @@ public:
         std::tm* now = std::localtime(&t);
         char buffer[80];
 
-        std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", now);
+        std::strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S GMT", now);
         return std::string(buffer);
     }
 };

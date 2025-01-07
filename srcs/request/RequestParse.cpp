@@ -6,12 +6,24 @@
 /*   By: mal-mora <mal-mora@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/05 10:44:44 by mal-mora         ###   ########.fr       */
+/*   Updated: 2025/01/07 10:55:49 by mal-mora         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <RequestParse.hpp>
 
+// RequestParse::RequestParse(const RequestParse& rqs)
+// {
+// 	*this = rqs;
+// }
+// RequestParse& RequestParse::operator=(const RequestParse& other) {
+//     if (this != &other) {
+
+//         // Free existing resources
+//         // Copy members from 'other'
+//     }
+//     return *this;
+// }
 
 void	RequestParse::parseFirstLine(std::string  header)
 {
@@ -26,6 +38,7 @@ void	RequestParse::parseFirstLine(std::string  header)
 		throw std::runtime_error("400 Bad Request"); 
 	if (_httpVersion != "HTTP/1.1")
 		throw std::runtime_error("400 Bad Request");
+	// std::cout <<"ff :" << _url << "\n";
 	if (_method == "GET")
 		_enumMethod = eGET;
 	else if (_method == "POST")
@@ -63,7 +76,10 @@ bool	isNotSpace(int ch)
 {
 	return !std::isspace(ch);
 }
-
+int		RequestParse::method()
+{
+	return this->_enumMethod;
+}
 std::string	RequestParse::trimSpace(std::string line)
 {
 	std::string::iterator first = std::find_if(line.begin(), line.end(), isNotSpace);
@@ -137,16 +153,15 @@ void    RequestParse::readBuffer(std::string buff, int &isHeader)
 		if (buff.find("\r\n\r\n") == std::string::npos)
 			return ;
 		isHeader = parseHeader(header);
-		std::cout << isHeader << "\n";
 		_body.setMetaData(_metaData);
 		buff = header.substr(header.find("\r\n\r\n") + 4);
 		type = _body.getTypeOfBody();
 		_body.openFileBasedOnContentType();
 		header.clear();
 	}
-	// _fd << "\n======================\n";
-	// _fd << buff; 
-	// _fd << "\n======================\n";
+	_fd << "\n======================\n";
+	_fd << buff; 
+	_fd << "\n======================\n";
 	switch (type)
 	{
 		case eBoundary :

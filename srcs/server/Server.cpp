@@ -6,7 +6,7 @@
 /*   By: mal-mora <mal-mora@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/01/05 10:45:37 by mal-mora         ###   ########.fr       */
+/*   Updated: 2025/01/07 10:34:47 by mal-mora         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,37 +89,22 @@ void Server::RecivData(int clientSocket, RequestParse &request)
         if (request.requestIsDone())
         {
             isHeader = 1;
-            // std::cout << "request is done : " << request.requestIsDone() << "\n";
-            // EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
-            // if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
-            //     errorMsg("kevent Error", clientSocket);
-            //  close(clientSocket);
-        }  
-
+            EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
+            if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
+                errorMsg("kevent Error", clientSocket);
+            return;
+        }
     }
 }
+
 void Server::SendData(int clientSocket, RequestParse &request)
 {
     size_t totalSent = 0;
     size_t dataSize;
-    std::ostringstream oss;
-    std::string responseBody;
-    std::string header;
-    (void)request;
-    // if(request._state == status::eBadRequest)
-    // Response::
+    std::string response;
+    Response responseObj;
 
-    //if is babrequest --> show 404 error html
-    //else check which method is 
-    oss << responseBody.size();
-    std::string response =
-        "HTTP/1.1 200 OK\r\n"
-        "Content-Type: text/html\r\n"
-        "Content-Length: " +
-        oss.str() + "\r\n"
-                    "\r\n" +
-        responseBody;
-    ////sending
+    response = responseObj.getResponse(request);
     dataSize = response.size();
     while (totalSent < dataSize)
     {
@@ -127,7 +112,7 @@ void Server::SendData(int clientSocket, RequestParse &request)
         if (bytesSent <= 0)
         {
             if (errno == EAGAIN || errno == EWOULDBLOCK)
-                continue;
+                break;
             perror("Send Error");
             break;
         }
@@ -135,6 +120,7 @@ void Server::SendData(int clientSocket, RequestParse &request)
     }
     close(clientSocket);
 }
+
 
 void Server::connectWithClient(int kq)
 {
@@ -155,10 +141,9 @@ void Server::connectWithClient(int kq)
             errorMsg("kevent Error", clientSocket);
     }
 }
-void Server::handelEvents(int n, struct kevent events[])
+void Server::handelEvents(int n, struct kevent events[], RequestParse &req)
 {
     int clientSocket;
-    RequestParse req;
 
     for (int i = 0; i < n; i++)
     {
@@ -178,6 +163,7 @@ void Server::handelEvents(int n, struct kevent events[])
 }
 int Server::CreateServer()
 {
+    RequestParse req;
     serverSocket = prepareTheSocket();
     struct kevent events[MAX_CLIENTS];
 
@@ -194,7 +180,7 @@ int Server::CreateServer()
         int n = kevent(kq, NULL, 0, events, MAX_CLIENTS, NULL);
         if (n == -1)
             errorMsg("kevent Fails", serverSocket);
-        handelEvents(n, events);
+        handelEvents(n, events, req);
     }
     close(serverSocket);
     close(kq);
