@@ -29,7 +29,7 @@ private:
     std::vector<int> clients;
 
     void            connectWithClient(int serverEpoll);
-    void            handelEvents(int n, struct kevent events[]);
+    void            handelEvents(int n, struct kevent events[], RequestParse &req);
     int             prepareTheSocket();
     void            SendData(int clientSocket, RequestParse &request);
     void            RecivData(int clientSocket, RequestParse &request);

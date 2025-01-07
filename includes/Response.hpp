@@ -5,10 +5,14 @@ class Server;
 class Response
 {
 private:
-    std::string getHeader(RequestParse &request);
+    std::map<std::string, std::string> _headerMap;
+    std::string contentType;
 public:
     Response();
-    static std::string FileToString(std::string const &fileName);
-
+    std::string FileToString(std::string const &fileName);
+    std::string getHeader(RequestParse &request);
+    std::string getResponse(RequestParse &request);
+    std::string processGetResponse(RequestParse &request);
+    std::string processResponse(RequestParse &request, int isSuccess);
 };
 

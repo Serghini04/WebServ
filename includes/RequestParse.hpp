@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RequestParse.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mal-mora <mal-mora@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/04 19:00:58 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/06 16:03:45 by mal-mora         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ class   RequestParse
 		status			_statusCode;
 		std::string 	_method;
 		std::string		_httpVersion;
-		std::string 	_url;
 		BodyParse		_body;
 		std::ofstream	_fd;
 		// add if request done.
@@ -70,11 +69,11 @@ class   RequestParse
 
 		// Get :
 		std::map<std::string, std::string>	&getMetaData();
+		std::string 	_url;
 		status	statusCode();
 		bool	requestIsDone();
-
 		// set :
-		
+		int		method();
 		void	SetStatusCode(status s);
 		void	SetRequestIsDone(bool s);
 
