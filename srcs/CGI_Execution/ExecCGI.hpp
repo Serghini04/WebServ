@@ -1,24 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   execCGI.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/30 11:33:58 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/09 10:01:22 by hidriouc         ###   ########.fr       */
+/*   Created: 2024/12/26 11:34:08 by hidriouc          #+#    #+#             */
+/*   Updated: 2024/12/26 12:13:05 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <Server.hpp>
-#include <RequestParse.hpp>
-#include <csignal>
+#include "ConServer.hpp"
+#include <unistd.h>
+#include <sys/wait.h>
 
-int main()
+
+#define BUFFER_SIZE 4096
+
+class	ExecCGI
 {
-	std::signal(SIGPIPE, SIG_IGN);
-	Server server;
-	
-	server.CreateServer();
-	return 0;
-}
+	private:
+		int			Inpipe[2];
+		int			Outpipe[2];
+		pid_t		pid;
+		std::string	Response;
+	public:
+	ExecCGI (const std::string &, const std::string &, const std::string&);
+	std::string	GetRespose();
+};
