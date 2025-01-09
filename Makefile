@@ -1,6 +1,6 @@
 CC = c++ 
 
-CFLAGS = -Wall -Wextra -Werror -I./includes
+CFLAGS = -I./includes #-Wall -Wextra -Werror 
 
 REQ_FILES = srcs/request/RequestParse.cpp srcs/request/BodyParse.cpp
 
