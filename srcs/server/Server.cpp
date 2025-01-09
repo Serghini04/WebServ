@@ -6,7 +6,7 @@
 /*   By: mal-mora <mal-mora@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/01/07 14:49:25 by mal-mora         ###   ########.fr       */
+/*   Updated: 2025/01/09 16:19:10 by mal-mora         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void Server::RecivData(int clientSocket, RequestParse &request)
     std::string fullData;
     static int isHeader = 1;
     
-    char buffer[1024 * 5];
+    char buffer[1024];
 
     while (true)
     {
@@ -96,32 +96,70 @@ void Server::RecivData(int clientSocket, RequestParse &request)
         }
     }
 }
-
 void Server::SendData(int clientSocket, RequestParse &request)
 {
-    size_t totalSent = 0;
-    size_t dataSize;
-    std::string response;
     Response responseObj;
+    std::ofstream mfile("test");
 
-    response = responseObj.getResponse(request);
-    dataSize = response.size();
-    std::cout << dataSize << std::endl;
-    exit(0);
-    while (totalSent < dataSize)
+    while (true)
     {
-        ssize_t bytesSent = send(clientSocket, response.c_str() + totalSent, dataSize - totalSent, 0);
-        if (bytesSent <= 0)
+        std::string response = responseObj.getResponse(request);
+        mfile << response;
+        mfile.flush();
+        if (response.empty())
+            break; 
+        size_t totalSent = 0; 
+        size_t responseSize = response.size();
+        while (totalSent < responseSize)
         {
-            if (errno == EAGAIN || errno == EWOULDBLOCK)
-                break;
-            perror("Send Error");
-            break;
+            ssize_t bytesSent = send(
+                clientSocket,
+                response.c_str() + totalSent, 
+                responseSize - totalSent,    
+                0);
+            if (bytesSent <= 0)
+            {
+                if (errno == EAGAIN || errno == EWOULDBLOCK)
+                    continue;
+                perror("Send Error");
+                close(clientSocket);
+                return;
+            }
+            totalSent += bytesSent; 
         }
-        totalSent += bytesSent;
     }
     close(clientSocket);
 }
+
+// void Server::SendData(int clientSocket, RequestParse &request)
+// {
+//     std::string response;
+//     Response responseObj;
+//     size_t totalSize = 0;
+//     std::ofstream mfile("test");
+
+//     while (true)
+//     {
+//         response = responseObj.getResponse(request);
+//         mfile << response;
+//         mfile.flush();
+//         if(response.empty())
+//             return;
+//         while (totalSize < response.size())
+//         {
+//             ssize_t bytesSent = send(clientSocket, response.c_str(), response.size(), 0);
+//             if (bytesSent <= 0)
+//             {
+//                 if (errno == EAGAIN || errno == EWOULDBLOCK)
+//                     break;
+//                 perror("Send Error");
+//                 break;
+//             }
+//             totalSize += bytesSent;
+//         }
+//     }
+//     close(clientSocket);
+// }
 
 
 void Server::connectWithClient(int kq)

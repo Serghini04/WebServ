@@ -9,8 +9,7 @@ private:
     std::string contentType;
 public:
     Response();
-    std::string FileToString(std::string const &fileName);
-    std::string getHeader(RequestParse &request);
+    std::string FileToString(std::ifstream &file,RequestParse &request);
     std::string getResponse(RequestParse &request);
     std::string processGetResponse(RequestParse &request);
     std::string processResponse(RequestParse &request, int isSuccess);
