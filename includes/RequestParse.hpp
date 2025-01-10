@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/07 14:49:21 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/08 18:39:05 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,18 +52,15 @@ class   RequestParse
 {
 	private :
 		std::map<std::string, std::string>  _metaData;
-		// i need to change this string to enum? 
 		methods			_enumMethod;
 		status			_statusCode;
 		std::string 	_method;
 		std::string		_httpVersion;
 		std::string 	_url;
 		BodyParse		_body;
-		std::ofstream	_fd;
-		// add if request done.
-		bool			_requestIsDone;
 		
-		std::string	trimSpace(std::string line);
+		bool			_requestIsDone;
+		std::ofstream	_fd;
 
 	public :
 		RequestParse();
@@ -73,13 +70,14 @@ class   RequestParse
 		status	statusCode();
 		bool	requestIsDone();
 		std::string	URL();
+
 		// set :
-		
 		void	SetStatusCode(status s);
 		void	SetRequestIsDone(bool s);
 
-		void    readBuffer(std::string buff, int &isHeader);
-		int    	parseHeader(std::string &header);
+		bool	readHeader(std::string &buff);
+		void	readBuffer(std::string buff, int &isHeader);
+		bool	parseHeader(std::string &header);
 		void	parseFirstLine(std::string  header);
 		void	parseMetaData(std::string header);
 };
