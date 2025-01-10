@@ -3,29 +3,89 @@
 /*                                                        :::      ::::::::   */
 /*   RequestParse.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mal-mora <mal-mora@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2024/12/30 20:06:07 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/09 19:11:55 by mal-mora         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <RequestParse.hpp>
 
+// RequestParse::RequestParse(const RequestParse& rqs)
+// {
+// 	*this = rqs;
+// }
+// RequestParse& RequestParse::operator=(const RequestParse& other) {
+//     if (this != &other) {
+
+//         // Free existing resources
+//         // Copy members from 'other'
+//     }
+//     return *this;
+// }
 
 void	RequestParse::parseFirstLine(std::string  header)
 {
 	std::stringstream    ss(header);
 
 	if (!std::isalpha(header[0]))
-		throw std::runtime_error("400 Bad Request");
+		throw std::runtime_error("400 Bad Request1");
 	ss >> _method >> _url >> _httpVersion;
 	if (_method != "GET" && _method != "POST" && _method != "DELETE")
-		throw std::runtime_error("400 Bad Request");
-	if (_url.empty())
-		throw std::runtime_error("400 Bad Request");
+		throw std::runtime_error("400 Bad Request2");
+	if (_url.empty() || _httpVersion.empty())
+		throw std::runtime_error("400 Bad Request3"); 
 	if (_httpVersion != "HTTP/1.1")
-		throw std::runtime_error("400 Bad Request");
+		throw std::runtime_error("400 Bad Request4");
+	if (_method == "GET")
+		_enumMethod = eGET;
+	else if (_method == "POST")
+		_enumMethod = ePOST;
+	else
+		_enumMethod = eDELETE;
+}
+
+std::map<std::string, std::string>	&RequestParse::getMetaData()
+{
+	return (_metaData);
+}
+
+bool RequestParse::requestIsDone()
+{
+	return this->_requestIsDone;
+}
+
+status	RequestParse::statusCode()
+{
+	return this->_statusCode;
+}
+
+void	RequestParse::SetStatusCode(status s)
+{
+	_statusCode = s;
+}
+
+void	RequestParse::SetRequestIsDone(bool s)
+{
+	_requestIsDone = s;
+}
+
+bool	isNotSpace(int ch)
+{
+	return !std::isspace(ch);
+}
+int		RequestParse::method()
+{
+	return this->_enumMethod;
+}
+std::string	RequestParse::trimSpace(std::string line)
+{
+	std::string::iterator first = std::find_if(line.begin(), line.end(), isNotSpace);
+	if (first == line.end())
+		return "";
+	std::string::iterator last = std::find_if(line.rbegin(), line.rend(), isNotSpace).base();
+	return std::string(first, last);
 }
 
 void	RequestParse::parseMetaData(std::string header)
@@ -37,7 +97,7 @@ void	RequestParse::parseMetaData(std::string header)
 			continue;
 		else if (i != 0 && header[i] == ':')
 		{
-			_metaData[header.substr(0, i)] = header.substr(i + 1);
+			_metaData[header.substr(0, i)] = trimSpace(header.substr(i + 1));
 			return ;
 		}
 		else
@@ -66,27 +126,68 @@ int RequestParse::parseHeader(std::string &header)
 			else
 			    parseMetaData(header.substr(start, i - start - 1));
 			if (i + 2 < header.size() && header[i + 1] == '\r' && header[i + 2] == '\n')
-				return i + 3;
+				return 0;
 			start = i + 1; 
 		}
 	}
-    return 0;
+	return 1;
+}
+RequestParse::RequestParse()
+{
+	_fd.open("output.txt", std::ios::binary | std::ios::app);
+	if (_fd.fail())
+	{
+		puts("open failed");
+		exit(1);
+	}
+	_requestIsDone = false;
+	_statusCode = eOK;
 }
 
+std::string	RequestParse::URL()
+{
+	return (_url);
+}
 
-void    RequestParse::readBuffer(std::string buff)
+void    RequestParse::readBuffer(std::string buff, int &isHeader)
 {
 	static std::string	header;
-	static int isHeaderDone = 0;
-    
-	if (!isHeaderDone)
-	{	
+	static	BodyType type = eNone;
+
+	if (_requestIsDone)
+		return ;
+	_fd << "\n===========" << type << "===========\n";
+	_fd << buff; 
+	_fd << "\n======================\n";
+	_fd.flush();
+	if (isHeader)
+	{
 		header.append(buff);
 		if (buff.find("\r\n\r\n") == std::string::npos)
 			return ;
-		std::cout << "===================\n";
-		std::cout << header << "\n";
-		std::cout << "===================\n";
-		isHeaderDone = parseHeader(header);
+		isHeader = parseHeader(header);
+		_body.setMetaData(_metaData);
+		buff = header.substr(header.find("\r\n\r\n") + 4);
+		type = _body.getTypeOfBody();
+		_body.openFileBasedOnContentType();
+		header.clear();
 	}
+	switch (type)
+	{
+		case eBoundary :
+			_body.BoundaryParse(buff);
+			break;
+		case eChunked :
+			_requestIsDone = _body.ChunkedParse(buff);
+			break;
+		case eChunkedBoundary :
+			_body.ChunkedBoundaryParse(buff);
+			break;
+		case eContentLength :
+			_body.ContentLengthParse(buff);
+			break;
+		case eNone :
+			break;
+	}
+	// isHeaderDone = !_requestIsDone;
 }

@@ -1,14 +1,15 @@
-CC = c++
+CC = c++ 
 
-CFLAGS = -Wall -Wextra -Werror -I./includes
+CFLAGS = -I./includes #-Wall -Wextra -Werror 
 
-REQ_FILES = srcs/request/RequestParse.cpp
+REQ_FILES = srcs/request/RequestParse.cpp srcs/request/BodyParse.cpp
 
-SRC_S = srcs/server
+SRC_S = srcs/server/Server.cpp  
+SRC_RES = srcs/response/Response.cpp
 
-HPATH = includes/Server.hpp includes/RequestParse.hpp
+HPATH = includes/Server.hpp includes/RequestParse.hpp includes/BodyParse.hpp includes/Utility.hpp
 
-SRCS = main.cpp $(SRC_S)/Server.cpp  $(REQ_FILES)
+SRCS = main.cpp $(SRC_S) $(SRC_RES) $(REQ_FILES)
 
 OBJS = $(SRCS:.cpp=.o)
 
@@ -23,7 +24,7 @@ $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) -c $< -o $@
 	
 clean:
-	rm -rf $(OBJS)
+	rm -rf $(OBJS) output.txt
 
 fclean: clean
 	rm -rf $(TARGET)
