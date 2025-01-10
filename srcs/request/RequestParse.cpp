@@ -6,12 +6,24 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/07 16:06:53 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/10 21:10:39 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <RequestParse.hpp>
 
+
+RequestParse::RequestParse()
+{
+	_fd.open("/Users/meserghi/goinfre/D/Trash.txt", std::ios::binary | std::ios::app);
+	if (_fd.fail())
+	{
+		puts("open failed");
+		exit(1);
+	}
+	_requestIsDone = false;
+	_statusCode = eOK;
+}
 
 void	RequestParse::parseFirstLine(std::string  header)
 {
@@ -59,20 +71,6 @@ void	RequestParse::SetRequestIsDone(bool s)
 	_requestIsDone = s;
 }
 
-bool	isNotSpace(int ch)
-{
-	return !std::isspace(ch);
-}
-
-std::string	RequestParse::trimSpace(std::string line)
-{
-	std::string::iterator first = std::find_if(line.begin(), line.end(), isNotSpace);
-	if (first == line.end())
-		return "";
-	std::string::iterator last = std::find_if(line.rbegin(), line.rend(), isNotSpace).base();
-	return std::string(first, last);
-}
-
 void	RequestParse::parseMetaData(std::string header)
 {
 	
@@ -82,7 +80,7 @@ void	RequestParse::parseMetaData(std::string header)
 			continue;
 		else if (i != 0 && header[i] == ':')
 		{
-			_metaData[header.substr(0, i)] = trimSpace(header.substr(i + 1));
+			_metaData[header.substr(0, i)] = Utility::trimSpace(header.substr(i + 1));
 			return ;
 		}
 		else
@@ -91,7 +89,7 @@ void	RequestParse::parseMetaData(std::string header)
 	throw std::runtime_error("400 Bad Request");
 }
 
-int RequestParse::parseHeader(std::string &header)
+bool	RequestParse::parseHeader(std::string &header)
 {
 	int firstLine = 1;
 	size_t start = 0;
@@ -111,22 +109,11 @@ int RequestParse::parseHeader(std::string &header)
 			else
 			    parseMetaData(header.substr(start, i - start - 1));
 			if (i + 2 < header.size() && header[i + 1] == '\r' && header[i + 2] == '\n')
-				return 0;
+				break ;
 			start = i + 1; 
 		}
 	}
-	return 1;
-}
-RequestParse::RequestParse()
-{
-	_fd.open("output.txt", std::ios::binary | std::ios::app);
-	if (_fd.fail())
-	{
-		puts("open failed");
-		exit(1);
-	}
-	_requestIsDone = false;
-	_statusCode = eOK;
+	return false;
 }
 
 std::string	RequestParse::URL()
@@ -134,33 +121,45 @@ std::string	RequestParse::URL()
 	return (_url);
 }
 
-void    RequestParse::readBuffer(std::string buff, int &isHeader)
+bool	RequestParse::readHeader(std::string &buff)
 {
 	static std::string	header;
-	static	BodyType type = eNone;
+	bool	isHeader = true;
 
+	header.append(buff);
+	if (buff.find("\r\n\r\n") == std::string::npos)
+		return isHeader;
+	isHeader = parseHeader(header);
+	_body.setMetaData(_metaData);
+	buff = header.substr(header.find("\r\n\r\n") + 4);
+	_body.setbodyType(_body.getTypeOfBody());
+	if (_body.bodyType() == eChunked ||  _body.bodyType() == eContentLength)
+		_body.openFileBasedOnContentType();
+	if (_body.bodyType() == eBoundary)
+	{
+		std::string	boundary = _metaData["Content-Type"].substr(_metaData["Content-Type"].find("boundary=") + 9);
+		std::cout << ">>" << "--" + boundary<< "<<\r\n";
+		_body.setBoundary("--" + boundary + "\r\n");
+		_body.setBoundaryEnd("\r\n--" + boundary + "--\r\n");
+	}
+	header.clear();
+	return isHeader;
+}
+
+void    RequestParse::readBuffer(std::string buff, int &isHeader)
+{
 	if (_requestIsDone)
 		return ;
-	_fd << "\n===========" << type << "===========\n";
-	_fd << buff; 
-	_fd << "\n======================\n";
-	_fd.flush();
+    _fd << "\n===========" << _body.bodyType() << "===========\n";
+    _fd << buff; 
+    _fd << "\n======================\n";
+    _fd.flush();
 	if (isHeader)
-	{
-		header.append(buff);
-		if (buff.find("\r\n\r\n") == std::string::npos)
-			return ;
-		isHeader = parseHeader(header);
-		_body.setMetaData(_metaData);
-		buff = header.substr(header.find("\r\n\r\n") + 4);
-		type = _body.getTypeOfBody();
-		_body.openFileBasedOnContentType();
-		header.clear();
-	}
-	switch (type)
+		isHeader = readHeader(buff);
+	switch (_body.bodyType())
 	{
 		case eBoundary :
-			_body.BoundaryParse(buff);
+			_requestIsDone = _body.BoundaryParse(buff);
 			break;
 		case eChunked :
 			_requestIsDone = _body.ChunkedParse(buff);

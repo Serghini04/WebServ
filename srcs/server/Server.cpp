@@ -6,11 +6,14 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/01/07 16:08:56 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/10 20:12:23 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Server.hpp"
+
+#include <ctime>
+#include <cmath>
 
 Server::Server()
 {
@@ -65,6 +68,7 @@ void Server::RecivData(int clientSocket, RequestParse &request)
     int bytesRead;
     std::string fullData;
     static int isHeader = 1;
+    static clock_t  s = clock();
     
     char buffer[1024 * 5];
 
@@ -88,7 +92,10 @@ void Server::RecivData(int clientSocket, RequestParse &request)
 		request.readBuffer(fullData, isHeader);
 		if (request.requestIsDone())
 		{
+            std::cout << (double)(clock() - s) / CLOCKS_PER_SEC << "s" << std::endl;
 		    isHeader = 1;
+            puts("Request is Done");
+            exit(1);
 		    // std::cout << "request is done : " << request.requestIsDone() << "\n";
 		    // EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
 		    // if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
