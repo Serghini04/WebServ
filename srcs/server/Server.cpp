@@ -21,7 +21,6 @@ void errorMsg(std::string str, int fd)
 {
     std::cerr << str << std::endl;
     close(fd);
-    // exit(1);
 }
 
 int make_socket_nonblocking(int sockfd)
@@ -60,13 +59,13 @@ int Server::prepareTheSocket()
     return serverSocket;
 }
 
-void Server::RecivData(int clientSocket, RequestParse &request)
+void Server::RecivData(int clientSocket, RequestParse *request)
 {
     int bytesRead;
     std::string fullData;
     static int isHeader = 1;
-    
-    char buffer[1024];
+    std::ofstream mfile("testdd");
+    char buffer[MAX_BUFFER];
 
     while (true)
     { 
@@ -85,8 +84,8 @@ void Server::RecivData(int clientSocket, RequestParse &request)
             break;
         }
         fullData.assign(buffer, bytesRead);
-        request.readBuffer(fullData, isHeader);
-        if (request.requestIsDone())
+        (*request).readBuffer(fullData, isHeader);
+        if ((*request).requestIsDone())
         {
             puts("Data Recived");
             isHeader = 1;
@@ -97,14 +96,14 @@ void Server::RecivData(int clientSocket, RequestParse &request)
         }
     }
 }
-void Server::SendData(int clientSocket, RequestParse &request)
+void Server::SendData(int clientSocket, RequestParse *request)
 {
     Response responseObj;
     std::ofstream mfile("test");
-
-    while (true)
+    // std::cout << "url : "<< (*request)._url << std::endl;
+    while (true)   
     {
-        std::string response = responseObj.getResponse(request);
+        std::string response = responseObj.getResponse(*request);
         mfile << response;
         mfile.flush();
         if (response.empty())
@@ -121,7 +120,7 @@ void Server::SendData(int clientSocket, RequestParse &request)
             if (bytesSent <= 0)
             {
                 if (errno == EAGAIN || errno == EWOULDBLOCK)
-                    break;
+                    continue;
                 perror("Send Error");
                 close(clientSocket);
                 return;
@@ -129,8 +128,10 @@ void Server::SendData(int clientSocket, RequestParse &request)
             totalSent += bytesSent; 
         }
     }
-    puts("Data Sended Successfully");
-    close(clientSocket);
+    EV_SET(&event, clientSocket, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
+    if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
+        perror("kevent Error: Removing EVFILT_WRITE");
+    puts("Data Sent Succussfully");
 }
 
 void Server::connectWithClient(int kq)
@@ -150,33 +151,33 @@ void Server::connectWithClient(int kq)
         EV_SET(&event, clientSocket, EVFILT_READ, EV_ADD, 0, 0, NULL);
         if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
             errorMsg("kevent Error", clientSocket);
-        puts("Connect With Client");
     }
 }
-
-void Server::handelEvents(int n, struct kevent events[], RequestParse &req)
+    
+void Server::handelEvents(int n, struct kevent events[])
 {
     int clientSocket;
-
     for (int i = 0; i < n; i++)
     {
+        std::cout << "good" << std::endl;
         if (events[i].ident == static_cast<uintptr_t>(serverSocket))
             connectWithClient(kq);
         else if(events[i].filter == EVFILT_READ)
         {
             clientSocket = events[i].ident;
-            RecivData(clientSocket, req);
+            clientsRequests[clientSocket] = std::unique_ptr<RequestParse>(new RequestParse());
+            RecivData(clientSocket, clientsRequests[clientSocket].get());
         }
         else if(events[i].filter == EVFILT_WRITE)
         {
             clientSocket = events[i].ident;
-            SendData(clientSocket, req);
+            SendData(clientSocket, clientsRequests[clientSocket].get());
+            close(clientSocket);
         }
     }
 }
 int Server::CreateServer()
 {
-    RequestParse req;
     serverSocket = prepareTheSocket();
     struct kevent events[MAX_CLIENTS];
 
@@ -193,7 +194,7 @@ int Server::CreateServer()
         int n = kevent(kq, NULL, 0, events, MAX_CLIENTS, NULL);
         if (n == -1)
             errorMsg("kevent Fails", serverSocket);
-        handelEvents(n, events, req);
+        handelEvents(n, events);
     }
     close(serverSocket);
     close(kq);

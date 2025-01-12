@@ -16,7 +16,7 @@
 #include <map>
 #include <Response.hpp>
 #include <RequestParse.hpp>
-#define MAX_BUFFER 40960
+#define MAX_BUFFER 1024
 #define MAX_CLIENTS 128
 #define PORT 3938
 
@@ -26,13 +26,13 @@ private:
     int serverSocket;
     int kq;
     struct kevent event;
-    std::vector<int> clients;
+    std::map<int, std::unique_ptr<RequestParse> > clientsRequests;
 
     void            connectWithClient(int serverEpoll);
-    void            handelEvents(int n, struct kevent events[], RequestParse &req);
+    void            handelEvents(int n, struct kevent events[]);
     int             prepareTheSocket();
-    void            SendData(int clientSocket, RequestParse &request);
-    void            RecivData(int clientSocket, RequestParse &request);
+    void            SendData(int clientSocket, RequestParse *request);
+    void            RecivData(int clientSocket, RequestParse *request);
 public:
     Server();
     int CreateServer();
