@@ -19,22 +19,27 @@
 #define MAX_BUFFER 1024
 #define MAX_CLIENTS 128
 #define PORT 3938
-
+class Response;
+class RequestParse;
 class Server
 {
 private:
     int serverSocket;
     int kq;
     struct kevent event;
-    std::map<int, std::unique_ptr<RequestParse> > clientsRequests;
-
-    void            connectWithClient(int serverEpoll);
-    void            handelEvents(int n, struct kevent events[]);
-    int             prepareTheSocket();
-    void            SendData(int clientSocket, RequestParse *request);
-    void            RecivData(int clientSocket, RequestParse *request);
+    std::map<int, RequestParse* > clientsRequest;
+    std::map<int, Response* > clientsResponse;
+    void            ConnectWithClient(int serverEpoll);
+    void            HandelEvents(int n, struct kevent events[]);
+    int             ConfigTheSocket();
+    void            SendData(int clientSocket);
+    void            RecivData(int clientSocket);
+    void            ResponseEnds(int clientSocket);
+    void            SendError(int fd);
+    bool            isInterError;
 public:
     Server();
+    ~Server();
     int CreateServer();
 };
 

@@ -1,10 +1,10 @@
 
 ===========4===========
-GET /Users/mal-mora/Desktop/webserv/index.html HTTP/1.1
+GET /Users/mal-mora/Desktop/webserv/outpucct.jpeg HTTP/1.1
 Transfer-Encoding: chunked
 User-Agent: PostmanRuntime/7.33.0
 Accept: */*
-Postman-Token: f9c644a9-ba45-4bab-b913-5774b4c5446a
+Postman-Token: 24649ebe-5695-458c-82e7-bf91cd9856bf
 Host: localhost:3938
 Accept-Encoding: gzip, deflate, br
 Connection: keep-alive
@@ -19,7 +19,22 @@ GET /Users/mal-mora/Desktop/webserv/outpucct.jpeg HTTP/1.1
 Transfer-Encoding: chunked
 User-Agent: PostmanRuntime/7.33.0
 Accept: */*
-Postman-Token: 31f498bf-50ee-40e4-a3da-46fe9e5e215b
+Postman-Token: 109d30ab-bb23-47c9-baeb-e29f8c65091b
+Host: localhost:3938
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+
+0
+
+
+======================
+
+===========0===========
+GET /Users/mal-mora/Desktop/webserv/index.html HTTP/1.1
+Transfer-Encoding: chunked
+User-Agent: PostmanRuntime/7.33.0
+Accept: */*
+Postman-Token: 5e325c6d-69bb-4b12-ba49-aeee647926a5
 Host: localhost:3938
 Accept-Encoding: gzip, deflate, br
 Connection: keep-alive
