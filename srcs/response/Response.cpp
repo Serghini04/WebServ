@@ -12,13 +12,20 @@ Response::~Response()
     
 }
 
-std::string Response::FileToString(RequestParse &request)
+std::string Response::FileToString()
 {
-    std::ostringstream ostr;
-    std::string format;
     std::string buf(1024, '\0');
 
     file.read(&buf[0], 1024);
+    buf.resize(file.gcount());
+    return buf;
+}
+void Response::setContentType(RequestParse &request)
+{
+    std::string format;
+
+    if(request._url.empty())
+        return ;
     size_t pos = request._url.find(".");
     if (pos != std::string::npos)
         format = request._url.substr(pos + 1);
@@ -28,16 +35,13 @@ std::string Response::FileToString(RequestParse &request)
         this->contentType = "application/json";
     else if (format == "html")
         this->contentType = "text/html";
-    else if (format == "jpeg")
-        this->contentType = "video/mp4";
     else if (format == "mp4")
-        this->contentType = "image/jpeg";
+        this->contentType = "video/mp4";
+    else if (format == "jpeg")
+        this->contentType = "image/jpeg; charset=UTF-8";
     else
         this->contentType = "text/plain";
-    buf.resize(file.gcount());
-    return buf;
 }
-
 int Response::getFileSize()
 {
     file.seekg(0, std::ios::end);
@@ -58,6 +62,7 @@ std::string Response::getHeader(RequestParse &request, const std::string &status
     _headerMap["Content-Type"] = contentType;
     _headerMap["Content-Length"] = bodySize.str();
     _headerMap["Connection"] = request.getMetaData().count("Connection") == 0 ? "keep-alive" : request.getMetaData()["Connection"];
+    // _headerMap["Connection"] = "close";
     response << statusLine;
     for (std::map<std::string, std::string>::const_iterator
              it = _headerMap.begin();
@@ -75,8 +80,10 @@ std::string Response::processResponse(RequestParse &request, int isSuccess)
     std::string filename;
 
     statusLine = "HTTP/1.1 200 OK\r\n";
-    if (!isSuccess)
+    setContentType(request);
+    if (isSuccess <= 0)
     {
+        this->contentType = "text/html";
         filename = "error.html";
         statusLine = "HTTP/1.1 400 Bad Request\r\n";
     }
@@ -96,25 +103,19 @@ std::string Response::processResponse(RequestParse &request, int isSuccess)
         size = getFileSize();
     }
     else
-        return FileToString(request);
+        return FileToString();
     firstCall = 0;
     return getHeader(request, statusLine);
 }
 
-std::string Response::getResponse(RequestParse &request)
+std::string Response::getResponse(RequestParse &request, int state)
 {
     std::string str;
-
+    if(state)
+        str = processResponse(request, -1);
     if (request.statusCode() != eOK)
         str = processResponse(request, 0);
     else
         str = processResponse(request, 1);
     return str;
-}
-
-void Response::ClearVars()
-{
-    size = 0;
-    file.clear();
-    firstCall = 1;
 }
