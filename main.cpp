@@ -13,10 +13,21 @@
 # include <Server.hpp>
 # include <RequestParse.hpp>
 
-int main()
+int main(int ac, char **av)
 {
+    (void)ac;
+    (void)av;
 	std::signal(SIGPIPE, SIG_IGN);
-    Server server;
-    server.CreateServer();
+    std::vector<Conserver>	servers = parseConfigFile(av[1]);
+    std::vector<Server> serverList;
+    for(size_t i = 0; i < servers.size(); i++)
+    {
+        Server server(servers[i]);
+        serverList.push_back(server);
+
+    }
+    // serverList[0].CreateServer();
+    
+    // std::cout << servers[0].getAttributes("client_max_body_size")<< std::endl;
 	return 0;
 }

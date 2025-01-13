@@ -12,9 +12,10 @@
 
 #include "../includes/Server.hpp"
 
-Server::Server()
+Server::Server(Conserver conserver)
 {
     isInterError = false;
+    this->conServer = conserver;
 }
 
 Server::~Server()
@@ -118,7 +119,7 @@ void Server::RecivData(int clientSocket)
         isHeader = 1;
         (*clientsRequest[clientSocket]).SetRequestIsDone(false);
         EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
-        if (kevent(kq, &event, 1, NULL, 0, NULL) == 0)
+        if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
             SendError(clientSocket, "kevent");
         return;
     }
@@ -148,18 +149,18 @@ void Server::SendData(int clientSocket)
         if (bytesSent <= 0)
         {
             if (errno == EAGAIN || errno == EWOULDBLOCK)
-                continue;
+                return;
             if(errno == EPIPE)
             {
                 ResponseEnds(clientSocket);
                 return ;
             }
-            perror("Send failed");
-            SendError(clientSocket, "SENDING Error");
+            SendError(clientSocket, "Sending Error");
             return;
         }
         totalSent += bytesSent;
     }
+
 }
 
 void Server::ConnectWithClient(int kq)
@@ -204,6 +205,7 @@ void Server::HandelEvents(int n, struct kevent events[])
         }
     }
 }
+
 int Server::CreateServer()
 {
     serverSocket = ConfigTheSocket();

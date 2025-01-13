@@ -16,6 +16,7 @@
 #include <map>
 #include <Response.hpp>
 #include <RequestParse.hpp>
+#include "ConServer.hpp"
 #define MAX_BUFFER 1024 * 5
 #define MAX_CLIENTS 128
 #define PORT 3938
@@ -37,8 +38,9 @@ private:
     void            ResponseEnds(int clientSocket);
     void            SendError(int fd, std::string msg);
     bool            isInterError;
+    Conserver       conServer;
 public:
-    Server();
+    Server(Conserver conserver);
     ~Server();
     int CreateServer();
 };
