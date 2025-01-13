@@ -1,0 +1,488 @@
+
+===========4===========
+GET /Users/mal-mora/Desktop/webserv/pe.mp4 HTTP/1.1
+Host: localhost:3938
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:131.0) Gecko/20100101 Firefox/131.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+======================
+
+===========3===========
+GET /favicon.ico HTTP/1.1
+Host: localhost:3938
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:131.0) Gecko/20100101 Firefox/131.0
+Accept: image/avif,image/webp,image/png,image/svg+xml,image/*;q=0.8,*/*;q=0.5
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Referer: http://localhost:3938/Users/mal-mora/Desktop/webserv/pe.mp4
+Sec-Fetch-Dest: image
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Site: same-origin
+Priority: u=6
+
+
+======================
+
+===========3===========
+GET /Users/mal-mora/Desktop/webserv/pe.mp4 HTTP/1.1
+Host: localhost:3938
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:131.0) Gecko/20100101 Firefox/131.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+======================
+
+===========3===========
+GET /Users/mal-mora/Desktop/webserv/pe.mp4 HTTP/1.1
+Host: localhost:3938
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:131.0) Gecko/20100101 Firefox/131.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+======================
+
+===========3===========
+GET /Users/mal-mora/Desktop/webserv/cc.mp4 HTTP/1.1
+Host: localhost:3938
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:131.0) Gecko/20100101 Firefox/131.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+======================
+
+===========3===========
+GET /Users/mal-mora/Desktop/webserv/pe.mp4 HTTP/1.1
+Host: localhost:3938
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:131.0) Gecko/20100101 Firefox/131.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+======================
+
+===========3===========
+GET /Users/mal-mora/Desktop/webserv/pe.mp4 HTTP/1.1
+Host: localhost:3938
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:131.0) Gecko/20100101 Firefox/131.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+======================
+
+===========4===========
+GET /Users/mal-mora/Desktop/webserv/pe.mp4 HTTP/1.1
+Transfer-Encoding: chunked
+User-Agent: PostmanRuntime/7.33.0
+Accept: */*
+Postman-Token: dfe13301-9ebc-4b14-99c2-a30af9c2cd05
+Host: localhost:3938
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+
+0
+
+
+======================
+
+===========4===========
+GET /Users/mal-mora/Desktop/webserv/cc.mp4 HTTP/1.1
+Host: localhost:3938
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:131.0) Gecko/20100101 Firefox/131.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+======================
+
+===========3===========
+GET /Users/mal-mora/Desktop/webserv/pe.mp4 HTTP/1.1
+Host: localhost:3938
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:131.0) Gecko/20100101 Firefox/131.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+======================
+
+===========4===========
+GET /Users/mal-mora/Desktop/webserv/pe.mp4 HTTP/1.1
+Host: localhost:3938
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:131.0) Gecko/20100101 Firefox/131.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+======================
+
+===========4===========
+GET /Users/mal-mora/Desktop/webserv/pe.mp4 HTTP/1.1
+Host: localhost:3938
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:131.0) Gecko/20100101 Firefox/131.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+======================
+
+===========4===========
+GET /Users/mal-mora/Desktop/webserv/pe.mp4 HTTP/1.1
+Host: localhost:3938
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:131.0) Gecko/20100101 Firefox/131.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+======================
+
+===========4===========
+GET /Users/mal-mora/Desktop/webserv/pe.mp4 HTTP/1.1
+Host: localhost:3938
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:131.0) Gecko/20100101 Firefox/131.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+======================
+
+===========4===========
+GET /Users/mal-mora/Desktop/webserv/pe.mp4 HTTP/1.1
+Host: localhost:3938
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:131.0) Gecko/20100101 Firefox/131.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+======================
+
+===========4===========
+GET /Users/mal-mora/Desktop/webserv/pe.mp4 HTTP/1.1
+Host: localhost:3938
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:131.0) Gecko/20100101 Firefox/131.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+======================
+
+===========4===========
+GET /Users/mal-mora/Desktop/webserv/pe.mp4 HTTP/1.1
+Host: localhost:3938
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:131.0) Gecko/20100101 Firefox/131.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+======================
+
+===========4===========
+GET /Users/mal-mora/Desktop/webserv/pe.mp4 HTTP/1.1
+Host: localhost:3938
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:131.0) Gecko/20100101 Firefox/131.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+======================
+
+===========4===========
+GET /Users/mal-mora/Desktop/webserv/pe.mp4 HTTP/1.1
+Host: localhost:3938
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:131.0) Gecko/20100101 Firefox/131.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br, zstd
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Priority: u=0, i
+
+
+======================
+
+===========3===========
+GET /Users/mal-mora/Desktop/webserv/pe.mp4 HTTP/1.1
+Transfer-Encoding: chunked
+User-Agent: PostmanRuntime/7.33.0
+Accept: */*
+Postman-Token: 8770a2fa-725d-4a7c-825a-98610909a91e
+Host: localhost:3938
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+
+0
+
+
+======================
+
+===========4===========
+GET /Users/mal-mora/Desktop/webserv/pe.mp4 HTTP/1.1
+Transfer-Encoding: chunked
+User-Agent: PostmanRuntime/7.33.0
+Accept: */*
+Postman-Token: e2d81898-c5b6-4337-933b-bc7561e5eae5
+Host: localhost:3938
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+
+0
+
+
+======================
+
+===========4===========
+GET /Users/mal-mora/Desktop/webserv/pe.mp4 HTTP/1.1
+Transfer-Encoding: chunked
+User-Agent: PostmanRuntime/7.33.0
+Accept: */*
+Postman-Token: d5adcd67-e114-4d18-9e37-2f9327967a0a
+Host: localhost:3938
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+
+0
+
+
+======================
+
+===========4===========
+GET /Users/mal-mora/Desktop/webserv/pe.mp4 HTTP/1.1
+Transfer-Encoding: chunked
+User-Agent: PostmanRuntime/7.33.0
+Accept: */*
+Postman-Token: 32b51b6d-0c04-42e2-a1e1-34bb0ce1c7c6
+Host: localhost:3938
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+
+0
+
+
+======================
+
+===========4===========
+GET /Users/mal-mora/Desktop/webserv/pe.mp4 HTTP/1.1
+Transfer-Encoding: chunked
+User-Agent: PostmanRuntime/7.33.0
+Accept: */*
+Postman-Token: 15b1ba0f-a800-42a4-a0c1-c06e7771c486
+Host: localhost:3938
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+
+0
+
+
+======================
+
+===========4===========
+GET /Users/mal-mora/Desktop/webserv/pe.mp4 HTTP/1.1
+Transfer-Encoding: chunked
+User-Agent: PostmanRuntime/7.33.0
+Accept: */*
+Postman-Token: 4e30f224-f854-4fd3-92c1-8a8967476acd
+Host: localhost:3938
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+
+0
+
+
+======================
+
+===========4===========
+GET /Users/mal-mora/Desktop/webserv/pe.mp4 HTTP/1.1
+Transfer-Encoding: chunked
+User-Agent: PostmanRuntime/7.33.0
+Accept: */*
+Postman-Token: 5ba5e4de-0b3a-47de-8c0a-244dc53cdd25
+Host: localhost:3938
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+
+0
+
+
+======================
+
+===========4===========
+GET /Users/mal-mora/Desktop/webserv/pe.mp4 HTTP/1.1
+Transfer-Encoding: chunked
+User-Agent: PostmanRuntime/7.33.0
+Accept: */*
+Postman-Token: d23271f8-b204-4c36-9051-1a49b34da15a
+Host: localhost:3938
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+
+0
+
+
+======================
+
+===========4===========
+GET /Users/mal-mora/Desktop/webserv/pe.mp4 HTTP/1.1
+Transfer-Encoding: chunked
+User-Agent: PostmanRuntime/7.33.0
+Accept: */*
+Postman-Token: c325e092-2431-43f8-be23-05da7c5fc3c8
+Host: localhost:3938
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+
+0
+
+
+======================
+
+===========4===========
+GET /Users/mal-mora/Desktop/webserv/pe.mp4 HTTP/1.1
+Transfer-Encoding: chunked
+User-Agent: PostmanRuntime/7.33.0
+Accept: */*
+Postman-Token: 2733f213-9ce9-4693-94a3-4c21609f9731
+Host: localhost:3938
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+
+0
+
+
+======================

@@ -36,7 +36,6 @@ void errorMsg(std::string str, int fd)
 void Server::SendError(int fd, std::string msg)
 {
     std::cout << msg << std::endl;
-    exit(0);
     this->clientsRequest[fd]->SetStatusCode(eInternalServerError);
     isInterError = true;
     SendData(fd);
@@ -81,7 +80,6 @@ int Server::ConfigTheSocket()
     addressSocket.sin_addr.s_addr = INADDR_ANY;
     addressSocket.sin_family = AF_INET;
     addressSocket.sin_port = htons(PORT);
-
     if (make_socket_nonblocking(serverSocket) == -1)
         return 1;
     if (bind(serverSocket, (const sockaddr *)&addressSocket, sizeof(addressSocket)) == -1)
@@ -120,7 +118,7 @@ void Server::RecivData(int clientSocket)
         isHeader = 1;
         (*clientsRequest[clientSocket]).SetRequestIsDone(false);
         EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
-        if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
+        if (kevent(kq, &event, 1, NULL, 0, NULL) == 0)
             SendError(clientSocket, "kevent");
         return;
     }
@@ -132,6 +130,8 @@ void Server::SendData(int clientSocket)
     size_t responseSize;
     std::ofstream test("outt.txt");
 
+    if (clientsResponse.find(clientSocket) == clientsResponse.end())
+        clientsResponse[clientSocket] = new Response();
     std::string response = clientsResponse[clientSocket]->getResponse(*clientsRequest[clientSocket], isInterError);
     if (response.empty())
     {
@@ -200,8 +200,6 @@ void Server::HandelEvents(int n, struct kevent events[])
         else if (events[i].filter == EVFILT_WRITE)
         {
             clientSocket = events[i].ident;
-            if (clientsResponse.find(clientSocket) == clientsResponse.end())
-                clientsResponse[clientSocket] = new Response();
             SendData(clientSocket);
         }
     }
