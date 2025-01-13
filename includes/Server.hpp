@@ -16,7 +16,7 @@
 #include <map>
 #include <Response.hpp>
 #include <RequestParse.hpp>
-#define MAX_BUFFER 1024
+#define MAX_BUFFER 1024 * 5
 #define MAX_CLIENTS 128
 #define PORT 3938
 class Response;
@@ -35,7 +35,7 @@ private:
     void            SendData(int clientSocket);
     void            RecivData(int clientSocket);
     void            ResponseEnds(int clientSocket);
-    void            SendError(int fd);
+    void            SendError(int fd, std::string msg);
     bool            isInterError;
 public:
     Server();

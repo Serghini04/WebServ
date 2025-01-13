@@ -85,15 +85,16 @@ void BodyParse::openFileBasedOnContentType()
 	index++;
 }
 
-void	BodyParse::ChunkedBoundaryParse(std::string &buff)
+bool	BodyParse::ChunkedBoundaryParse(std::string &buff)
 {
 	(void)buff;
+	return true;
 }
 
-void	BodyParse::BoundaryParse(std::string &buff)
+bool	BodyParse::BoundaryParse(std::string &buff)
 {
 	(void)buff;
-
+	return true;
 }
 
 bool BodyParse::ChunkedParse(std::string &buff)
@@ -150,7 +151,8 @@ bool BodyParse::ChunkedParse(std::string &buff)
 
 
 
-void	BodyParse::ContentLengthParse(std::string &buff)
+bool	BodyParse::ContentLengthParse(std::string &buff)
 {
 	(void)buff;
+	return true;
 }
