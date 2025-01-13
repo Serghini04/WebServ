@@ -20,7 +20,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
-
+#include <ostream>
 class Conserver {
 	private:
 	    std::map<std::string, std::string> serv_attributes;

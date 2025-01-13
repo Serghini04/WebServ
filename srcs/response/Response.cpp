@@ -24,8 +24,6 @@ std::string Response::FileToString()
 void Response::setContentType(RequestParse &request)
 {
     std::string format;
-
-    Utility::Debug(request._url);
     if( request._url.empty())
         return ;
     size_t pos = request._url.find(".");
@@ -64,7 +62,6 @@ std::string Response::getHeader(RequestParse &request, const std::string &status
     _headerMap["Content-Type"] = contentType;
     _headerMap["Content-Length"] = bodySize.str();
     _headerMap["Connection"] = request.getMetaData().count("Connection") == 0 ? "keep-alive" : request.getMetaData()["Connection"];
-    // _headerMap["Connection"] = "close";
     response << statusLine;
     for (std::map<std::string, std::string>::const_iterator
              it = _headerMap.begin();
@@ -119,11 +116,8 @@ std::string Response::getResponse(RequestParse &request, int state)
 {
     std::string str;
     if(state)
-    {
         str = processResponse(request, -1);
-        std::cout << str << std::endl;
-    }
-    if (request.statusCode() != eOK)
+    else if (request.statusCode() != eOK)
         str = processResponse(request, 0);
     else
         str = processResponse(request, 1);
