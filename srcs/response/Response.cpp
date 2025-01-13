@@ -5,6 +5,7 @@ Response::Response()
     size = 0;
     file.clear();
     firstCall = 1;
+    this->contentType = "";
 }
 
 Response::~Response()
@@ -24,7 +25,8 @@ void Response::setContentType(RequestParse &request)
 {
     std::string format;
 
-    if(request._url.empty())
+    Utility::Debug(request._url);
+    if( request._url.empty())
         return ;
     size_t pos = request._url.find(".");
     if (pos != std::string::npos)
@@ -80,7 +82,6 @@ std::string Response::processResponse(RequestParse &request, int isSuccess)
     std::string filename;
 
     statusLine = "HTTP/1.1 200 OK\r\n";
-    setContentType(request);
     if (isSuccess <= 0)
     {
         this->contentType = "text/html";
@@ -88,9 +89,15 @@ std::string Response::processResponse(RequestParse &request, int isSuccess)
         statusLine = "HTTP/1.1 400 Bad Request\r\n";
     }
     else if (firstCall && request.method() == ePOST)
+    {
         file.open("post.json");
+        this->contentType = "application/json";
+    }
     else
+    {
+        setContentType(request);
         filename = request._url;
+    }
     if (firstCall)
     {
         if (request.method() != ePOST)
@@ -112,7 +119,10 @@ std::string Response::getResponse(RequestParse &request, int state)
 {
     std::string str;
     if(state)
+    {
         str = processResponse(request, -1);
+        std::cout << str << std::endl;
+    }
     if (request.statusCode() != eOK)
         str = processResponse(request, 0);
     else
