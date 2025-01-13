@@ -133,9 +133,6 @@ void Server::SendData(int clientSocket)
     std::ofstream test("outt.txt");
 
     std::string response = clientsResponse[clientSocket]->getResponse(*clientsRequest[clientSocket], isInterError);
-    test << response;
-    test.flush();
-    exit(0);
     if (response.empty())
     {
         ResponseEnds(clientSocket);
