@@ -181,10 +181,10 @@ void    RequestParse::readBuffer(std::string buff, int &isHeader)
 			_requestIsDone = _body.ChunkedParse(buff);
 			break;
 		case eChunkedBoundary :
-			_body.ChunkedBoundaryParse(buff);
+			_requestIsDone = _body.ChunkedBoundaryParse(buff);
 			break;
 		case eContentLength :
-			_body.ContentLengthParse(buff);
+			_requestIsDone = _body.ContentLengthParse(buff);
 			break;
 		case eNone :
 			break;

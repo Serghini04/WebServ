@@ -39,9 +39,9 @@ class BodyParse
 		BodyParse();
 		BodyType	getTypeOfBody();
 		void		openFileBasedOnContentType();
-		void		BoundaryParse(std::string &buff);
+		bool		BoundaryParse(std::string &buff);
 		bool		ChunkedParse(std::string &buff);
-		void		ChunkedBoundaryParse(std::string &buff);
-		void		ContentLengthParse(std::string &buff);
+		bool		ChunkedBoundaryParse(std::string &buff);
+		bool		ContentLengthParse(std::string &buff);
 		void		setMetaData(std::map<std::string, std::string> &data);
 };
