@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/14 11:02:52 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/14 17:14:02 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,9 +150,9 @@ void    RequestParse::readBuffer(std::string buff, int &isHeader)
 {
 	if (_requestIsDone)
 		return ;
-	_fd << "\n===========" << _body.bodyType() << "===========\n";
-	_fd << buff; 
-	_fd << "\n======================\n";
+	// _fd << "\n===========" << _body.bodyType() << "===========\n";
+	// _fd << buff; 
+	// _fd << "\n======================\n";
 	_fd.flush();
 	if (isHeader)
 		isHeader = readHeader(buff);
