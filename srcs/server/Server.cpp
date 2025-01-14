@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/01/14 10:27:48 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/14 11:56:46 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,6 @@ void Server::RecivData(int clientSocket, RequestParse &request)
 		bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
 		if (bytesRead == -1)
 		{
-		    perror("Read Error");
 		    if (errno == EAGAIN || errno == EWOULDBLOCK)
 		        break;
 		    break;
