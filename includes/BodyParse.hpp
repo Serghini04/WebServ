@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:36:14 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/13 18:34:12 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/14 10:51:02 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,8 @@ class BodyParse
 		void		openFileBasedOnContentType();
 		bool		BoundaryParse(std::string &buff);
 		bool		ChunkedParse(std::string &buff);
-		void		ChunkedBoundaryParse(std::string &buff);
-		void		ContentLengthParse(std::string &buff);
+		bool		ChunkedBoundaryParse(std::string &buff);
+		bool		ContentLengthParse(std::string &buff);
 		void		openFileOfBoundary(std::string buff);
 		void		setMetaData(std::map<std::string, std::string> &data);
 };

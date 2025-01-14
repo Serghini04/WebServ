@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/14 10:27:14 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/14 11:02:52 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,10 +150,10 @@ void    RequestParse::readBuffer(std::string buff, int &isHeader)
 {
 	if (_requestIsDone)
 		return ;
-	// _fd << "\n===========" << _body.bodyType() << "===========\n";
-	// _fd << buff; 
-	// _fd << "\n======================\n";
-	// _fd.flush();
+	_fd << "\n===========" << _body.bodyType() << "===========\n";
+	_fd << buff; 
+	_fd << "\n======================\n";
+	_fd.flush();
 	if (isHeader)
 		isHeader = readHeader(buff);
 	switch (_body.bodyType())
@@ -165,10 +165,10 @@ void    RequestParse::readBuffer(std::string buff, int &isHeader)
 			_requestIsDone = _body.ChunkedParse(buff);
 			break;
 		case eChunkedBoundary :
-			_body.ChunkedBoundaryParse(buff);
+			_requestIsDone = _body.ChunkedBoundaryParse(buff);
 			break;
 		case eContentLength :
-			_body.ContentLengthParse(buff);
+			_requestIsDone = _body.ContentLengthParse(buff);
 			break;
 		case eNone :
 			break;
