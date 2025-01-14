@@ -1,10 +1,10 @@
 CC = c++ 
 
-CFLAGS = -Wall -Wextra -Werror -O3 -I./includes
+CFLAGS = -Wall -Wextra -Werror -O3 -I./includes -g -fsanitize=address
 
 REQ_FILES = srcs/request/RequestParse.cpp srcs/request/BodyParse.cpp
 
-SRC_S = srcs/server/Server.cpp  
+SRC_S = srcs/server/Server.cpp srcs/ConfigFile/ConServer.cpp srcs/ConfigFile/ParseConfigFile.cpp  
 SRC_RES = srcs/response/Response.cpp
 
 HPATH = includes/Server.hpp includes/RequestParse.hpp includes/BodyParse.hpp includes/Utility.hpp

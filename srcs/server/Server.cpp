@@ -6,24 +6,44 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/01/14 14:35:33 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/14 18:35:45 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Server.hpp"
 
-#include <ctime>
-#include <cmath>
-
+Server::Server(Conserver conserver)
+{
+    isInterError = false;
+    this->conServer = conserver;
+}
 Server::Server()
 {
-    
+    isInterError = false;
+}
+
+Server::~Server()
+{
+    for (std::map<int, RequestParse *>::const_iterator
+             it = clientsRequest.begin();
+         it != clientsRequest.end(); it++)
+    {
+        delete it->second;
+    }
 }
 
 void errorMsg(std::string str, int fd)
 {
-    std::cerr << str << std::endl;
+    std::cout << str << std::endl;
     close(fd);
+}
+
+void Server::SendError(int fd, std::string msg)
+{
+    std::cout << msg << std::endl;
+    this->clientsRequest[fd]->SetStatusCode(eInternalServerError);
+    isInterError = true;
+    SendData(fd);
 }
 
 int make_socket_nonblocking(int sockfd)
@@ -35,8 +55,21 @@ int make_socket_nonblocking(int sockfd)
     }
     return 0;
 }
+void Server::ResponseEnds(int clientSocket)
+{
+    EV_SET(&event, clientSocket, EVFILT_WRITE, EV_CLEAR, 0, 0, NULL);
+    if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
+        SendError(clientSocket, "kevent");
+    EV_SET(&event, clientSocket, EVFILT_READ, EV_CLEAR, 0, 0, NULL);
+    if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
+        SendError(clientSocket, "kevent");
+    clientsResponse.erase(clientSocket);
+    clientsRequest.erase(clientSocket);
+    isInterError = false;
+    close(clientSocket);
+}
 
-int Server::prepareTheSocket()
+int Server::ConfigTheSocket()
 {
     sockaddr_in addressSocket;
     int opt = 1;
@@ -52,9 +85,8 @@ int Server::prepareTheSocket()
     addressSocket.sin_addr.s_addr = INADDR_ANY;
     addressSocket.sin_family = AF_INET;
     addressSocket.sin_port = htons(PORT);
-
     if (make_socket_nonblocking(serverSocket) == -1)
-        return 1;
+        return -11;
     if (bind(serverSocket, (const sockaddr *)&addressSocket, sizeof(addressSocket)) == -1)
         return -1;
     if (listen(serverSocket, 5) == -1)
@@ -62,127 +94,126 @@ int Server::prepareTheSocket()
     return serverSocket;
 }
 
-void Server::RecivData(int clientSocket, RequestParse &request)
+void Server::RecivData(int clientSocket)
 {
     int bytesRead;
     std::string fullData;
     static int isHeader = 1;
-    static clock_t  s = clock();
-    
-    char buffer[8192];
+    char buffer[MAX_BUFFER];
 
-    while (true)
+    memset(buffer, 0, sizeof(buffer));
+    bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
+    if (bytesRead <= 0)
     {
-		memset(buffer, 0, sizeof(buffer));
-		bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
-		if (bytesRead == -1)
-		{
-		    if (errno == EAGAIN || errno == EWOULDBLOCK)
-		        break;
-		    break;
-		}
-		else if (bytesRead == 0)
-		{
-		    close(clientSocket);
-		    break;
-		}
-		fullData.assign(buffer, bytesRead);
-		request.readBuffer(fullData, isHeader);
-		if (request.requestIsDone())
-		{
-    	    std::cout << (double)(clock() - s) / CLOCKS_PER_SEC << "s" << std::endl;
-		    isHeader = 1;
-            request.SetRequestIsDone(false);
-            puts("Request is Done");
-            exit(1);
-		    // std::cout << "request is done : " << request.requestIsDone() << "\n";
-		    // EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
-		    // if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
-		    //     errorMsg("kevent Error", clientSocket);
-		    //  close(clientSocket);
-		}
+        if (errno == EAGAIN || errno == EWOULDBLOCK)
+            return;
+        if(errno == ECONNRESET)
+        {
+            ResponseEnds(clientSocket);
+            return ;
+        }
+        return;
+    }
+    fullData.assign(buffer, bytesRead);
+    (*clientsRequest[clientSocket]).readBuffer(fullData, isHeader);
+    if ((*clientsRequest[clientSocket]).requestIsDone()) //false
+    {
+        puts("Data Recived");
+        isHeader = 1;
+        (*clientsRequest[clientSocket]).SetRequestIsDone(false);
+        EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
+        if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
+            SendError(clientSocket, "kevent");
+        return;
     }
 }
-void Server::SendData(int clientSocket, RequestParse &request)
+
+void Server::SendData(int clientSocket)
 {
     size_t totalSent = 0;
-    size_t dataSize;
-    std::ostringstream oss;
-    std::string responseBody;
-    std::string header;
-    (void)request;
-    // if(request._state == status::eBadRequest)
+    size_t responseSize;
+    std::ofstream test("outt.txt");
 
-    responseBody = Response::FileToString("index.html");
-    //if is babrequest --> show 404 error html
-    //else check which method is 
-    oss << responseBody.size();
-    std::string response =
-        "HTTP/1.1 200 OK\r\n"
-        "Content-Type: text/html\r\n"
-        "Content-Length: " +
-        oss.str() + "\r\n"
-                    "\r\n" +
-        responseBody;
-    ////sending
-    dataSize = response.size();
-    while (totalSent < dataSize)
+    if (clientsResponse.find(clientSocket) == clientsResponse.end())
+        clientsResponse[clientSocket] = new Response(this->conServer);
+    std::string response = clientsResponse[clientSocket]->getResponse(*clientsRequest[clientSocket], isInterError);
+    // std::cout << response;
+    // exit(0);
+    if (response.empty())
     {
-        ssize_t bytesSent = send(clientSocket, response.c_str() + totalSent, dataSize - totalSent, 0);
+        ResponseEnds(clientSocket);
+        return;
+    }
+    responseSize = response.size();
+    while (totalSent < responseSize)
+    {
+        ssize_t bytesSent = send(clientSocket,
+                                 response.c_str() + totalSent,
+                                 responseSize - totalSent,
+                                 0);
         if (bytesSent <= 0)
         {
             if (errno == EAGAIN || errno == EWOULDBLOCK)
-                continue;
-            perror("Send Error");
-            break;
+                return;
+            if(errno == EPIPE)
+            {
+                ResponseEnds(clientSocket);
+                return ;
+            }
+            SendError(clientSocket, "Sending Error");
+            return;
         }
         totalSent += bytesSent;
     }
+
 }
 
-void Server::connectWithClient(int kq)
+void Server::ConnectWithClient(int kq)
 {
     sockaddr_in clientAddress;
     socklen_t clientAddrLen;
     int clientSocket;
-
+    puts("new connection");
     clientAddrLen = sizeof(clientAddress);
     clientSocket = accept(serverSocket, (struct sockaddr *)&clientAddress, &clientAddrLen);
     if (clientSocket == -1)
-        errorMsg("Accept Error", clientSocket);
+        errorMsg("Cannot Connect", serverSocket);
     if (make_socket_nonblocking(clientSocket) == -1)
-        errorMsg("Non-Blocking Error", clientSocket);
+        SendError(clientSocket, "NonBloacking");
     else
     {
         EV_SET(&event, clientSocket, EVFILT_READ, EV_ADD, 0, 0, NULL);
         if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
-            errorMsg("kevent Error", clientSocket);
+            SendError(clientSocket, "kevent5");
     }
 }
-void Server::handelEvents(int n, struct kevent events[], RequestParse &req)
+
+void Server::HandelEvents(int n, struct kevent events[])
 {
     int clientSocket;
 
     for (int i = 0; i < n; i++)
     {
         if (events[i].ident == static_cast<uintptr_t>(serverSocket))
-            connectWithClient(kq);
-        else if(events[i].filter == EVFILT_READ)
+            ConnectWithClient(kq);
+        else if (events[i].filter == EVFILT_READ)
         {
             clientSocket = events[i].ident;
-            RecivData(clientSocket, req);
+            if (clientsRequest.find(clientSocket) == clientsRequest.end())
+                    clientsRequest[clientSocket] = new RequestParse();
+            RecivData(clientSocket);
         }
-        // else if(events[i].filter == EVFILT_WRITE)
-        // {
-        //     clientSocket = events[i].ident;
-        //     SendData(clientSocket, req);
-        // }
+        else if (events[i].filter == EVFILT_WRITE)
+        {
+            clientSocket = events[i].ident;
+            SendData(clientSocket);
+        }
     }
 }
+
 int Server::CreateServer()
 {
-    RequestParse req;
-    serverSocket = prepareTheSocket();
+    serverSocket = ConfigTheSocket();
     struct kevent events[MAX_CLIENTS];
 
     if (serverSocket == -1)
@@ -198,7 +229,7 @@ int Server::CreateServer()
         int n = kevent(kq, NULL, 0, events, MAX_CLIENTS, NULL);
         if (n == -1)
             errorMsg("kevent Fails", serverSocket);
-        handelEvents(n, events, req);
+        HandelEvents(n, events);
     }
     close(serverSocket);
     close(kq);
