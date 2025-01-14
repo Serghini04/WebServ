@@ -6,12 +6,24 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/14 17:50:55 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/14 18:36:56 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <RequestParse.hpp>
 
+// RequestParse::RequestParse(const RequestParse& rqs)
+// {
+// 	*this = rqs;
+// }
+// RequestParse& RequestParse::operator=(const RequestParse& other) {
+//     if (this != &other) {
+
+//         // Free existing resources
+//         // Copy members from 'other'
+//     }
+//     return *this;
+// }
 
 RequestParse::RequestParse()
 {
@@ -114,6 +126,11 @@ bool	RequestParse::parseHeader(std::string &header)
 		}
 	}
 	return false;
+}
+
+methods	RequestParse::method()
+{
+	return _enumMethod;
 }
 
 std::string	RequestParse::URL()

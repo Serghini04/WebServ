@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/11 18:36:37 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/14 18:32:14 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ class   RequestParse
 		status	statusCode();
 		bool	requestIsDone();
 		std::string	URL();
+		methods	method();
 
 		// set :
 		void	SetStatusCode(status s);

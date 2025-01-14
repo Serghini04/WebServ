@@ -1,39 +1,124 @@
 #include <Response.hpp>
-Response::Response()
-{
 
+Response::Response(Conserver &conserver) : conserver(conserver)
+{
+    size = 0;
+    file.clear();
+    firstCall = 1;
+    this->contentType = "";
 }
 
-std::string Response::FileToString(std::string const &fileName)
+Response::~Response()
 {
-    std::ifstream file(fileName);
-    std::ostringstream ostr;
-
-    if(!file.is_open())
-        Utility::ShowErrorExit("Error in Open File");
-    ostr << file.rdbuf();
-    return ostr.str(); 
+    
 }
 
-std::string Response::getHeader(RequestParse &request)
+std::string Response::FileToString()
 {
-    std::ostringstream oss;
-    std::string responseBody;
-    std::string header;
-    oss << responseBody.size();
-    std::map<std::string, std::string> headerMap;
-    if(request.statusCode() == eOK)
-        header = "HTTP/1.1 200 OK";
+    std::string buf(1024, '\0');
+    file.read(&buf[0], 1024);
+    buf.resize(file.gcount());
+    return buf;
+}
+void Response::setContentType(RequestParse &request)
+{
+    std::string format;
+    if( request.URL().empty())
+        return ;
+    size_t pos = request.URL().find(".");
+    if (pos != std::string::npos)
+        format = request.URL().substr(pos + 1);
     else
-        header = "HTTP/1.1 400 Bad";
-    headerMap["Date"] = Utility::GetCurrentTime();
-    headerMap["Server"] = request.getMetaData()["Server"];
-    headerMap["Content-Type"] = request.getMetaData()["Content-Type"];
-    header =
-        "HTTP/1.1 200 OK\r\n"
-        "Content-Type: text/html\r\n"
-        "Content-Length: " +
-        oss.str() + "\r\n"
-                    "\r\n";
-    return header;
+        format = "";
+    if (format == "json")
+        this->contentType = "application/json";
+    else if (format == "html")
+        this->contentType = "text/html";
+    else if (format == "mp4")
+        this->contentType = "video/mp4";
+    else if (format == "jpeg")
+        this->contentType = "image/jpeg; charset=UTF-8";
+    else
+        this->contentType = "text/plain";
+}
+int Response::getFileSize()
+{
+    file.seekg(0, std::ios::end);
+    size = file.tellg();
+    file.seekg(0, std::ios::beg);
+    return size;
+}
+
+
+std::string Response::getHeader(RequestParse &request, const std::string &statusLine)
+{
+    std::ostringstream bodySize;
+    std::ostringstream response;
+
+    bodySize << size;
+    _headerMap["Date"] = Utility::GetCurrentTime();
+    _headerMap["Server"] = conserver.getAttributes("server_name"); // get it from config file
+    _headerMap["Content-Type"] = contentType;
+    _headerMap["Content-Length"] = bodySize.str();
+    _headerMap["Connection"] = request.getMetaData().count("Connection") == 0 ? "keep-alive" : request.getMetaData()["Connection"];
+    response << statusLine;
+    for (std::map<std::string, std::string>::const_iterator
+             it = _headerMap.begin();
+         it != _headerMap.end(); ++it)
+    {
+        response << it->first << ": " << it->second << "\r\n";
+    }
+    response << "\r\n";
+    return response.str();
+}
+
+std::string Response::processResponse(RequestParse &request, int isSuccess)
+{
+    std::string statusLine;
+    std::string filename;
+
+    statusLine = "HTTP/1.1 200 OK\r\n";
+    if (isSuccess <= 0)
+    {
+        this->contentType = "text/html";
+        filename = "error.html";
+        statusLine = "HTTP/1.1 400 Bad Request\r\n";
+    }
+    else if (firstCall && request.method() == ePOST)
+    {
+        file.open("post.json");
+        this->contentType = "application/json";
+    }
+    else
+    {
+        setContentType(request);
+        filename = request.URL();
+    }
+    if (firstCall)
+    {
+        if (request.method() != ePOST)
+            file.open(filename, std::ios::binary);
+        if (!file.is_open())
+        {
+            statusLine = "HTTP/1.1 400 Bad Request\r\n";
+            file.open("error.html");
+        }
+        size = getFileSize();
+    }
+    else
+        return FileToString();
+    firstCall = 0;
+    return getHeader(request, statusLine);
+}
+
+std::string Response::getResponse(RequestParse &request, int state)
+{
+    std::string str;
+    if(state)
+        str = processResponse(request, -1);
+    else if (request.statusCode() != eOK)
+        str = processResponse(request, 0);
+    else
+        str = processResponse(request, 1);
+    return str;
 }
