@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/10 21:10:39 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/14 10:27:14 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 RequestParse::RequestParse()
 {
-	_fd.open("/Users/meserghi/goinfre/D/Trash.txt", std::ios::binary | std::ios::app);
+	_fd.open("/Users/meserghi/goinfre/D/Output.trash", std::ios::binary | std::ios::app);
 	if (_fd.fail())
 	{
 		puts("open failed");
@@ -127,20 +127,20 @@ bool	RequestParse::readHeader(std::string &buff)
 	bool	isHeader = true;
 
 	header.append(buff);
-	if (buff.find("\r\n\r\n") == std::string::npos)
+	size_t pos = header.find("\r\n\r\n");
+	if (pos == std::string::npos)
 		return isHeader;
 	isHeader = parseHeader(header);
 	_body.setMetaData(_metaData);
-	buff = header.substr(header.find("\r\n\r\n") + 4);
+	buff = header.substr(pos + 4);
 	_body.setbodyType(_body.getTypeOfBody());
 	if (_body.bodyType() == eChunked ||  _body.bodyType() == eContentLength)
 		_body.openFileBasedOnContentType();
 	if (_body.bodyType() == eBoundary)
 	{
 		std::string	boundary = _metaData["Content-Type"].substr(_metaData["Content-Type"].find("boundary=") + 9);
-		std::cout << ">>" << "--" + boundary<< "<<\r\n";
 		_body.setBoundary("--" + boundary + "\r\n");
-		_body.setBoundaryEnd("\r\n--" + boundary + "--\r\n");
+		_body.setBoundaryEnd("--" + boundary + "--\r\n");
 	}
 	header.clear();
 	return isHeader;
@@ -150,10 +150,10 @@ void    RequestParse::readBuffer(std::string buff, int &isHeader)
 {
 	if (_requestIsDone)
 		return ;
-    _fd << "\n===========" << _body.bodyType() << "===========\n";
-    _fd << buff; 
-    _fd << "\n======================\n";
-    _fd.flush();
+	// _fd << "\n===========" << _body.bodyType() << "===========\n";
+	// _fd << buff; 
+	// _fd << "\n======================\n";
+	// _fd.flush();
 	if (isHeader)
 		isHeader = readHeader(buff);
 	switch (_body.bodyType())

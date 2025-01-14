@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:36:14 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/10 20:55:58 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/13 18:34:12 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ class BodyParse
 		size_t		sizeRead();
 
 		BodyType	getTypeOfBody();
-		bool		isPartOfBoundary(std::string buff);
 		void		openFileBasedOnContentType();
 		bool		BoundaryParse(std::string &buff);
 		bool		ChunkedParse(std::string &buff);

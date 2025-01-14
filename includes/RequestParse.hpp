@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/08 18:39:05 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/11 18:36:37 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ enum status
 	eMethodNotAllowed = 405,
 	eRequestURITooLong = 414,
 	eRequestEntityTooLarge = 413,
-	// if fail system call :
+	// if fail system call or not find file to open
     eInternalServerError = 500,
 	eHTTPVersionNotSupported = 505,
     eRequestedRangeNotSatisfiable = 416
