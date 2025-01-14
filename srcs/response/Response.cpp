@@ -1,6 +1,6 @@
 #include <Response.hpp>
 
-Response::Response()
+Response::Response(Conserver &conserver) : conserver(conserver)
 {
     size = 0;
     file.clear();
@@ -16,7 +16,6 @@ Response::~Response()
 std::string Response::FileToString()
 {
     std::string buf(1024, '\0');
-
     file.read(&buf[0], 1024);
     buf.resize(file.gcount());
     return buf;
@@ -58,7 +57,7 @@ std::string Response::getHeader(RequestParse &request, const std::string &status
 
     bodySize << size;
     _headerMap["Date"] = Utility::GetCurrentTime();
-    _headerMap["Server"] = "myserver"; // get it from config file
+    _headerMap["Server"] = conserver.getAttributes("server_name"); // get it from config file
     _headerMap["Content-Type"] = contentType;
     _headerMap["Content-Length"] = bodySize.str();
     _headerMap["Connection"] = request.getMetaData().count("Connection") == 0 ? "keep-alive" : request.getMetaData()["Connection"];
