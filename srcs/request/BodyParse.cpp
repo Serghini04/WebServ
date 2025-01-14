@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:38:49 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/14 12:29:03 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/14 17:13:25 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 BodyParse::BodyParse()
 {
     _type = eNone;
-	_sizeRead = 0;
+	_bodySize = 0;
 	_boundary = "";
 	_indexFile = 1;
 }
@@ -42,10 +42,15 @@ BodyType	BodyParse::getTypeOfBody()
 		return eChunked;
 	else if (_metaData["Content-Type"].find("multipart/form-data; boundary=") != std::string::npos)
 		return eBoundary;
+	else if (_metaData["Content-Length"] != "")
+	{
+		_bodySize = atoi(_metaData["Content-Length"].c_str());
+		return eContentLength;
+	}
 	// case : POST
 	// 411 Length Required
 	// 400 Bad Request if Content type is not define for case POST
-	return eContentLength;
+	return eNone;
 }
 
 void	BodyParse::setbodyType(BodyType type)
@@ -60,7 +65,7 @@ BodyType	BodyParse::bodyType()
 
 size_t		BodyParse::sizeRead()
 {
-	return (_sizeRead);
+	return (_bodySize);
 }
 
 void BodyParse::openFileBasedOnContentType()
@@ -101,14 +106,52 @@ void BodyParse::openFileBasedOnContentType()
 	_indexFile++;
 }
 
+bool	removeChunkedSize(std::string &buff, std::string &data, size_t processed)
+{
+	static bool	isFistTime = true;
+	size_t		chunkedSize;
+	size_t		CRLFpos;
+	char		*trash = NULL;	
+
+	CRLFpos = buff.find("\r\n");
+	if (isFistTime && CRLFpos == std::string::npos)
+		return data = buff, false;
+	else if (isFistTime && CRLFpos != std::string::npos)
+	{
+		chunkedSize = strtol(buff.substr(0, CRLFpos).c_str(), &trash, 16);
+		if (*trash)
+		{
+			puts("Invalid size of chunked");
+			exit(1);
+		}
+		buff.erase(0, CRLFpos + 2);
+		isFistTime = false;
+	}
+	else if (CRLFpos != std::string::npos)
+	{
+		size_t	CRLFnextPos = buff.find("\r\n", CRLFpos);
+		bool	isHex = true;
+		size_t i = processed;
+		for (; i < CRLFnextPos && buff[i]; i++)
+		{
+			if (!isxdigit(buff[i]))
+			{
+				isHex = false;
+				break;
+			}
+		}
+		if (isHex && CRLFnextPos != std::string::npos)
+			buff.erase(CRLFpos + 2, i - 1);
+		else if (isHex)
+			return data = buff, false;
+	}
+	return true;
+}
+
 bool	BodyParse::ChunkedBoundaryParse(std::string &buff)
 {
-	static std::string data;
-	static bool		isFistTime = true;
-	size_t			processed = 0;
-	size_t			CRLFpos;
-	size_t			chunkedSize;
-	char			*trash = NULL;	
+	static std::string	data;
+	size_t				processed = 0;
 
 	if (!data.empty())
 	{
@@ -117,41 +160,8 @@ bool	BodyParse::ChunkedBoundaryParse(std::string &buff)
 	}
 	while (processed < buff.size())
 	{
-		CRLFpos = buff.find("\r\n");
-		if (isFistTime && CRLFpos == std::string::npos)
-			return data = buff, false;
-		else if (isFistTime && CRLFpos != std::string::npos)
-		{
-			chunkedSize = strtol(buff.substr(0, CRLFpos).c_str(), &trash, 16);
-			if (*trash)
-			{
-				puts("Invalid size of chunked");
-				exit(1);
-			}
-			buff.erase(0, CRLFpos + 2);
-			std::cout << "\n=========================\n";
-			std::cout << buff;
-			std::cout << "\n=========================\n";
-			isFistTime = false;
-		}
-		else if (CRLFpos != std::string::npos)
-		{
-			size_t	CRLFnextPos = buff.find("\r\n", CRLFpos);
-			bool	isHex = true;
-			size_t i = processed;
-			for (; i < CRLFnextPos && buff[i]; i++)
-			{
-				if (!isxdigit(buff[i]))
-				{
-					isHex = false;
-					break;
-				}
-			}
-			if (isHex && CRLFnextPos != std::string::npos)
-				buff.erase(CRLFpos + 2, i - 1);
-			else if (isHex)
-				return data = buff, false;
-		}
+		if (!removeChunkedSize(buff, data, processed))
+			return false;
 		size_t boundaryPos = buff.find(_boundary, processed);
 		if (boundaryPos != std::string::npos)
 		{
@@ -183,7 +193,7 @@ bool	BodyParse::ChunkedBoundaryParse(std::string &buff)
 		data = buff.substr(processed);
 		buff.clear();
 	}
-    return false;
+	return false;
 }
 
 void	BodyParse::setBoundary(std::string boundary)
@@ -335,6 +345,17 @@ bool BodyParse::ChunkedParse(std::string &buff)
 
 bool	BodyParse::ContentLengthParse(std::string &buff)
 {
-	(void)buff;
-	return true;
+	if (_bodySize >= buff.size())
+	{
+		_fileOutput << buff;
+		_bodySize -= buff.size();
+	}
+	else
+		std::runtime_error("400 Bad Request");
+	if (!_bodySize)
+	{
+		_fileOutput.flush();
+		return true;
+	}
+	return false;
 }

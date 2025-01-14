@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/01/14 11:56:46 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/14 14:35:33 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,9 +91,8 @@ void Server::RecivData(int clientSocket, RequestParse &request)
 		if (request.requestIsDone())
 		{
     	    std::cout << (double)(clock() - s) / CLOCKS_PER_SEC << "s" << std::endl;
-            // static clock_t  s = clock();
-            // std::cout << (double)(clock() - s) / CLOCKS_PER_SEC << "s" << std::endl;
 		    isHeader = 1;
+            request.SetRequestIsDone(false);
             puts("Request is Done");
             exit(1);
 		    // std::cout << "request is done : " << request.requestIsDone() << "\n";

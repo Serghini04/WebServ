@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:36:14 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/14 10:51:02 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/14 14:58:52 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ class BodyParse
 {
 	private:
 		BodyType							_type;
-		size_t								_sizeRead;
+		size_t								_bodySize;
 		std::ofstream						_fileOutput;
 		std::string							_boundary;
 		std::string							_boundaryEnd;
