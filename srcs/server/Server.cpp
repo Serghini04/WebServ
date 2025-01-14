@@ -17,6 +17,10 @@ Server::Server(Conserver conserver)
     isInterError = false;
     this->conServer = conserver;
 }
+Server::Server()
+{
+    isInterError = false;
+}
 
 Server::~Server()
 {
@@ -82,7 +86,7 @@ int Server::ConfigTheSocket()
     addressSocket.sin_family = AF_INET;
     addressSocket.sin_port = htons(PORT);
     if (make_socket_nonblocking(serverSocket) == -1)
-        return 1;
+        return -11;
     if (bind(serverSocket, (const sockaddr *)&addressSocket, sizeof(addressSocket)) == -1)
         return -1;
     if (listen(serverSocket, 5) == -1)
@@ -112,7 +116,6 @@ void Server::RecivData(int clientSocket)
     }
     fullData.assign(buffer, bytesRead);
     (*clientsRequest[clientSocket]).readBuffer(fullData, isHeader);
-    std::cout.flush();
     if ((*clientsRequest[clientSocket]).requestIsDone()) //false
     {
         puts("Data Recived");
@@ -132,8 +135,10 @@ void Server::SendData(int clientSocket)
     std::ofstream test("outt.txt");
 
     if (clientsResponse.find(clientSocket) == clientsResponse.end())
-        clientsResponse[clientSocket] = new Response();
+        clientsResponse[clientSocket] = new Response(this->conServer);
     std::string response = clientsResponse[clientSocket]->getResponse(*clientsRequest[clientSocket], isInterError);
+    // std::cout << response;
+    // exit(0);
     if (response.empty())
     {
         ResponseEnds(clientSocket);

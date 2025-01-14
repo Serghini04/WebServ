@@ -41,6 +41,7 @@ private:
     Conserver       conServer;
 public:
     Server(Conserver conserver);
+    Server();
     ~Server();
     int CreateServer();
 };
