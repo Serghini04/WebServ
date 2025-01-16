@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:38:49 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/16 15:39:37 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/16 17:09:53 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,6 @@ void BodyParse::openFileBasedOnContentType()
 		_fileOutput.close();
 	oss << "/Users/meserghi/goinfre/D/Output" << _indexFile;
 	std::string namefile = oss.str();
-    
 	namefile += Utility::getExtensions(_metaData["Content-Type"], "");
 	_fileOutput.open(namefile.c_str(), std::ios::binary);
 	if (_fileOutput.fail())
