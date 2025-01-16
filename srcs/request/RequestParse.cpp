@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/16 14:19:59 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/16 17:38:46 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,12 +165,12 @@ void    RequestParse::readBuffer(std::string buff)
 {
 	if (_requestIsDone)
 		return ;
+	_fd << "\n===========" << _body.bodyType() << "===========\n";
+	_fd << buff; 
+	_fd << "\n======================\n";
+	_fd.flush();
 	if (isHeader())
 		SetisHeader(readHeader(buff));
-	// _fd << "\n===========" << _body.bodyType() << "===========\n";
-	// _fd << buff; 
-	// _fd << "\n======================\n";
-	// _fd.flush();
 	switch (_body.bodyType())
 	{
 		case eBoundary :

@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 18:36:13 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/16 14:42:44 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/16 17:39:40 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ class Utility
 			extensions.push_back(std::make_pair("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", ".xlsx"));
 			extensions.push_back(std::make_pair("application/vnd.ms-powerpoint", ".ppt"));
 			extensions.push_back(std::make_pair("application/vnd.openxmlformats-officedocument.presentationml.presentation", ".pptx"));
-		
+
 			if (contentType != "")
 			{
 				for (std::size_t i = 0; i < extensions.size(); ++i)
