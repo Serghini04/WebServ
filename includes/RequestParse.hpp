@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/14 18:32:14 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/15 10:59:32 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,26 +58,27 @@ class   RequestParse
 		std::string		_httpVersion;
 		std::string 	_url;
 		BodyParse		_body;
-		
 		bool			_requestIsDone;
 		std::ofstream	_fd;
-
+		bool			_isHeader;
 	public :
 		RequestParse();
 
 		// Get :
 		std::map<std::string, std::string>	&getMetaData();
-		status	statusCode();
-		bool	requestIsDone();
+		status		statusCode();
+		bool		requestIsDone();
+		bool		isHeader();
 		std::string	URL();
-		methods	method();
+		methods		method();
 
 		// set :
+		void	SetisHeader(bool isHeader);
 		void	SetStatusCode(status s);
 		void	SetRequestIsDone(bool s);
 
 		bool	readHeader(std::string &buff);
-		void	readBuffer(std::string buff, int &isHeader);
+		void	readBuffer(std::string buff);
 		bool	parseHeader(std::string &header);
 		void	parseFirstLine(std::string  header);
 		void	parseMetaData(std::string header);

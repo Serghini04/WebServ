@@ -6,24 +6,11 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/14 18:36:56 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/16 14:19:59 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <RequestParse.hpp>
-
-// RequestParse::RequestParse(const RequestParse& rqs)
-// {
-// 	*this = rqs;
-// }
-// RequestParse& RequestParse::operator=(const RequestParse& other) {
-//     if (this != &other) {
-
-//         // Free existing resources
-//         // Copy members from 'other'
-//     }
-//     return *this;
-// }
 
 RequestParse::RequestParse()
 {
@@ -33,6 +20,7 @@ RequestParse::RequestParse()
 		puts("open failed");
 		exit(1);
 	}
+	_isHeader = true;
 	_requestIsDone = false;
 	_statusCode = eOK;
 }
@@ -81,6 +69,16 @@ void	RequestParse::SetStatusCode(status s)
 void	RequestParse::SetRequestIsDone(bool s)
 {
 	_requestIsDone = s;
+}
+
+void	RequestParse::SetisHeader(bool isHeader)
+{
+	_isHeader = isHeader;
+}
+
+bool	RequestParse::isHeader()
+{
+	return _isHeader;
 }
 
 void	RequestParse::parseMetaData(std::string header)
@@ -138,7 +136,7 @@ std::string	RequestParse::URL()
 	return (_url);
 }
 
-bool	RequestParse::readHeader(std::string &buff)
+bool RequestParse::readHeader(std::string &buff)
 {
 	static std::string	header;
 	bool	isHeader = true;
@@ -151,28 +149,28 @@ bool	RequestParse::readHeader(std::string &buff)
 	_body.setMetaData(_metaData);
 	buff = header.substr(pos + 4);
 	_body.setbodyType(_body.getTypeOfBody());
-	if (_body.bodyType() == eChunked ||  _body.bodyType() == eContentLength)
-		_body.openFileBasedOnContentType();
-	if (_body.bodyType() == eBoundary)
+	if (_body.bodyType() == eBoundary || _body.bodyType() == eChunkedBoundary)
 	{
 		std::string	boundary = _metaData["Content-Type"].substr(_metaData["Content-Type"].find("boundary=") + 9);
 		_body.setBoundary("--" + boundary + "\r\n");
 		_body.setBoundaryEnd("--" + boundary + "--\r\n");
 	}
+	if (_body.bodyType() == eChunked || _body.bodyType() == eContentLength)
+		_body.openFileBasedOnContentType();
 	header.clear();
 	return isHeader;
 }
 
-void    RequestParse::readBuffer(std::string buff, int &isHeader)
+void    RequestParse::readBuffer(std::string buff)
 {
 	if (_requestIsDone)
 		return ;
+	if (isHeader())
+		SetisHeader(readHeader(buff));
 	// _fd << "\n===========" << _body.bodyType() << "===========\n";
 	// _fd << buff; 
 	// _fd << "\n======================\n";
-	_fd.flush();
-	if (isHeader)
-		isHeader = readHeader(buff);
+	// _fd.flush();
 	switch (_body.bodyType())
 	{
 		case eBoundary :
