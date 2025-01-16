@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/01/14 18:35:45 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/15 11:00:40 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,6 @@ void Server::RecivData(int clientSocket)
 {
     int bytesRead;
     std::string fullData;
-    static int isHeader = 1;
     char buffer[MAX_BUFFER];
 
     memset(buffer, 0, sizeof(buffer));
@@ -115,11 +114,11 @@ void Server::RecivData(int clientSocket)
         return;
     }
     fullData.assign(buffer, bytesRead);
-    (*clientsRequest[clientSocket]).readBuffer(fullData, isHeader);
+    (*clientsRequest[clientSocket]).readBuffer(fullData);
     if ((*clientsRequest[clientSocket]).requestIsDone()) //false
     {
         puts("Data Recived");
-        isHeader = 1;
+        (*clientsRequest[clientSocket]).SetisHeader(true);
         (*clientsRequest[clientSocket]).SetRequestIsDone(false);
         EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
         if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)

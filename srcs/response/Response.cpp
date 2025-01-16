@@ -22,6 +22,8 @@ std::string Response::FileToString()
 }
 void Response::setContentType(RequestParse &request)
 {
+    // std::string h = "dfasfdasfasfda$FFFFfdsfdsfds";
+    // h.replace($FFFF, "")
     std::string format;
     if( request.URL().empty())
         return ;
