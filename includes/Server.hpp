@@ -39,8 +39,7 @@ private:
     void            SendData(int clientSocket);
     void            RecivData(int clientSocket);
     void            ResponseEnds(int clientSocket);
-    void            SendError(int fd, std::string msg);
-    bool            isInterError;
+    void            SendError(int fd);
 public:
     Server();
     ~Server();
