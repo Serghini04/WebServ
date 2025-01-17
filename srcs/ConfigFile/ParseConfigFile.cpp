@@ -21,12 +21,12 @@ std::string trim(const std::string& str) {
 	return (start == std::string::npos) ? "" : str.substr(start, end - start + 1);
 }
 
-bool	is_validAttServer(std::string key, std::string value, int inde)
+bool	is_validAttServer(std::string &key, std::string &value, int inde)
 {
-	(void)value;
+	value.erase(value.end()-1);
 	std::string validATT[] = {"host", "port", "server_name", "client_max_body_size",
-	"error_page"};
-	for (int i = 0; i <= 4; i++){
+	"error_page", "root"};
+	for (int i = 0; i < 6; i++){
 	if (validATT[i] == key)
 	{
 		if (key == "error_page")
@@ -84,8 +84,7 @@ void parseKeyValue(const std::string& line_content, int &index_line, std::string
 	if (value[value.length() - 1] == '{'){
 	value = value.substr(0,value.find_first_of("{"));
 	return ;
-	}
-	}
+	}}
 	if (value.empty() || value.back() != ';') {
 	std::string err("Error: Missing ';' Or invalid Strecture in the value for key : ");
 	std:: cerr << "In Line :"<< index_line<<std::endl;
@@ -96,10 +95,31 @@ void parseKeyValue(const std::string& line_content, int &index_line, std::string
 
 void saveAttribute(const std::string& confline, Conserver& server, int index_line) {
 	std::string trimmed_line = trim(confline);
+	static bool sin = false;
 	if (trimmed_line.empty() || trimmed_line == "}")
 		return;
 	std::string key, value;
 	parseKeyValue(trimmed_line, index_line, key, value);
+	if (key == "host"){
+		if (!sin){
+		server.addhost(value);
+		}else {
+			server.addport("8080");
+			server.addhost(value);
+		}
+		sin = true;
+		return;
+	}else if (key == "port"){
+		if (sin){
+			server.addport(value);
+		}
+		else {
+			server.addhost("0.0.0.0");
+			server.addport(value);
+		}
+		sin = false;
+		return;
+	}
 	if (is_validAttServer(key, value, index_line))
 		server.addAttribute(key, value);
 	else
@@ -117,7 +137,8 @@ void	parseLocation(const std::string& confline, Conserver& server, std::ifstream
 	LocationStack.push('{');
 	while (std::getline(infile, line_content) && (line_content = trim(line_content) )!= "}") {
 	index_line++;
-	if (line_content.empty() || line_content[0] == '#') continue;
+	if (line_content.empty() || line_content[0] == '#')
+		continue;
 	if (line_content == "{") {
 	std::cerr << "In line : "<< index_line << "\n";
 	throw((std::string)("Error: Invalid structure !"));
@@ -184,7 +205,12 @@ std::vector<Conserver>	parseConfigFile(char *in_file){
 	if(ServStack.size()){
 	throw (std::string("Error: Unbalanced '}'"));
 	}
-	servers.push_back(server);
+	if (!server.getAttributes("root").empty())
+		servers.push_back(server);
+	else{
+	 std::cerr<< "Error: server without root !line :"<< index_line<<std::endl;
+	 continue;
+	}
 	} else {
 		if (trim(confline) == "}")
 			throw (std::string("Error: Unbalanced '}'" ));
