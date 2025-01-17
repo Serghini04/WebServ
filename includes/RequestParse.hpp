@@ -61,6 +61,7 @@ class   RequestParse
 		bool			_requestIsDone;
 		std::ofstream	_fd;
 		bool			_isHeader;
+		std::string		_statusCodeMessage;
 	public :
 		RequestParse();
 
@@ -70,11 +71,13 @@ class   RequestParse
 		bool		requestIsDone();
 		bool		isHeader();
 		std::string	URL();
+		std::string	statusCodeMessage();
 		methods		method();
 
 		// set :
 		void	SetisHeader(bool isHeader);
 		void	SetStatusCode(status s);
+		void	SetStatusCodeMsg(std::string s);
 		void	SetRequestIsDone(bool s);
 
 		bool	readHeader(std::string &buff);

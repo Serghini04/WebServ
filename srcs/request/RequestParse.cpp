@@ -14,7 +14,6 @@
 
 RequestParse::RequestParse()
 {
-	std::cout << " here " << std::endl;
 	_fd.open("/Users/mal-mora/goinfre/Output.trash", std::ios::binary | std::ios::app);
 	if (_fd.fail())
 	{
@@ -24,8 +23,17 @@ RequestParse::RequestParse()
 	_isHeader = true;
 	_requestIsDone = false;
 	_statusCode = eOK;
+	_statusCodeMessage = "200 created";
 }
 
+std::string	RequestParse::statusCodeMessage()
+{
+	return _statusCodeMessage;
+}
+void	RequestParse::SetStatusCodeMsg(std::string s)
+{
+	this->_statusCodeMessage = s;
+}
 void	RequestParse::parseFirstLine(std::string  header)
 {
 	std::stringstream    ss(header);

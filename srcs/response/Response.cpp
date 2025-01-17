@@ -5,7 +5,7 @@ Response::Response(Conserver &conserver) : conserver(conserver)
     size = 0;
     file.clear();
     firstCall = 1;
-    this->contentType = "";
+    statusLine = "HTTP/1.1 200 OK\r\n";
 }
 
 Response::~Response()
@@ -13,34 +13,23 @@ Response::~Response()
     
 }
 
-std::string Response::FileToString()
+std::string Response::FileToString(RequestParse &request)
 {
-    std::string buf(1024 * 2, '\0');
-    file.read(&buf[0], 1024 * 2);
+    if (request.statusCode() != eOK && !file.is_open())
+    {
+        if (errMsg.empty())
+        {
+            errMsg = replacePlaceholders(getFileHtml(), "$MSG", request.statusCodeMessage());
+            return errMsg;
+        }
+        return "";
+    }
+    std::string buf(BUFFER_SIZE, '\0');
+    file.read(&buf[0], BUFFER_SIZE);
     buf.resize(file.gcount());
     return buf;
 }
-void Response::setContentType(RequestParse &request)
-{
-    std::string format;
-    if( request.URL().empty())
-        return ;
-    size_t pos = request.URL().find(".");
-    if (pos != std::string::npos)
-        format = request.URL().substr(pos + 1);
-    else
-        format = "";
-    if (format == "json")
-        this->contentType = "application/json";
-    else if (format == "html")
-        this->contentType = "text/html";
-    else if (format == "mp4")
-        this->contentType = "video/mp4";
-    else if (format == "jpeg")
-        this->contentType = "image/jpeg; charset=UTF-8";
-    else
-        this->contentType = "text/plain";
-}
+
 int Response::getFileSize()
 {
     file.seekg(0, std::ios::end);
@@ -49,20 +38,16 @@ int Response::getFileSize()
     return size;
 }
 
-
 std::string Response::getHeader(RequestParse &request, const std::string &statusLine)
 {
     std::ostringstream bodySize;
     std::ostringstream response;
 
     bodySize << size;
-    (void)conserver;
-    std::cout << &conserver << std::endl;
     _headerMap["Date"] = Utility::GetCurrentTime();
     std::string ser = conserver.getAttributes("server_name");
     ser.erase(ser.end() - 1);
     _headerMap["Server"] = ser;
-
     _headerMap["Content-Type"] = contentType;
     _headerMap["Content-Length"] = bodySize.str();
     _headerMap["Connection"] = request.getMetaData().count("Connection") == 0 ? "keep-alive" : request.getMetaData()["Connection"];
@@ -77,51 +62,48 @@ std::string Response::getHeader(RequestParse &request, const std::string &status
     return response.str();
 }
 
-std::string Response::processResponse(RequestParse &request, int isSuccess)
+void Response::handelRequestErrors(RequestParse &request)
 {
-    std::string statusLine;
-    std::string filename;
+    statusLine = "HTTP/1.1 " + request.statusCodeMessage() + "\r\n";
+    file.open(conserver.getErrorPage(request.statusCode()));
+    this->contentType = Utility::getExtensions("", ".html");
+}
 
-    statusLine = "HTTP/1.1 200 OK\r\n";
-    if (isSuccess <= 0)
-    {
-        this->contentType = "text/html";
-        filename = "error.html";
-        statusLine = "HTTP/1.1 400 Bad Request\r\n";
-    }
-    else if (firstCall && request.method() == ePOST)
-    {
-        file.open("post.json");
-        this->contentType = "application/json";
-    }
-    else
-    {
-        setContentType(request);
-        filename = request.URL();
-    }
+std::string Response::processResponse(RequestParse &request, int state)
+{
     if (firstCall)
     {
-        if (request.method() != ePOST)
-            file.open(filename, std::ios::binary);
-        if (!file.is_open())
+        if (state == 0)
+            handelRequestErrors(request);
+        else
         {
-            statusLine = "HTTP/1.1 400 Bad Request\r\n";
-            file.open("error.html");
+            if (request.method() != ePOST)
+            {
+                file.open(request.URL(), std::ios::binary | std::ios::in);
+                size_t pos = request.URL().find(".");
+                if (pos != std::string::npos)
+                    this->contentType = Utility::getExtensions("", request.URL().substr(pos));
+                if (!file.is_open())
+                {
+                    request.SetStatusCode(eNotFound);
+                    request.SetStatusCodeMsg("404 Not Found");
+                    handelRequestErrors(request);
+                }
+            }
         }
         size = getFileSize();
     }
     else
-        return FileToString();
+        return FileToString(request);
     firstCall = 0;
     return getHeader(request, statusLine);
 }
 
-std::string Response::getResponse(RequestParse &request, int state)
+std::string Response::getResponse(RequestParse &request)
 {
     std::string str;
-    if(state)
-        str = processResponse(request, -1);
-    else if (request.statusCode() != eOK)
+
+    if (request.statusCode() != eOK)
         str = processResponse(request, 0);
     else
         str = processResponse(request, 1);
