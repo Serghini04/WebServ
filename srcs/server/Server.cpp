@@ -6,7 +6,7 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/01/17 12:27:53 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/01/17 14:43:45 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,6 @@ void Server::SendData(int clientSocket)
     size_t totalSent = 0;
     size_t responseSize;
     std::ofstream test("outt.txt");
-
     if (clientsResponse.find(clientSocket) == clientsResponse.end())
         clientsResponse[clientSocket] = new Response(*serversConfigs[serversClients[clientSocket]]);
     std::string response = clientsResponse[clientSocket]->getResponse(*clientsRequest[clientSocket], isInterError);

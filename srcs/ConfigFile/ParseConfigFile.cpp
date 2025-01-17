@@ -96,29 +96,29 @@ void parseKeyValue(const std::string& line_content, int &index_line, std::string
 void saveAttribute(const std::string& confline, Conserver& server, int index_line) {
 	std::string trimmed_line = trim(confline);
 	static bool sin = false;
+	static std::string	host;
 	if (trimmed_line.empty() || trimmed_line == "}")
 		return;
 	std::string key, value;
 	parseKeyValue(trimmed_line, index_line, key, value);
 	if (key == "host"){
-		if (!sin){
-		server.addhost(value);
-		}else {
-			server.addport("8080");
-			server.addhost(value);
+		if (host.empty())
+			host = value;
+		else{
+		server.addlistening(std::pair<std::string, std::string>(host, "8080"));
+		host = value;
 		}
 		sin = true;
 		return;
-	}else if (key == "port"){
-		if (sin){
-			server.addport(value);
-		}
-		else {
-			server.addhost("0.0.0.0");
-			server.addport(value);
-		}
+	}
+	else if (key == "port"){
+		if (sin)
+			server.addlistening(std::pair<std::string, std::string>(host, value));
+		else
+			server.addlistening(std::pair<std::string, std::string>("0.0.0.0", value));
 		sin = false;
-		return;
+		host = "";
+		return ;
 	}
 	if (is_validAttServer(key, value, index_line))
 		server.addAttribute(key, value);
