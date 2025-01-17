@@ -6,7 +6,7 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 16:02:15 by hidriouc          #+#    #+#             */
-/*   Updated: 2025/01/17 12:09:41 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/01/17 12:27:06 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ class Conserver {
 		void addLocation(const std::map<std::string, std::string> loc_attribute);
 		void addhost(std::string host);
 		void addport(std::string port);
-		std::vector<std::string> gethost();
-		std::vector<std::string> getport();
+		// std::string gethost(int n);
+		// std::string getport(int n);
 		std::string getAttributes(std::string att);
 		std::string getErrorPage(int ERRNumber);
 		std::map<std::string, std::string> getLocation(std::string locaPath);

@@ -6,7 +6,7 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/01/17 12:06:33 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/01/17 12:27:53 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ int Server::ConfigTheSocket(Conserver &config)
     }
     addressSocket.sin_addr.s_addr = INADDR_ANY;
     addressSocket.sin_family = AF_INET;
-    addressSocket.sin_port = htons(Utility::StrToInt(config.getport()));
+    addressSocket.sin_port = htons(Utility::StrToInt("you need get PORT"));
     if (make_socket_nonblocking(serverSocket) == -1)
         return -1;
     if (bind(serverSocket, (const sockaddr *)&addressSocket, sizeof(addressSocket)) == -1)
