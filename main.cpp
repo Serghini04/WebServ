@@ -3,25 +3,32 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mal-mora <mal-mora@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 11:33:58 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/07 10:54:00 by mal-mora         ###   ########.fr       */
+/*   Updated: 2025/01/17 11:38:15 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "includes/Server.hpp"
 # include <Server.hpp>
 # include <RequestParse.hpp>
+#include <cstdlib>
 
 int main(int ac, char **av)
 {
 	std::signal(SIGPIPE, SIG_IGN);
     (void)av;
     (void)ac;
-    // if(ac != 2)
-    //     return 1;
-    // std::vector<Conserver>	servers = parseConfigFile(av[1]);
-    // std::vector<Server> serverList;
+    if(ac != 2)
+        return 1;
+	try {
+	std::vector<Conserver>	servers = parseConfigFile(av[1]);
+	} catch (std::string Err) {
+		std::cerr<<Err<<std::endl;
+		exit(EXIT_FAILURE);
+	}
+	
     // for(size_t i = 0; i < servers.size(); i++)
     // {
     //     Server server(servers[i]);
@@ -45,8 +52,8 @@ int main(int ac, char **av)
     //         break;
     // }
     
-    Server ser;
-    ser.CreateServer();
+    // Server ser;
+    // ser.CreateServer();
     // std::cout << servers[0].getAttributes("client_max_body_size")<< std::endl;
 	return 0;
 }
