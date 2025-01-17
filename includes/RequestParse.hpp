@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RequestParse.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mal-mora <mal-mora@student.42.fr>          +#+  +:+       +#+        */
+/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/09 19:12:46 by mal-mora         ###   ########.fr       */
+/*   Updated: 2025/01/15 10:59:32 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ enum status
 	eMethodNotAllowed = 405,
 	eRequestURITooLong = 414,
 	eRequestEntityTooLarge = 413,
-	// if fail system call :
+	// if fail system call or not find file to open
     eInternalServerError = 500,
 	eHTTPVersionNotSupported = 505,
     eRequestedRangeNotSatisfiable = 416
@@ -52,34 +52,34 @@ class   RequestParse
 {
 	private :
 		std::map<std::string, std::string>  _metaData;
-		// i need to change this string to enum? 
 		methods			_enumMethod;
 		status			_statusCode;
 		std::string 	_method;
 		std::string		_httpVersion;
+		std::string 	_url;
 		BodyParse		_body;
-		std::ofstream	_fd;
-		// add if request done.
 		bool			_requestIsDone;
-		
-		std::string	trimSpace(std::string line);
-
+		std::ofstream	_fd;
+		bool			_isHeader;
 	public :
 		RequestParse();
 
 		// Get :
 		std::map<std::string, std::string>	&getMetaData();
-		std::string 	_url;
-		status	statusCode();
-		bool	requestIsDone();
+		status		statusCode();
+		bool		requestIsDone();
+		bool		isHeader();
 		std::string	URL();
+		methods		method();
+
 		// set :
-		int		method();
+		void	SetisHeader(bool isHeader);
 		void	SetStatusCode(status s);
 		void	SetRequestIsDone(bool s);
 
-		void    readBuffer(std::string buff, int &isHeader);
-		int    	parseHeader(std::string &header);
+		bool	readHeader(std::string &buff);
+		void	readBuffer(std::string buff);
+		bool	parseHeader(std::string &header);
 		void	parseFirstLine(std::string  header);
 		void	parseMetaData(std::string header);
 };

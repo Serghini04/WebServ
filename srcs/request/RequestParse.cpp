@@ -3,27 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   RequestParse.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mal-mora <mal-mora@student.42.fr>          +#+  +:+       +#+        */
+/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/09 19:11:55 by mal-mora         ###   ########.fr       */
+/*   Updated: 2025/01/16 17:38:46 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <RequestParse.hpp>
 
-// RequestParse::RequestParse(const RequestParse& rqs)
-// {
-// 	*this = rqs;
-// }
-// RequestParse& RequestParse::operator=(const RequestParse& other) {
-//     if (this != &other) {
-
-//         // Free existing resources
-//         // Copy members from 'other'
-//     }
-//     return *this;
-// }
+RequestParse::RequestParse()
+{
+	std::cout << " here " << std::endl;
+	_fd.open("/Users/mal-mora/goinfre/Output.trash", std::ios::binary | std::ios::app);
+	if (_fd.fail())
+	{
+		puts("open failed");
+		exit(1);
+	}
+	_isHeader = true;
+	_requestIsDone = false;
+	_statusCode = eOK;
+}
 
 void	RequestParse::parseFirstLine(std::string  header)
 {
@@ -71,21 +72,14 @@ void	RequestParse::SetRequestIsDone(bool s)
 	_requestIsDone = s;
 }
 
-bool	isNotSpace(int ch)
+void	RequestParse::SetisHeader(bool isHeader)
 {
-	return !std::isspace(ch);
+	_isHeader = isHeader;
 }
-int		RequestParse::method()
+
+bool	RequestParse::isHeader()
 {
-	return this->_enumMethod;
-}
-std::string	RequestParse::trimSpace(std::string line)
-{
-	std::string::iterator first = std::find_if(line.begin(), line.end(), isNotSpace);
-	if (first == line.end())
-		return "";
-	std::string::iterator last = std::find_if(line.rbegin(), line.rend(), isNotSpace).base();
-	return std::string(first, last);
+	return _isHeader;
 }
 
 void	RequestParse::parseMetaData(std::string header)
@@ -97,7 +91,7 @@ void	RequestParse::parseMetaData(std::string header)
 			continue;
 		else if (i != 0 && header[i] == ':')
 		{
-			_metaData[header.substr(0, i)] = trimSpace(header.substr(i + 1));
+			_metaData[header.substr(0, i)] = Utility::trimSpace(header.substr(i + 1));
 			return ;
 		}
 		else
@@ -106,7 +100,7 @@ void	RequestParse::parseMetaData(std::string header)
 	throw std::runtime_error("400 Bad Request");
 }
 
-int RequestParse::parseHeader(std::string &header)
+bool	RequestParse::parseHeader(std::string &header)
 {
 	int firstLine = 1;
 	size_t start = 0;
@@ -126,22 +120,16 @@ int RequestParse::parseHeader(std::string &header)
 			else
 			    parseMetaData(header.substr(start, i - start - 1));
 			if (i + 2 < header.size() && header[i + 1] == '\r' && header[i + 2] == '\n')
-				return 0;
+				break ;
 			start = i + 1; 
 		}
 	}
-	return 1;
+	return false;
 }
-RequestParse::RequestParse()
+
+methods	RequestParse::method()
 {
-	_fd.open("output.txt", std::ios::binary | std::ios::app);
-	if (_fd.fail())
-	{
-		puts("open failed");
-		exit(1);
-	}
-	_requestIsDone = false;
-	_statusCode = eOK;
+	return _enumMethod;
 }
 
 std::string	RequestParse::URL()
@@ -149,33 +137,47 @@ std::string	RequestParse::URL()
 	return (_url);
 }
 
-void    RequestParse::readBuffer(std::string buff, int &isHeader)
+bool RequestParse::readHeader(std::string &buff)
 {
 	static std::string	header;
-	static	BodyType type = eNone;
+	bool	isHeader = true;
 
+	header.append(buff);
+	size_t pos = header.find("\r\n\r\n");
+	if (pos == std::string::npos)
+		return isHeader;
+	isHeader = parseHeader(header);
+	_body.setMetaData(_metaData);
+	buff = header.substr(pos + 4);
+	_body.setbodyType(_body.getTypeOfBody());
+	if (_body.bodyType() == eBoundary || _body.bodyType() == eChunkedBoundary)
+	{
+		std::string	boundary = _metaData["Content-Type"].substr(_metaData["Content-Type"].find("boundary=") + 9);
+		_body.setBoundary("--" + boundary + "\r\n");
+		_body.setBoundaryEnd("--" + boundary + "--\r\n");
+	}
+	if (_body.bodyType() == eChunked || _body.bodyType() == eContentLength)
+		_body.openFileBasedOnContentType();
+	header.clear();
+	if (_enumMethod == eGET)
+		_requestIsDone = true;
+	return isHeader;
+}
+
+void    RequestParse::readBuffer(std::string buff)
+{
 	if (_requestIsDone)
 		return ;
-	_fd << "\n===========" << type << "===========\n";
-	_fd << buff; 
-	_fd << "\n======================\n";
-	_fd.flush();
-	if (isHeader)
-	{
-		header.append(buff);
-		if (buff.find("\r\n\r\n") == std::string::npos)
-			return ;
-		isHeader = parseHeader(header);
-		_body.setMetaData(_metaData);
-		buff = header.substr(header.find("\r\n\r\n") + 4);
-		type = _body.getTypeOfBody();
-		_body.openFileBasedOnContentType();
-		header.clear();
-	}
-	switch (type)
+	// _fd << "\n===========" << _body.bodyType() << "===========\n";
+	// _fd << buff; 
+	// _fd << "\n======================\n";
+	// _fd.flush();
+	if (isHeader())
+		SetisHeader(readHeader(buff));
+	switch (_body.bodyType())
 	{
 		case eBoundary :
-			_body.BoundaryParse(buff);
+			_requestIsDone = _body.BoundaryParse(buff);
 			break;
 		case eChunked :
 			_requestIsDone = _body.ChunkedParse(buff);
@@ -189,5 +191,4 @@ void    RequestParse::readBuffer(std::string buff, int &isHeader)
 		case eNone :
 			break;
 	}
-	// isHeaderDone = !_requestIsDone;
 }
