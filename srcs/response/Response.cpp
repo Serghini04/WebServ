@@ -15,19 +15,19 @@ Response::~Response()
 
 std::string Response::FileToString()
 {
-    std::string buf(1024, '\0');
-    file.read(&buf[0], 1024);
+    std::string buf(1024 * 2, '\0');
+    file.read(&buf[0], 1024 * 2);
     buf.resize(file.gcount());
     return buf;
 }
 void Response::setContentType(RequestParse &request)
 {
     std::string format;
-    if( request._url.empty())
+    if( request.URL().empty())
         return ;
-    size_t pos = request._url.find(".");
+    size_t pos = request.URL().find(".");
     if (pos != std::string::npos)
-        format = request._url.substr(pos + 1);
+        format = request.URL().substr(pos + 1);
     else
         format = "";
     if (format == "json")
@@ -56,8 +56,13 @@ std::string Response::getHeader(RequestParse &request, const std::string &status
     std::ostringstream response;
 
     bodySize << size;
+    (void)conserver;
+    std::cout << &conserver << std::endl;
     _headerMap["Date"] = Utility::GetCurrentTime();
-    _headerMap["Server"] = conserver.getAttributes("server_name"); // get it from config file
+    std::string ser = conserver.getAttributes("server_name");
+    ser.erase(ser.end() - 1);
+    _headerMap["Server"] = ser;
+
     _headerMap["Content-Type"] = contentType;
     _headerMap["Content-Length"] = bodySize.str();
     _headerMap["Connection"] = request.getMetaData().count("Connection") == 0 ? "keep-alive" : request.getMetaData()["Connection"];
@@ -92,7 +97,7 @@ std::string Response::processResponse(RequestParse &request, int isSuccess)
     else
     {
         setContentType(request);
-        filename = request._url;
+        filename = request.URL();
     }
     if (firstCall)
     {
