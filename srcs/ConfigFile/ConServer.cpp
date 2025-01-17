@@ -6,13 +6,14 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 16:54:05 by hidriouc          #+#    #+#             */
-/*   Updated: 2025/01/17 12:26:57 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/01/17 15:59:52 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <Server.hpp>
 #include <cstddef>
 #include <string>
+#include <sys/socket.h>
 
 void	Conserver::addAttribute(const std::string& key, const std::string& value)
 {
@@ -22,13 +23,9 @@ void	Conserver::addLocation(const std::map<std::string, std::string> loc_attribu
 {
 	location_list.push_back(loc_attribute);
 }
-void Conserver::addhost(std::string host)
+void Conserver::addlistening(std::pair<std::string, std::string > lsn)
 {
-	hosts.push_back(host);
-}
-void	Conserver::addport(std::string port)
-{
-	ports.push_back(port);
+	listening.push_back(lsn);
 }
 std::string	Conserver::getAttributes(std::string att) 
 {
@@ -41,14 +38,6 @@ std::string	Conserver::getAttributes(std::string att)
 	return "";
 }
 
-// std::string Conserver::gethost(int index)
-// {
-// 	// return hosts;
-// }
-// std::string  Conserver::getport(int index)
-// {
-// 	// return ports;
-// }
 std::string  Conserver::getErrorPage(int ERRNumber)
 {
 	std::map<std::string, std::string>::iterator It_map;
@@ -65,6 +54,10 @@ std::string  Conserver::getErrorPage(int ERRNumber)
 	}
 	return "";
 	
+}
+std::vector<std::pair<std::string, std::string> >  Conserver::getlistening()
+{
+	return listening;
 }
 
 std::map<std::string, std::string> Conserver::getLocation(std::string valueToFind)
