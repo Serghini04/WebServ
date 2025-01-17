@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:38:49 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/16 17:09:53 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/17 11:02:48 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,36 +21,32 @@ BodyParse::BodyParse()
 	_boundary = "";
 }
 
-// chunked && boundray ==>
-// "Content-Type" = "multipart/form-data" && "Transfer-Encoding" == "chunked"
-// chunked ==>
-//  "Transfer-Encoding" == "chunked"
-// boundray ==>
-// "Content-Type" == "multipart/form-data" && "Transfer-Encoding" != "chunked"
-//  Content-Length ==>
-// Content-Length || !Content-Length
-
 void		BodyParse::setMetaData(std::map<std::string, std::string> &data)
 {
 	_metaData = data;
 }
 
-BodyType	BodyParse::getTypeOfBody()
+BodyType	BodyParse::getTypeOfBody(methods method)
 {
     if (_metaData["Transfer-Encoding"] == "chunked" && _metaData["Content-Type"].find("multipart/form-data; boundary=") != std::string::npos)
 		return eChunkedBoundary;
 	else if (_metaData["Transfer-Encoding"] == "chunked")
+	{
+		if (method == ePOST && _metaData["Content-Type"] == "")
+			throw std::runtime_error("400 Bad Request");
 		return eChunked;
+	}
 	else if (_metaData["Content-Type"].find("multipart/form-data; boundary=") != std::string::npos)
 		return eBoundary;
 	else if (_metaData["Content-Length"] != "")
 	{
-		_bodySize = atoi(_metaData["Content-Length"].c_str());
+		if (method == ePOST && _metaData["Content-Type"] == "")
+			throw std::runtime_error("400 Bad Request");
+		_bodySize = atoll(_metaData["Content-Length"].c_str());
 		return eContentLength;
 	}
-	// case : POST
-	// 411 Length Required
-	// 400 Bad Request if Content type is not define for case POST
+	if (method == ePOST)
+		throw std::length_error("411 Length Required");
 	return eNone;
 }
 
@@ -329,16 +325,14 @@ bool BodyParse::ChunkedParse(std::string &buff)
 	return false;
 }
 
-bool	BodyParse::ContentLengthParse(std::string &buff)
+bool BodyParse::ContentLengthParse(std::string &buff)
 {
-	if (_bodySize >= buff.size())
-	{
-		_fileOutput << buff;
-		_bodySize -= buff.size();
-	}
-	else
-		std::runtime_error("400 Bad Request");
-	if (!_bodySize)
+	if (_bodySize <= 0)
+		return true;
+	size_t bytesToProcess = buff.size();
+	_fileOutput.write(buff.data(), bytesToProcess);
+	_bodySize -= bytesToProcess;
+	if (_bodySize == 0)
 	{
 		_fileOutput.flush();
 		return true;

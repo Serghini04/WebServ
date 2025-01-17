@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/15 10:59:32 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/17 10:47:34 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,6 @@
 # include <string>
 # include <BodyParse.hpp>
 # include <map>
-
-enum	methods
-{
-	ePOST,
-	eGET,
-	eDELETE
-};
 
 enum status
 {
