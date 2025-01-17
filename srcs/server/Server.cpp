@@ -114,7 +114,7 @@ void Server::RecivData(int clientSocket)
     {
         puts("Data Recived");
         EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
-        if (kevent(kq, &event, 1, NULL, 0, NULL) == -1) ////loooook
+        if (kevent(kq, &event, 1, NULL, 0, NULL)) ////loooook
             SendError(clientSocket);
         return;
     }
