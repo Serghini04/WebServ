@@ -6,7 +6,7 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 16:54:05 by hidriouc          #+#    #+#             */
-/*   Updated: 2025/01/17 12:12:21 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/01/17 12:26:57 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,14 +41,14 @@ std::string	Conserver::getAttributes(std::string att)
 	return "";
 }
 
-std::vector<std::string> Conserver::gethost(int index)
-{
-	return hosts;
-}
-std::vector<std::string> Conserver::getport(int index)
-{
-	return ports;
-}
+// std::string Conserver::gethost(int index)
+// {
+// 	// return hosts;
+// }
+// std::string  Conserver::getport(int index)
+// {
+// 	// return ports;
+// }
 std::string  Conserver::getErrorPage(int ERRNumber)
 {
 	std::map<std::string, std::string>::iterator It_map;
