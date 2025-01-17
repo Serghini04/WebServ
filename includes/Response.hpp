@@ -2,6 +2,7 @@
 #include "../includes/Server.hpp"
 #include "../includes/RequestParse.hpp"
 class Server;
+class RequestParse;
 class Conserver;
 class Response
 {
