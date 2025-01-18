@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:36:14 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/17 10:47:41 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/17 11:44:35 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,8 @@ class BodyParse
 
 		// Get
 		BodyType	bodyType();
-		size_t		sizeRead();
-		BodyType	getTypeOfBody(methods method);
+		long long	sizeRead();
+		BodyType	getTypeOfBody(methods method, long long maxBodySize);
 
 		bool		clearBuffers(std::string &data, std::string &accumulatedData, std::string &carryOver);
 		void		openFileBasedOnContentType();

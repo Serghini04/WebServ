@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/17 10:47:34 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/18 12:38:31 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <string>
 # include <BodyParse.hpp>
 # include <map>
+# include <ConServer.hpp>
 
 enum status
 {
@@ -54,12 +55,17 @@ class   RequestParse
 		bool			_requestIsDone;
 		std::ofstream	_fd;
 		bool			_isHeader;
-	public :
-		RequestParse();
+		Conserver		&_configServer;
+		long long		_maxBodySize;
+		std::string		_statusCodeMessage;
 
+	public :
+		RequestParse(Conserver &conserver);
+	
 		// Get :
 		std::map<std::string, std::string>	&getMetaData();
 		status		statusCode();
+		std::string	statusCodeMessage();
 		bool		requestIsDone();
 		bool		isHeader();
 		std::string	URL();
@@ -68,8 +74,10 @@ class   RequestParse
 		// set :
 		void	SetisHeader(bool isHeader);
 		void	SetStatusCode(status s);
+		void	SetstatusCodeMessage(std::string message);
 		void	SetRequestIsDone(bool s);
 
+		void	checkURL();
 		bool	readHeader(std::string &buff);
 		void	readBuffer(std::string buff);
 		bool	parseHeader(std::string &header);
