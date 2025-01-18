@@ -6,13 +6,13 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/17 10:45:37 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/18 14:29:50 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <RequestParse.hpp>
 
-RequestParse::RequestParse()
+RequestParse::RequestParse(Conserver &conserver) : _configServer(conserver)
 {
 	_fd.open("/Users/meserghi/goinfre/D/Output.trash", std::ios::binary | std::ios::app);
 	if (_fd.fail())
@@ -23,6 +23,21 @@ RequestParse::RequestParse()
 	_isHeader = true;
 	_requestIsDone = false;
 	_statusCode = eOK;
+	_statusCodeMessage = "20 OK";
+	_maxBodySize = atoll(_configServer.getAttributes("client_max_body_size").c_str());
+}
+
+void	RequestParse::checkURL()
+{
+	const std::string invalidChars = "\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0A\x0B\x0C\x0D\x0E\x0F"
+									"\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C\x1D\x1E\x1F"
+									"\x7F\"<>\\^`{|}";
+	if (_url.length() > 4096)
+		throw std::runtime_error("414 URI Too Long");
+	if (_url[0] != '/')
+		throw std::runtime_error("400 Bad Request");
+	if (_url.find_first_of(invalidChars) != std::string::npos)
+		throw std::runtime_error("400 Bad Request");
 }
 
 void	RequestParse::parseFirstLine(std::string  header)
@@ -30,14 +45,15 @@ void	RequestParse::parseFirstLine(std::string  header)
 	std::stringstream    ss(header);
 
 	if (!std::isalpha(header[0]))
-		throw std::runtime_error("400 Bad Request1");
+		throw std::runtime_error("400 Bad Request");
 	ss >> _method >> _url >> _httpVersion;
 	if (_method != "GET" && _method != "POST" && _method != "DELETE")
-		throw std::runtime_error("400 Bad Request2");
+		throw std::runtime_error("400 Bad Request");
 	if (_url.empty() || _httpVersion.empty())
-		throw std::runtime_error("400 Bad Request3"); 
+		throw std::runtime_error("400 Bad Request"); 
 	if (_httpVersion != "HTTP/1.1")
-		throw std::runtime_error("400 Bad Request4");
+		throw std::runtime_error("400 Bad Request");
+	checkURL();
 	if (_method == "GET")
 		_enumMethod = eGET;
 	else if (_method == "POST")
@@ -49,6 +65,16 @@ void	RequestParse::parseFirstLine(std::string  header)
 std::map<std::string, std::string>	&RequestParse::getMetaData()
 {
 	return (_metaData);
+}
+
+std::string	RequestParse::statusCodeMessage()
+{
+	return _statusCodeMessage;
+}
+
+void	RequestParse::SetstatusCodeMessage(std::string message)
+{
+	_statusCodeMessage = message;
 }
 
 bool RequestParse::requestIsDone()
@@ -106,7 +132,6 @@ bool	RequestParse::parseHeader(std::string &header)
 
 	if (header.empty())
 		throw std::runtime_error("400 Bad Request");
-
 	for (size_t i = 1; i < header.size(); i++)
 	{
 		if (header[i - 1] == '\r' && header[i] == '\n')
@@ -148,7 +173,7 @@ bool RequestParse::readHeader(std::string &buff)
 	isHeader = parseHeader(header);
 	_body.setMetaData(_metaData);
 	buff = header.substr(pos + 4);
-	_body.setbodyType(_body.getTypeOfBody(_enumMethod));
+	_body.setbodyType(_body.getTypeOfBody(_enumMethod, _maxBodySize));
 	if (_body.bodyType() == eBoundary || _body.bodyType() == eChunkedBoundary)
 	{
 		std::string	boundary = _metaData["Content-Type"].substr(_metaData["Content-Type"].find("boundary=") + 9);
@@ -165,29 +190,42 @@ bool RequestParse::readHeader(std::string &buff)
 
 void    RequestParse::readBuffer(std::string buff)
 {
+	_fd << "\n===========" << _body.bodyType() << "===========\n";
+	_fd << buff; 
+	_fd << "\n======================\n";
+	_fd.flush();
 	if (_requestIsDone)
 		return ;
-	// _fd << "\n===========" << _body.bodyType() << "===========\n";
-	// _fd << buff; 
-	// _fd << "\n======================\n";
-	// _fd.flush();
-	if (isHeader())
-		SetisHeader(readHeader(buff));
-	switch (_body.bodyType())
+	try
 	{
-		case eBoundary :
-			_requestIsDone = _body.BoundaryParse(buff);
-			break;
-		case eChunked :
-			_requestIsDone = _body.ChunkedParse(buff);
-			break;
-		case eChunkedBoundary :
-			_requestIsDone = _body.ChunkedBoundaryParse(buff);
-			break;
-		case eContentLength :
-			_requestIsDone = _body.ContentLengthParse(buff);
-			break;
-		case eNone :
-			break;
+		if (isHeader())
+			SetisHeader(readHeader(buff));
+		switch (_body.bodyType())
+		{
+			case eBoundary :
+				_requestIsDone = _body.BoundaryParse(buff);
+				break;
+			case eChunked :
+				_requestIsDone = _body.ChunkedParse(buff);
+				break;
+			case eChunkedBoundary :
+				_requestIsDone = _body.ChunkedBoundaryParse(buff);
+				break;
+			case eContentLength :
+				_requestIsDone = _body.ContentLengthParse(buff);
+				break;
+			case eNone :
+				break;
+		}
+	}
+	catch (std::string &e)
+	{
+		_statusCode = (status)atoi(e.c_str());
+		_requestIsDone = 1;
+	}
+	catch (...)
+	{
+		_statusCode = eBadRequest;
+		_requestIsDone = 1;
 	}
 }

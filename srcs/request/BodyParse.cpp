@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:38:49 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/17 11:02:48 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/18 13:04:08 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,16 @@ void		BodyParse::setMetaData(std::map<std::string, std::string> &data)
 	_metaData = data;
 }
 
-BodyType	BodyParse::getTypeOfBody(methods method)
+BodyType	BodyParse::getTypeOfBody(methods method, long long maxBodySize)
 {
+	(void)maxBodySize;
+	if (_metaData["Content-Length"] != "")
+	{
+		_bodySize = atoll(_metaData["Content-Length"].c_str());
+		// if (_bodySize > maxBodySize)
+		// 	throw std::runtime_error("413 Content Too Large");
+		// puts("ff");
+	}
     if (_metaData["Transfer-Encoding"] == "chunked" && _metaData["Content-Type"].find("multipart/form-data; boundary=") != std::string::npos)
 		return eChunkedBoundary;
 	else if (_metaData["Transfer-Encoding"] == "chunked")
@@ -60,7 +68,7 @@ BodyType	BodyParse::bodyType()
 	return (_type);
 }
 
-size_t		BodyParse::sizeRead()
+long long		BodyParse::sizeRead()
 {
 	return (_bodySize);
 }

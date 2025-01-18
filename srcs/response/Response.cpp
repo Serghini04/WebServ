@@ -15,8 +15,8 @@ Response::~Response()
 
 std::string Response::FileToString()
 {
-    std::string buf(1024, '\0');
-    file.read(&buf[0], 1024);
+    std::string buf(1024 * 2, '\0');
+    file.read(&buf[0], 1024 * 2);
     buf.resize(file.gcount());
     return buf;
 }
@@ -59,7 +59,10 @@ std::string Response::getHeader(RequestParse &request, const std::string &status
 
     bodySize << size;
     _headerMap["Date"] = Utility::GetCurrentTime();
-    _headerMap["Server"] = conserver.getAttributes("server_name"); // get it from config file
+    std::string ser = conserver.getAttributes("server_name");
+    ser.erase(ser.end() - 1);
+    _headerMap["Server"] = ser;
+
     _headerMap["Content-Type"] = contentType;
     _headerMap["Content-Length"] = bodySize.str();
     _headerMap["Connection"] = request.getMetaData().count("Connection") == 0 ? "keep-alive" : request.getMetaData()["Connection"];
