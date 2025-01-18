@@ -125,10 +125,9 @@ void Server::SendData(int clientSocket)
     size_t totalSent = 0;
     size_t responseSize;
 
-    if (clientsResponse.find(clientSocket) == clientsResponse.end())
+    if (!clientsResponse.count(clientSocket))
         clientsResponse[clientSocket] = new Response(*serversConfigs[serversClients[clientSocket]]);
     std::string response = clientsResponse[clientSocket]->getResponse(*clientsRequest[clientSocket]);
-    
     if (response.empty())
     {
         ResponseEnds(clientSocket);

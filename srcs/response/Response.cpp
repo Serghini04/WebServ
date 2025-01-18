@@ -89,6 +89,10 @@ std::string Response::processResponse(RequestParse &request, int state)
                     request.SetStatusCodeMsg("404 Not Found");
                     handelRequestErrors(request);
                 }
+            }else
+            {
+                file.open("post.json");
+                this->contentType = Utility::getExtensions("", ".json");
             }
         }
         size = getFileSize();
