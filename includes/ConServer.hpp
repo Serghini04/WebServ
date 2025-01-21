@@ -6,7 +6,7 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 16:02:15 by hidriouc          #+#    #+#             */
-/*   Updated: 2025/01/17 16:00:12 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/01/21 13:19:59 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,6 @@ class Conserver {
 	    std::map<std::string, std::string> serv_attributes;
 	    std::list<std::map<std::string, std::string> > location_list;
 		std::vector<std::pair<std::string, std::string> > listening;
-		std::vector<std::string> hosts;
-		std::vector<std::string> ports;
 	public:
 		void addAttribute(const std::string& key, const std::string& value);
 		void addLocation(const std::map<std::string, std::string> loc_attribute);
