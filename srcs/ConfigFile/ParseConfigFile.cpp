@@ -162,11 +162,9 @@ void	parseLocation(const std::string& confline, Conserver& server, std::ifstream
 	if (location_map.empty() || location_map.size() == 1) {
 		throw( std::string("Error: Invalid location block at line ") + std::to_string(index_line));
 	}
-	if (!location_map["allowed_methods"].find("POST") && location_map["upload_store"].empty())
-	{
-		std::cerr<<"hhhhhhhh";
-		exit((EXIT_FAILURE));
-	}
+	if (location_map["allowed_methods"].find("POST")!= std::string::npos &&
+	(location_map["upload_store"].empty() || !location_map["upload_store"][0]))
+	std::cerr<<"'"<<location_map["PATH"]<<"'", throw ((std::string)": The location requires an 'upload_store' attribute!");
 	index_line++;
 	server.addLocation(location_map);
 }
@@ -193,15 +191,19 @@ void	processServerBlock(std::ifstream& infile, Conserver& server, int& index_lin
 }
 
 std::vector<Conserver>	parseConfigFile(char *in_file){
-	std::ifstream infile(in_file);
+	std::ifstream infile;
 	std::vector<Conserver> servers;
 	std::stack<char> ServStack;
 	int index_line = 0;
 	std::string confline;
 
-	if (!infile.is_open())
-		throw((std::string)"Error: Failed to open configuration file '" );
 	try{
+		if (!in_file)
+		infile.open("ConfigFiles/Configfile.conf");
+		else
+		infile.open(in_file);
+		if (!infile.is_open())
+		throw((std::string)"Error: Failed to open configuration file !" );
 		while (std::getline(infile, confline)) {
 		Conserver server;
 		index_line++;
@@ -215,7 +217,7 @@ std::vector<Conserver>	parseConfigFile(char *in_file){
 		if (!server.getAttributes("root").empty())
 			servers.push_back(server);
 		else
-			throw((std::string )"Error: server without root line");
+			throw((std::string )"Error: server without root line !");
 		if (trim(confline) == "}")
 			throw (std::string("Error: Unbalanced '}'" ));
 		}
