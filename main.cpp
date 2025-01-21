@@ -17,11 +17,9 @@
 
 int main(int ac, char **av)
 {
+	(void)ac;
 	std::signal(SIGPIPE, SIG_IGN);
-	if(ac != 2)
-		return 1;
 	std::vector<Conserver>	servers = parseConfigFile(av[1]);
-	std::cerr<<">> " <<servers.size()<<std::endl;
 	if (servers.size()){
 	Server ser;
 	ser.CreateServer(servers);}
