@@ -24,9 +24,11 @@ std::string trim(const std::string& str) {
 bool	is_validAttServer(std::string &key, std::string &value, int inde)
 {
 	value.erase(value.end()-1);
-	std::string validATT[] = {"host", "port", "server_name", "client_max_body_size",
-	"error_page", "root"};
-	for (int i = 0; i < 6; i++){
+	std::vector<std::string> validATT;
+	validATT.push_back("host"),validATT.push_back("port"),validATT.push_back("server_name");
+	validATT.push_back("client_max_body_size"), validATT.push_back("error_page");
+	validATT.push_back("index"),validATT.push_back("root");
+	for (size_t i = 0; i < validATT.size(); i++){
 	if (validATT[i] == key)
 	{
 		if (key == "error_page")
@@ -42,8 +44,11 @@ bool	is_validAttServer(std::string &key, std::string &value, int inde)
 bool	is_validAttLocation(std::string key, std::string value)
 {
 	(void)value;
-	std::string validATT[] = {"allowed_methods", "upload_store", "root", "index",};
-	for (int i = 0; i <= 4; i++){
+	std::vector<std::string> validATT;
+	validATT.push_back("allowed_methods"),validATT.push_back("upload_store");
+	validATT.push_back("root"),validATT.push_back("index"), validATT.push_back("return");
+	validATT.push_back("auto_index"), validATT.push_back("cgi");
+	for (size_t i = 0; i <validATT.size(); i++){
 	if (validATT[i] == key)
 	{
 		return true;
@@ -72,25 +77,25 @@ bool	Check_Line(std::string Name, std::stack<char>& ServStack)
 	return false;
 }
 
-void parseKeyValue(const std::string& line_content, int &index_line, std::string& key, std::string& value) {
+bool	parseKeyValue(const std::string& line_content, int &index_line, std::string& key, std::string& value) {
 	std::istringstream line_stream(line_content);
 	if (!(line_stream >> key)) {
-	std::string err ("Error: Malformed key in line ");
-	throw (err);
+		throw (std::string("Error: Malformed key in line "));
 	}
 	std::getline(line_stream, value);
 	value = trim(value);
 	if (!key.find("location")){
 	if (value[value.length() - 1] == '{'){
-	value = value.substr(0,value.find_first_of("{"));
-	return ;
+		value = value.substr(0,value.find_first_of("{"));
+		return true;
 	}}
 	if (value.empty() || value.back() != ';') {
-	std::string err("Error: Missing ';' Or invalid Strecture in the value for key : ");
-	std:: cerr << "In Line :"<< index_line<<std::endl;
-	throw (err + key);
+		std:: cerr << "In Line :"<< index_line<<std::endl;
+		std::cerr<<"Error: Missing ';' Or invalid Strecture in the value for key : ";
+		return false;
 	}
 	value.back() = '\0';
+		return true;
 }
 
 void saveAttribute(const std::string& confline, Conserver& server, int index_line) {
@@ -154,11 +159,13 @@ void	parseLocation(const std::string& confline, Conserver& server, std::ifstream
 	}
 	if (LocationStack.size())
 		throw (std::string("Error: Invalid structure (line ")+ std::to_string(index_line)+")!");
-	if (location_map.empty() || location_map.size() == 1 || location_map["root"].empty()) {
-		if ( location_map["root"].empty())
-			throw( std::string("Error: Location Without root (line: ") + std::to_string(index_line) + ")");
+	if (location_map.empty() || location_map.size() == 1) {
 		throw( std::string("Error: Invalid location block at line ") + std::to_string(index_line));
-	exit(EXIT_FAILURE);
+	}
+	if (!location_map["allowed_methods"].find("POST") && location_map["upload_store"].empty())
+	{
+		std::cerr<<"hhhhhhhh";
+		exit((EXIT_FAILURE));
 	}
 	index_line++;
 	server.addLocation(location_map);
@@ -187,36 +194,36 @@ void	processServerBlock(std::ifstream& infile, Conserver& server, int& index_lin
 
 std::vector<Conserver>	parseConfigFile(char *in_file){
 	std::ifstream infile(in_file);
-	int index_line = 0;
-	if (!infile.is_open()) {
-	std::string Error("Error: Failed to open configuration file '" );
-	throw (Error + in_file + "' !");
-	}
 	std::vector<Conserver> servers;
 	std::stack<char> ServStack;
+	int index_line = 0;
 	std::string confline;
-	while (std::getline(infile, confline)) {
-	Conserver server;
-	index_line++;
-	confline = trim(confline);
-	if (confline.empty() || confline[0] == '#') continue;
-	if (Check_Line(confline, ServStack)){
-	processServerBlock(infile, server, index_line, ServStack);
-	if(ServStack.size()){
-	throw (std::string("Error: Unbalanced '}'"));
-	}
-	if (!server.getAttributes("root").empty())
-		servers.push_back(server);
-	else{
-	 std::cerr<< "Error: server without root !line :"<< index_line<<std::endl;
-	 continue;
-	}
-	} else {
+
+	if (!infile.is_open())
+		throw((std::string)"Error: Failed to open configuration file '" );
+	try{
+		while (std::getline(infile, confline)) {
+		Conserver server;
+		index_line++;
+		confline = trim(confline);
+		if (confline.empty() || confline[0] == '#') continue;
+		if (Check_Line(confline, ServStack)){
+			processServerBlock(infile, server, index_line, ServStack);
+		if(ServStack.size()){
+			throw (std::string("Error: Unbalanced brackets '}', line") + std::to_string(index_line));
+		}
+		if (!server.getAttributes("root").empty())
+			servers.push_back(server);
+		else
+			throw((std::string )"Error: server without root line");
 		if (trim(confline) == "}")
 			throw (std::string("Error: Unbalanced '}'" ));
-		throw (std::string("Error: Unknown keyword at line "));
+		}
+	}}
+	catch(std::string err){
+		std::cerr<<err<<std::endl;
+		exit(1);
 	}
-	}
-	return servers;
+		return servers;
 }
 
