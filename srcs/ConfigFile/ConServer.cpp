@@ -6,7 +6,7 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 16:54:05 by hidriouc          #+#    #+#             */
-/*   Updated: 2025/01/21 11:21:44 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/01/22 11:30:25 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <cstddef>
 #include <string>
 #include <sys/socket.h>
+#include <sys/syslimits.h>
 
 void	Conserver::addAttribute(const std::string& key, const std::string& value)
 {
@@ -23,9 +24,17 @@ void	Conserver::addLocation(const std::map<std::string, std::string> loc_attribu
 {
 	location_list.push_back(loc_attribute);
 }
+void Conserver::addPath(std::string path)
+{
+	AllPaths.push_back(path);
+}
 void Conserver::addlistening(std::pair<std::string, std::string > lsn)
 {
 	listening.push_back(lsn);
+}
+std::vector<std::string> Conserver::getphats()
+{
+	return AllPaths;
 }
 std::string	Conserver::getAttributes(std::string att) 
 {
@@ -36,6 +45,10 @@ std::string	Conserver::getAttributes(std::string att)
 			return It_map->second;
 	}
 	return "";
+}
+std::list<std::map<std::string, std::string> >	Conserver::getlist() 
+{
+	return  location_list;
 }
 
 std::string  Conserver::getErrorPage(int ERRNumber)
@@ -70,6 +83,7 @@ std::map<std::string, std::string> Conserver::getLocation(std::string valueToFin
 		for (std::map<std::string, std::string>::iterator mapIt = listIt->begin();
 		 mapIt != listIt->end(); ++mapIt) {
 		// Check if the value matches
+			
 			if (mapIt->second == valueToFind) {
 			return *listIt; // Return the entire map that contains the value
 		}
