@@ -131,6 +131,7 @@ void saveAttribute(const std::string& confline, Conserver& server, int index_lin
 		throw("Unowned element in line :" + std::to_string(index_line) + "!");
 }
 
+
 void	parseLocation(const std::string& confline, Conserver& server, std::ifstream& infile, int& index_line) {
 	std::map<std::string, std::string> location_map;
 	std::string line_content;
@@ -139,16 +140,19 @@ void	parseLocation(const std::string& confline, Conserver& server, std::ifstream
 	std::string Key, Value;
 	parseKeyValue(confline, index_line, Key, Value);
 	location_map["PATH"] = trim(Value);
+	server.addPath(location_map["PATH"]);
 	LocationStack.push('{');
 	while (std::getline(infile, line_content) && (line_content = trim(line_content) )!= "}") {
 	index_line++;
 	if (line_content.empty() || line_content[0] == '#')
 		continue;
-	if (line_content == "{") {
+	parseKeyValue(line_content, index_line, Key, Value);
+	if (Key == "{") {
 	std::cerr << "In line : "<< index_line << "\n";
 	throw((std::string)("Error: Invalid structure !"));
 	}
-	parseKeyValue(line_content, index_line, Key, Value);
+	if (Key == "cgi")
+		;
 	if (is_validAttLocation(Key, Value))
 		location_map[Key] = Value;
 	else

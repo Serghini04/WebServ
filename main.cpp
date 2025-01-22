@@ -14,12 +14,18 @@
 # include <Server.hpp>
 # include <RequestParse.hpp>
 #include <cstdlib>
+#include <vector>
 
 int main(int ac, char **av)
 {
 	(void)ac;
 	std::signal(SIGPIPE, SIG_IGN);
 	std::vector<Conserver>	servers = parseConfigFile(av[1]);
+	std::vector<std::string> gg = servers[0].getphats();
+	for (std::vector<std::string>::iterator it= gg.begin(); it != gg.end(); it++)
+	{
+		std::cout << *it << std::endl; 
+	}
 	if (servers.size()){
 	Server ser;
 	ser.CreateServer(servers);}
