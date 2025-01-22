@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/18 14:29:50 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/22 11:43:07 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ RequestParse::RequestParse(Conserver &conserver) : _configServer(conserver)
 	_isHeader = true;
 	_requestIsDone = false;
 	_statusCode = eOK;
-	_statusCodeMessage = "20 OK";
+	_statusCodeMessage = "200 OK";
 	_maxBodySize = atoll(_configServer.getAttributes("client_max_body_size").c_str());
 }
 
@@ -32,6 +32,7 @@ void	RequestParse::checkURL()
 	const std::string invalidChars = "\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0A\x0B\x0C\x0D\x0E\x0F"
 									"\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C\x1D\x1E\x1F"
 									"\x7F\"<>\\^`{|}";
+
 	if (_url.length() > 4096)
 		throw std::runtime_error("414 URI Too Long");
 	if (_url[0] != '/')
@@ -40,12 +41,17 @@ void	RequestParse::checkURL()
 		throw std::runtime_error("400 Bad Request");
 }
 
+std::string	RequestParse::statusCodeMessage()
+{
+	return _statusCodeMessage;
+}
+
 void	RequestParse::parseFirstLine(std::string  header)
 {
 	std::stringstream    ss(header);
 
 	if (!std::isalpha(header[0]))
-		throw std::runtime_error("400 Bad Request");
+		throw std::runtime_error("400 Bad Request1");
 	ss >> _method >> _url >> _httpVersion;
 	if (_method != "GET" && _method != "POST" && _method != "DELETE")
 		throw std::runtime_error("400 Bad Request");
@@ -67,12 +73,7 @@ std::map<std::string, std::string>	&RequestParse::getMetaData()
 	return (_metaData);
 }
 
-std::string	RequestParse::statusCodeMessage()
-{
-	return _statusCodeMessage;
-}
-
-void	RequestParse::SetstatusCodeMessage(std::string message)
+void	RequestParse::SetStatusCodeMsg(std::string message)
 {
 	_statusCodeMessage = message;
 }
@@ -161,9 +162,19 @@ std::string	RequestParse::URL()
 	return (_url);
 }
 
-bool RequestParse::readHeader(std::string &buff)
+void	RequestParse::checkAllowedMethod()
 {
-	static std::string	header;
+	// url : "/Users/meserghi/dddd"
+	// locations : 
+	//				/
+	//				/Users/meserghi/ddd
+	//				/Users/meserghi
+	//				/Users/meserghi/Desktop
+	//				/Users/meserghi/Desktop/Webserv
+}
+
+bool RequestParse::readHeader(std::string &header, std::string &buff)
+{
 	bool	isHeader = true;
 
 	header.append(buff);
@@ -182,6 +193,7 @@ bool RequestParse::readHeader(std::string &buff)
 	}
 	if (_body.bodyType() == eChunked || _body.bodyType() == eContentLength)
 		_body.openFileBasedOnContentType();
+	checkAllowedMethod();
 	header.clear();
 	if (_enumMethod == eGET)
 		_requestIsDone = true;
@@ -190,16 +202,17 @@ bool RequestParse::readHeader(std::string &buff)
 
 void    RequestParse::readBuffer(std::string buff)
 {
-	_fd << "\n===========" << _body.bodyType() << "===========\n";
-	_fd << buff; 
-	_fd << "\n======================\n";
-	_fd.flush();
-	if (_requestIsDone)
-		return ;
+	static std::string	header;
+	// _fd << "\n===========" << _body.bodyType() << "===========\n";
+	// _fd << buff; 
+	// _fd << "\n======================\n";
+	// _fd.flush();
 	try
 	{
+		if (_requestIsDone)
+			return ;
 		if (isHeader())
-			SetisHeader(readHeader(buff));
+			SetisHeader(readHeader(header, buff));
 		switch (_body.bodyType())
 		{
 			case eBoundary :
@@ -218,13 +231,17 @@ void    RequestParse::readBuffer(std::string buff)
 				break;
 		}
 	}
-	catch (std::string &e)
+	catch (std::exception &e)
 	{
-		_statusCode = (status)atoi(e.c_str());
+		header.clear();
+		_statusCode = (status)atoi(e.what());
+		_statusCodeMessage = e.what();
 		_requestIsDone = 1;
 	}
 	catch (...)
 	{
+		header.clear();
+		_statusCodeMessage = "400 Bad Request";
 		_statusCode = eBadRequest;
 		_requestIsDone = 1;
 	}

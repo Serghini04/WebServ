@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ConServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 16:54:05 by hidriouc          #+#    #+#             */
-/*   Updated: 2025/01/08 12:48:55 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/01/22 11:26:24 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ std::string  Conserver::getErrorPage(int ERRNumber)
 	return "";
 	
 }
+
 
 std::map<std::string, std::string> Conserver::getLocation(std::string valueToFind)
 {
