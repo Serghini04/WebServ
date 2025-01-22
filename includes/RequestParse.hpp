@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/18 15:53:44 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/22 13:09:15 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,16 +72,17 @@ class   RequestParse
 		methods		method();
 
 		// set :
-		void	SetisHeader(bool isHeader);
-		void	SetStatusCode(status s);
-		void	SetStatusCodeMsg(std::string message);
-		void	SetRequestIsDone(bool s);
+		void		SetisHeader(bool isHeader);
+		void		SetStatusCode(status s);
+		void		SetStatusCodeMsg(std::string message);
+		void		SetRequestIsDone(bool s);
 
-		void	checkURL();
-		void	checkAllowedMethod();
-		bool	readHeader(std::string &header, std::string &buff);
-		void	readBuffer(std::string buff);
-		bool	parseHeader(std::string &header);
-		void	parseFirstLine(std::string  header);
-		void	parseMetaData(std::string header);
+		void		checkURL();
+		std::string matchingURL();
+		void		checkAllowedMethod();
+		bool		readHeader(std::string &header, std::string &buff);
+		void		readBuffer(std::string buff);
+		bool		parseHeader(std::string &header);
+		void		parseFirstLine(std::string  header);
+		void		parseMetaData(std::string header);
 };

@@ -21,12 +21,14 @@ std::string trim(const std::string& str) {
 	return (start == std::string::npos) ? "" : str.substr(start, end - start + 1);
 }
 
-bool	is_validAttServer(std::string key, std::string value, int inde)
+bool	is_validAttServer(std::string &key, std::string &value, int inde)
 {
-	(void)value;
-	std::string validATT[] = {"host", "port", "server_name", "client_max_body_size",
-	"error_page"};
-	for (int i = 0; i <= 4; i++){
+	value.erase(value.end()-1);
+	std::vector<std::string> validATT;
+	validATT.push_back("host"),validATT.push_back("port"),validATT.push_back("server_name");
+	validATT.push_back("client_max_body_size"), validATT.push_back("error_page");
+	validATT.push_back("index"),validATT.push_back("root");
+	for (size_t i = 0; i < validATT.size(); i++){
 	if (validATT[i] == key)
 	{
 		if (key == "error_page")
@@ -42,8 +44,11 @@ bool	is_validAttServer(std::string key, std::string value, int inde)
 bool	is_validAttLocation(std::string key, std::string value)
 {
 	(void)value;
-	std::string validATT[] = {"allowed_methods", "upload_store", "root", "index",};
-	for (int i = 0; i <= 4; i++){
+	std::vector<std::string> validATT;
+	validATT.push_back("allowed_methods"),validATT.push_back("upload_store");
+	validATT.push_back("root"),validATT.push_back("index"), validATT.push_back("return");
+	validATT.push_back("auto_index"), validATT.push_back("cgi");
+	for (size_t i = 0; i <validATT.size(); i++){
 	if (validATT[i] == key)
 	{
 		return true;
@@ -72,39 +77,60 @@ bool	Check_Line(std::string Name, std::stack<char>& ServStack)
 	return false;
 }
 
-void parseKeyValue(const std::string& line_content, int &index_line, std::string& key, std::string& value) {
+bool	parseKeyValue(const std::string& line_content, int &index_line, std::string& key, std::string& value) {
 	std::istringstream line_stream(line_content);
 	if (!(line_stream >> key)) {
-	std::string err ("Error: Malformed key in line ");
-	throw (err);
+		throw (std::string("Error: Malformed key in line "));
 	}
 	std::getline(line_stream, value);
 	value = trim(value);
 	if (!key.find("location")){
 	if (value[value.length() - 1] == '{'){
-	value = value.substr(0,value.find_first_of("{"));
-	return ;
-	}
-	}
+		value = value.substr(0,value.find_first_of("{"));
+		return true;
+	}}
 	if (value.empty() || value.back() != ';') {
-	std::string err("Error: Missing ';' Or invalid Strecture in the value for key : ");
-	std:: cerr << "In Line :"<< index_line<<std::endl;
-	throw (err + key);
+		std:: cerr << "In Line :"<< index_line<<std::endl;
+		std::cerr<<"Error: Missing ';' Or invalid Strecture in the value for key : ";
+		return false;
 	}
 	value.back() = '\0';
+		return true;
 }
 
 void saveAttribute(const std::string& confline, Conserver& server, int index_line) {
 	std::string trimmed_line = trim(confline);
+	static bool sin = false;
+	static std::string	host;
 	if (trimmed_line.empty() || trimmed_line == "}")
 		return;
 	std::string key, value;
 	parseKeyValue(trimmed_line, index_line, key, value);
+	if (key == "host"){
+		if (host.empty())
+			host = value;
+		else{
+		server.addlistening(std::pair<std::string, std::string>(host, "8080"));
+		host = value;
+		}
+		sin = true;
+		return;
+	}
+	else if (key == "port"){
+		if (sin)
+			server.addlistening(std::pair<std::string, std::string>(host, value));
+		else
+			server.addlistening(std::pair<std::string, std::string>("0.0.0.0", value));
+		sin = false;
+		host = "";
+		return ;
+	}
 	if (is_validAttServer(key, value, index_line))
 		server.addAttribute(key, value);
 	else
 		throw("Unowned element in line :" + std::to_string(index_line) + "!");
 }
+
 
 void	parseLocation(const std::string& confline, Conserver& server, std::ifstream& infile, int& index_line) {
 	std::map<std::string, std::string> location_map;
@@ -114,15 +140,19 @@ void	parseLocation(const std::string& confline, Conserver& server, std::ifstream
 	std::string Key, Value;
 	parseKeyValue(confline, index_line, Key, Value);
 	location_map["PATH"] = trim(Value);
+	server.addPath(location_map["PATH"]);
 	LocationStack.push('{');
 	while (std::getline(infile, line_content) && (line_content = trim(line_content) )!= "}") {
 	index_line++;
-	if (line_content.empty() || line_content[0] == '#') continue;
-	if (line_content == "{") {
+	if (line_content.empty() || line_content[0] == '#')
+		continue;
+	parseKeyValue(line_content, index_line, Key, Value);
+	if (Key == "{") {
 	std::cerr << "In line : "<< index_line << "\n";
 	throw((std::string)("Error: Invalid structure !"));
 	}
-	parseKeyValue(line_content, index_line, Key, Value);
+	if (Key == "cgi")
+		;
 	if (is_validAttLocation(Key, Value))
 		location_map[Key] = Value;
 	else
@@ -133,12 +163,12 @@ void	parseLocation(const std::string& confline, Conserver& server, std::ifstream
 	}
 	if (LocationStack.size())
 		throw (std::string("Error: Invalid structure (line ")+ std::to_string(index_line)+")!");
-	if (location_map.empty() || location_map.size() == 1 || location_map["root"].empty()) {
-		if ( location_map["root"].empty())
-			throw( std::string("Error: Location Without root (line: ") + std::to_string(index_line) + ")");
+	if (location_map.empty() || location_map.size() == 1) {
 		throw( std::string("Error: Invalid location block at line ") + std::to_string(index_line));
-	exit(EXIT_FAILURE);
 	}
+	if (location_map["allowed_methods"].find("POST")!= std::string::npos &&
+	(location_map["upload_store"].empty() || !location_map["upload_store"][0]))
+	std::cerr<<"'"<<location_map["PATH"]<<"'", throw ((std::string)": The location requires an 'upload_store' attribute!");
 	index_line++;
 	server.addLocation(location_map);
 }
@@ -165,32 +195,41 @@ void	processServerBlock(std::ifstream& infile, Conserver& server, int& index_lin
 }
 
 std::vector<Conserver>	parseConfigFile(char *in_file){
-	std::ifstream infile(in_file);
-	int index_line = 0;
-	if (!infile.is_open()) {
-	std::string Error("Error: Failed to open configuration file '" );
-	throw (Error + in_file + "' !");
-	}
+	std::ifstream infile;
 	std::vector<Conserver> servers;
 	std::stack<char> ServStack;
+	int index_line = 0;
 	std::string confline;
-	while (std::getline(infile, confline)) {
-	Conserver server;
-	index_line++;
-	confline = trim(confline);
-	if (confline.empty() || confline[0] == '#') continue;
-	if (Check_Line(confline, ServStack)){
-	processServerBlock(infile, server, index_line, ServStack);
-	if(ServStack.size()){
-	throw (std::string("Error: Unbalanced '}'"));
-	}
-	servers.push_back(server);
-	} else {
+
+	try{
+		if (!in_file)
+		infile.open("ConfigFiles/Configfile.conf");
+		else
+		infile.open(in_file);
+		if (!infile.is_open())
+		throw((std::string)"Error: Failed to open configuration file !" );
+		while (std::getline(infile, confline)) {
+		Conserver server;
+		index_line++;
+		confline = trim(confline);
+		if (confline.empty() || confline[0] == '#') continue;
+		if (Check_Line(confline, ServStack)){
+			processServerBlock(infile, server, index_line, ServStack);
+		if(ServStack.size()){
+			throw (std::string("Error: Unbalanced brackets '}', line") + std::to_string(index_line));
+		}
+		if (!server.getAttributes("root").empty())
+			servers.push_back(server);
+		else
+			throw((std::string )"Error: server without root line !");
 		if (trim(confline) == "}")
 			throw (std::string("Error: Unbalanced '}'" ));
-		throw (std::string("Error: Unknown keyword at line "));
+		}
+	}}
+	catch(std::string err){
+		std::cerr<<err<<std::endl;
+		exit(1);
 	}
-	}
-	return servers;
+		return servers;
 }
 
