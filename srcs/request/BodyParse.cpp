@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:38:49 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/18 13:04:08 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/22 12:24:25 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void BodyParse::openFileBasedOnContentType()
 	std::ostringstream oss;
 	if (_fileOutput.is_open())
 		_fileOutput.close();
-	oss << "/Users/meserghi/goinfre/D/Output" << _indexFile;
+	oss << "/Users/meserghi/goinfre/www/Output" << _indexFile;
 	std::string namefile = oss.str();
 	namefile += Utility::getExtensions(_metaData["Content-Type"], "");
 	_fileOutput.open(namefile.c_str(), std::ios::binary);
@@ -214,9 +214,9 @@ void	BodyParse::openFileOfBoundary(std::string buff)
 		filename = buff.substr(start, end - start);
 		start = filename.rfind(".");
 		if (start != std::string::npos)
-			oss << "/Users/meserghi/goinfre/D/Output" << _indexFile << filename.substr(start);
+			oss << "/Users/meserghi/goinfre/www/Output" << _indexFile << filename.substr(start);
 		else
-			oss << "/Users/meserghi/goinfre/D/Output" << _indexFile << ".txt";
+			oss << "/Users/meserghi/goinfre/www/Output" << _indexFile << ".txt";
 	}
 	else if (buff.find("Content-Type: ") != std::string::npos)
 	{
@@ -231,7 +231,7 @@ void	BodyParse::openFileOfBoundary(std::string buff)
 		return ;
 	}
 	else
-		oss << "/Users/meserghi/goinfre/D/Output" << _indexFile << ".txt";
+		oss << "/Users/meserghi/goinfre/www/Output" << _indexFile << ".txt";
 	std::cout <<"Create File :>>" << oss.str() << "<<\n";
 	_fileOutput.open(oss.str(), std::ios::binary);
 	if (_fileOutput.fail())

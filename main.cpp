@@ -1,5 +1,5 @@
 /* ************************************************************************** */
-/*                                                                            */
+/*	                                                                        */
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
@@ -11,13 +11,12 @@
 /* ************************************************************************** */
 
 # include <Server.hpp>
-# include <RequestParse.hpp>
 
 int main(int ac, char **av)
 {
 	try
 	{
-		if(ac != 2)
+		if(ac > 2)
 			throw std::runtime_error("Invalid Arg.");
 		Server ser;
 		std::signal(SIGPIPE, SIG_IGN);
@@ -26,7 +25,7 @@ int main(int ac, char **av)
 	}
 	catch(...)
 	{
-		std::cerr <<">> FUCk OFF! <<" << '\n';
+		std::cerr <<">> FUCK OFF! <<" << '\n';
 	}
 	return 0;
 }

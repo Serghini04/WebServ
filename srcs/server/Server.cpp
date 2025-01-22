@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/01/18 14:36:15 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/22 16:21:59 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,8 @@ int Server::ConfigTheSocket(Conserver &config)
     }
     addressSocket.sin_addr.s_addr = INADDR_ANY;
     addressSocket.sin_family = AF_INET;
-    addressSocket.sin_port = htons(Utility::StrToInt(config.getAttributes("port")));
+    // addressSocket.sin_port = htons(Utility::StrToInt(config.getAttributes("port")));
+    addressSocket.sin_port = htons(PORT);
     if (make_socket_nonblocking(serverSocket) == -1)
         return -1;
     if (bind(serverSocket, (const sockaddr *)&addressSocket, sizeof(addressSocket)) == -1)
@@ -112,6 +113,7 @@ void Server::RecivData(int clientSocket)
     (*clientsRequest[clientSocket]).readBuffer(fullData);
     if ((*clientsRequest[clientSocket]).requestIsDone())
     {
+        std::cout << "S =>>" << (*clientsRequest[clientSocket]).statusCodeMessage() << "<<" << std::endl;
         puts("Data Recived");
         EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
         if (kevent(kq, &event, 1, NULL, 0, NULL)) ////loooook

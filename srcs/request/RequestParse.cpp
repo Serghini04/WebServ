@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/22 11:43:07 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/22 16:38:36 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 RequestParse::RequestParse(Conserver &conserver) : _configServer(conserver)
 {
-	_fd.open("/Users/meserghi/goinfre/D/Output.trash", std::ios::binary | std::ios::app);
+	_fd.open("/Users/meserghi/goinfre/www/Output.trash", std::ios::binary | std::ios::app);
 	if (_fd.fail())
 	{
 		puts("open failed");
@@ -24,6 +24,7 @@ RequestParse::RequestParse(Conserver &conserver) : _configServer(conserver)
 	_requestIsDone = false;
 	_statusCode = eOK;
 	_statusCodeMessage = "200 OK";
+	std::cout << "\n==============================\n";
 	_maxBodySize = atoll(_configServer.getAttributes("client_max_body_size").c_str());
 }
 
@@ -162,15 +163,31 @@ std::string	RequestParse::URL()
 	return (_url);
 }
 
+std::string	RequestParse::matchingURL()
+{
+	std::vector<std::string> locations = _configServer.getphats();
+
+	std::sort(locations.begin(), locations.end(), Utility::compareByLength);
+	for (size_t	i = 0; i < locations.size(); i++)
+	{
+		if (locations[i] == _url)
+			return locations[i];
+		else if (locations[i] < _url && locations[i] == _url.substr(0, locations[i].length()))
+			return locations[i];
+	}
+	return "/";
+}
+
 void	RequestParse::checkAllowedMethod()
 {
-	// url : "/Users/meserghi/dddd"
-	// locations : 
-	//				/
-	//				/Users/meserghi/ddd
-	//				/Users/meserghi
-	//				/Users/meserghi/Desktop
-	//				/Users/meserghi/Desktop/Webserv
+	std::string	location = matchingURL();
+
+	std::cout << "based on this location =>" << location << "<" << std::endl;
+		std::cerr << ">>" <<_configServer.getLocation(location)["allowed_methods"] << "<<>>" << Utility::toUpperCase(_method) << "<<";
+	if (_configServer.getLocation(location)["allowed_methods"].find(Utility::toUpperCase(_method)) == std::string::npos)
+	{
+		throw std::runtime_error("405 Method Not Allowed");
+	}
 }
 
 bool RequestParse::readHeader(std::string &header, std::string &buff)
@@ -185,6 +202,7 @@ bool RequestParse::readHeader(std::string &header, std::string &buff)
 	_body.setMetaData(_metaData);
 	buff = header.substr(pos + 4);
 	_body.setbodyType(_body.getTypeOfBody(_enumMethod, _maxBodySize));
+	checkAllowedMethod();
 	if (_body.bodyType() == eBoundary || _body.bodyType() == eChunkedBoundary)
 	{
 		std::string	boundary = _metaData["Content-Type"].substr(_metaData["Content-Type"].find("boundary=") + 9);
@@ -193,7 +211,6 @@ bool RequestParse::readHeader(std::string &header, std::string &buff)
 	}
 	if (_body.bodyType() == eChunked || _body.bodyType() == eContentLength)
 		_body.openFileBasedOnContentType();
-	checkAllowedMethod();
 	header.clear();
 	if (_enumMethod == eGET)
 		_requestIsDone = true;

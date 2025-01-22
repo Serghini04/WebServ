@@ -44,4 +44,3 @@ public:
     ~Server();
     int CreateServer(std::vector<Conserver> &config);
 };
-
