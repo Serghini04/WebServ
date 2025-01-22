@@ -6,15 +6,15 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/01/17 11:16:03 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/18 14:36:15 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/Server.hpp"
+#include "Server.hpp"
 
 Server::Server()
 {
-    isInterError = false;
+
 }
 
 Server::~Server()
@@ -33,13 +33,10 @@ void errorMsg(std::string str, int fd)
     close(fd);
 }
 
-void Server::SendError(int fd, std::string msg)
+void Server::SendError(int fd)
 {
-    std::cout << msg << std::endl;
-    if(this->clientsRequest[fd])
-        this->clientsRequest[fd]->SetStatusCode(eInternalServerError);
-    std::cout.flush();
-    isInterError = true;
+    this->clientsRequest[fd]->SetStatusCode(eInternalServerError);
+    this->clientsRequest[fd]->SetStatusCodeMsg("500 Internal Error");
     SendData(fd);
 }
 
@@ -56,14 +53,13 @@ void Server::ResponseEnds(int clientSocket)
 {
     EV_SET(&event, clientSocket, EVFILT_WRITE, EV_CLEAR, 0, 0, NULL);
     if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
-        SendError(clientSocket, "kevent");
+        SendError(clientSocket);
     EV_SET(&event, clientSocket, EVFILT_READ, EV_CLEAR, 0, 0, NULL);
     if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
-        SendError(clientSocket, "kevent");
+        SendError(clientSocket);
     (*clientsRequest[clientSocket]).SetRequestIsDone(false);
     clientsResponse.erase(clientSocket);
     clientsRequest.erase(clientSocket);
-    isInterError = false;
     close(clientSocket);
 }
 int Server::ConfigTheSocket(Conserver &config)
@@ -114,12 +110,12 @@ void Server::RecivData(int clientSocket)
     }
     fullData.assign(buffer, bytesRead);
     (*clientsRequest[clientSocket]).readBuffer(fullData);
-    if ((*clientsRequest[clientSocket]).requestIsDone()) //false
+    if ((*clientsRequest[clientSocket]).requestIsDone())
     {
         puts("Data Recived");
         EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
-        if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
-            SendError(clientSocket, "kevent");
+        if (kevent(kq, &event, 1, NULL, 0, NULL)) ////loooook
+            SendError(clientSocket);
         return;
     }
 }
@@ -128,11 +124,10 @@ void Server::SendData(int clientSocket)
 {
     size_t totalSent = 0;
     size_t responseSize;
-    std::ofstream test("outt.txt");
 
-    if (clientsResponse.find(clientSocket) == clientsResponse.end())
+    if (!clientsResponse.count(clientSocket))
         clientsResponse[clientSocket] = new Response(*serversConfigs[serversClients[clientSocket]]);
-    std::string response = clientsResponse[clientSocket]->getResponse(*clientsRequest[clientSocket], isInterError);
+    std::string response = clientsResponse[clientSocket]->getResponse(*clientsRequest[clientSocket]);
     if (response.empty())
     {
         ResponseEnds(clientSocket);
@@ -154,7 +149,7 @@ void Server::SendData(int clientSocket)
                 ResponseEnds(clientSocket);
                 return ;
             }
-            SendError(clientSocket, "Sending Error");
+            SendError(clientSocket);
             return;
         }
         totalSent += bytesSent;
@@ -165,21 +160,22 @@ void Server::SendData(int clientSocket)
 void Server::ConnectWithClient(int kq, uintptr_t server)
 {
     sockaddr_in clientAddress;
-    socklen_t clientAddrLen;
-    int clientSocket;
+    socklen_t   clientAddrLen;
+    int         clientSocket;
+
     puts("new connection");
     clientAddrLen = sizeof(clientAddress);
     clientSocket = accept(server, (struct sockaddr *)&clientAddress, &clientAddrLen);
     if (clientSocket == -1)
         errorMsg("Cannot Connect", serverSocket);
     if (make_socket_nonblocking(clientSocket) == -1)
-        SendError(clientSocket, "NonBloacking");
+        SendError(clientSocket);
     else
     {
         serversClients[clientSocket] = server;
         EV_SET(&event, clientSocket, EVFILT_READ, EV_ADD, 0, 0, NULL);
         if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
-            SendError(clientSocket, "kevent5");
+            SendError(clientSocket);
     }
 
 }
@@ -196,9 +192,7 @@ void Server::HandelEvents(int n, struct kevent events[])
         {
             clientSocket = events[i].ident;
             if (clientsRequest.find(clientSocket) == clientsRequest.end())
-            {
                 clientsRequest[clientSocket] = new RequestParse(*serversConfigs[serversClients[clientSocket]]);
-            }
             RecivData(clientSocket);
         }
         else if (events[i].filter == EVFILT_WRITE)

@@ -5,7 +5,7 @@ CFLAGS = -Wall -Wextra -Werror -O3 -I./includes -g -fsanitize=address
 REQ_FILES = srcs/request/RequestParse.cpp srcs/request/BodyParse.cpp
 
 SRC_S = srcs/server/Server.cpp srcs/ConfigFile/ConServer.cpp srcs/ConfigFile/ParseConfigFile.cpp  
-SRC_RES = srcs/response/Response.cpp
+SRC_RES = srcs/response/Response.cpp srcs/response/ResponseUtils.cpp
 
 HPATH = includes/Server.hpp includes/RequestParse.hpp includes/BodyParse.hpp includes/Utility.hpp
 
@@ -28,5 +28,5 @@ clean:
 
 fclean: clean
 	rm -rf $(TARGET)
-    
+
 re: fclean all
