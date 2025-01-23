@@ -6,15 +6,17 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 16:54:05 by hidriouc          #+#    #+#             */
-/*   Updated: 2025/01/22 11:30:25 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/01/23 16:15:55 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <Server.hpp>
 #include <cstddef>
+#include <cstdlib>
 #include <string>
 #include <sys/socket.h>
 #include <sys/syslimits.h>
+#include <limits>
 
 void	Conserver::addAttribute(const std::string& key, const std::string& value)
 {
@@ -31,6 +33,22 @@ void Conserver::addPath(std::string path)
 void Conserver::addlistening(std::pair<std::string, std::string > lsn)
 {
 	listening.push_back(lsn);
+}
+long long	Conserver::GetBodySize()
+{
+	return client_max_body_size;
+}
+void	Conserver::addBodySize(std::string value)
+{
+	client_max_body_size = 0;
+	for(size_t i = 0; i < value.size(); i++)
+	{
+		client_max_body_size = client_max_body_size * 10 + (value[i] - 48);
+		if (client_max_body_size  < 0 || !(value[i] >= '0' && value[i] <= '9')){
+			std::cerr<< "Invalid value of client_max_body_size !"<<std::endl;
+			exit(EXIT_FAILURE);
+		}
+	}
 }
 std::vector<std::string> Conserver::getphats()
 {
@@ -56,7 +74,7 @@ std::string  Conserver::getErrorPage(int ERRNumber)
 	std::map<std::string, std::string>::iterator It_map;
 	for (It_map = serv_attributes.begin(); It_map != serv_attributes.end(); ++It_map)
 	{
-		if (!It_map->first.find("error_page") && !It_map->second.find(std::to_string(ERRNumber)))
+		if (!It_map->first.find("error_page") && !It_map->second.find(Utility::ToStr(ERRNumber)))
 		{
 			std::string str;
 			size_t beg = It_map->second.find_first_of(' ');
