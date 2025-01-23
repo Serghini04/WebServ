@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Utility.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 18:36:13 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/16 17:39:40 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/23 15:19:19 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,12 +122,17 @@ class Utility
 			std::string::iterator last = std::find_if(line.rbegin(), line.rend(), isNotSpace).base();
 			return std::string(first, last);
 		}
-        static int StrToInt(std::string str)
-        {
-            int num;
-
-        std::stringstream ss(str);
-        ss >> num;
-        return num;
-    } 
+		static int StrToInt(std::string str)
+		{
+			int num;
+			std::stringstream ss(str);
+			ss >> num;
+			return num;
+		}
+		static std::string ToStr(long long nb)
+		{
+			std::stringstream ss;
+			ss << nb;
+			return ss.str();
+		}
 };

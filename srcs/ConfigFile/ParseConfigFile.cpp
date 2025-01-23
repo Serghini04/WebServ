@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "ConServer.hpp"
+#include <Utility.hpp>
 #include <cctype>
 #include <cstddef>
 #include <cstdlib>
@@ -73,7 +74,7 @@ bool	is_validAttServer(std::string &key, std::string &value, int inde)
 		if (key == "error_page")
 		{
 			key += "_";
-			key += std::to_string(inde);
+			key += Utility::ToStr(inde);
 		}
 		return true;
 	}
@@ -167,10 +168,12 @@ void saveAttribute(const std::string& confline, Conserver& server, int index_lin
 		host = "";
 		return ;
 	}
-	if (is_validAttServer(key, value, index_line))
+	if (key == "client_max_body_size")
+		server.addBodySize(value);
+	else if (is_validAttServer(key, value, index_line))
 		server.addAttribute(key, value);
 	else
-		throw("Invalid strecture in line :" + std::to_string(index_line) + "!");
+		throw("Invalid strecture in line :" + Utility::ToStr(index_line) + "!");
 }
 
 std::string	checklocationPat(std::string value)
@@ -201,7 +204,7 @@ void	parseLocation(const std::string& confline, Conserver& server, std::ifstream
 	std::string Key, Value;
 	parseKeyValue(confline, index_line, Key, Value);
 	if (Value.empty())
-		throw ((std::string)"Empty location Path in thr lin " + std::to_string(index_line) + "!");
+		throw ((std::string)"Empty location Path in thr lin " + Utility::ToStr(index_line) + "!");
 	location_map["PATH"] = checklocationPat(trim(Value));
 	server.addPath(location_map["PATH"]);
 	LocationStack.push('{');
@@ -219,15 +222,15 @@ void	parseLocation(const std::string& confline, Conserver& server, std::ifstream
 	if (is_validAttLocation(Key, Value, index_line))
 		location_map[Key] = Value;
 	else
-		throw((std::string)("Error: Invalid structure(line " + std::to_string(index_line) + " )!"));
+		throw((std::string)("Error: Invalid structure(line " + Utility::ToStr(index_line) + " )!"));
 	}
 	if (line_content == "}"){
 	LocationStack.pop();
 	}
 	if (LocationStack.size())
-		throw (std::string("Error: Invalid structure (line ")+ std::to_string(index_line)+")!");
+		throw (std::string("Error: Invalid structure (line ")+ Utility::ToStr(index_line)+")!");
 	if (location_map.empty() || location_map.size() == 1) {
-		throw( std::string("Error: Invalid location block at line ") + std::to_string(index_line));
+		throw( std::string("Error: Invalid location block at line ") + Utility::ToStr(index_line));
 	}
 	if (location_map["allowed_methods"].find("POST")!= std::string::npos &&
 	(location_map["upload_store"].empty() || !location_map["upload_store"][0]))
@@ -279,12 +282,12 @@ std::vector<Conserver>	parseConfigFile(char *in_file){
 		if (Check_Line(confline, ServStack)){
 			processServerBlock(infile, server, index_line, ServStack);
 		if(ServStack.size()){
-			throw (std::string("Error: Unbalanced brackets '}', line") + std::to_string(index_line));
+			throw (std::string("Error: Unbalanced brackets '}', line") + Utility::ToStr(index_line));
 		}
 		if (!server.getAttributes("root").empty())
 			servers.push_back(server);
 		else
-			throw((std::string )"Error: server without root line !"+ std::to_string(index_line - 1));
+			throw((std::string )"Error: server without root line !"+ Utility::ToStr(index_line - 1));
 		if (trim(confline) == "}")
 			throw (std::string("Error: Unbalanced '}'" ));
 		}
