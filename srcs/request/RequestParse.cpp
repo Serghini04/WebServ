@@ -34,6 +34,11 @@ void	RequestParse::SetStatusCodeMsg(std::string s)
 {
 	this->_statusCodeMessage = s;
 }
+
+void RequestParse::setUrl(std::string s)
+{
+	this->_url = s;
+}
 void	RequestParse::parseFirstLine(std::string  header)
 {
 	std::stringstream    ss(header);
@@ -144,7 +149,10 @@ std::string	RequestParse::URL()
 {
 	return (_url);
 }
-
+bool RequestParse::isConnectionClosed()
+{
+	return (this->getMetaData()["Connection"].find("close") != std::string::npos);
+}
 bool RequestParse::readHeader(std::string &buff)
 {
 	static std::string	header;

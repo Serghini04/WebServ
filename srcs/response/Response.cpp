@@ -1,6 +1,6 @@
 #include <Response.hpp>
 
-Response::Response(Conserver &conserver) : conserver(conserver)
+Response::Response(Conserver &conserver, RequestParse &request) : conserver(conserver), request(request)
 {
     size = 0;
     file.clear();
@@ -10,10 +10,9 @@ Response::Response(Conserver &conserver) : conserver(conserver)
 
 Response::~Response()
 {
-    
 }
 
-std::string Response::FileToString(RequestParse &request)
+std::string Response::FileToString()
 {
     if (request.statusCode() != eOK && !file.is_open())
     {
@@ -38,7 +37,7 @@ int Response::getFileSize()
     return size;
 }
 
-std::string Response::getHeader(RequestParse &request, const std::string &statusLine)
+std::string Response::getHeader()
 {
     std::ostringstream bodySize;
     std::ostringstream response;
@@ -51,6 +50,7 @@ std::string Response::getHeader(RequestParse &request, const std::string &status
     _headerMap["Content-Type"] = contentType;
     _headerMap["Content-Length"] = bodySize.str();
     _headerMap["Connection"] = request.getMetaData().count("Connection") == 0 ? "keep-alive" : request.getMetaData()["Connection"];
+    _headerMap["Keep-Alive"] = "timeout=5, max = 100";
     response << statusLine;
     for (std::map<std::string, std::string>::const_iterator
              it = _headerMap.begin();
@@ -62,34 +62,52 @@ std::string Response::getHeader(RequestParse &request, const std::string &status
     return response.str();
 }
 
-void Response::handelRequestErrors(RequestParse &request)
+void Response::handelRequestErrors()
 {
     statusLine = "HTTP/1.1 " + request.statusCodeMessage() + "\r\n";
     file.open(conserver.getErrorPage(request.statusCode()));
     this->contentType = Utility::getExtensions("", ".html");
 }
 
-std::string Response::processResponse(RequestParse &request, int state)
+void Response::NotFoundError()
+{
+    request.SetStatusCode(eNotFound);
+    request.SetStatusCodeMsg("404 Not Found");
+    handelRequestErrors();
+}
+void Response::CheckConfig()
+{
+    std::map<std::string, std::string> mapLocation = conserver.getLocation(request.URL());
+    if (!mapLocation.empty() && mapLocation["allowed_methods"].find("GET") != std::string::npos)
+    {
+        request.setUrl(mapLocation["root"]);
+    }
+    else
+        NotFoundError();
+}
+std::string Response::processResponse(int state)
 {
     if (firstCall)
     {
         if (state == 0)
-            handelRequestErrors(request);
+            handelRequestErrors();
         else
         {
-            if (request.method() != ePOST)
+            CheckConfig();
+            if (request.statusCode()== eOK && request.method() != ePOST)
             {
                 file.open(request.URL(), std::ios::binary | std::ios::in);
                 size_t pos = request.URL().find(".");
                 if (pos != std::string::npos)
-                    this->contentType = Utility::getExtensions("", request.URL().substr(pos));
-                if (!file.is_open())
                 {
-                    request.SetStatusCode(eNotFound);
-                    request.SetStatusCodeMsg("404 Not Found");
-                    handelRequestErrors(request);
+                    std::string str = request.URL();
+                    str.erase(str.end() - 1);
+                    this->contentType = Utility::getExtensions("", str.substr(pos));
                 }
-            }else
+                if (!file.is_open())
+                    NotFoundError();
+            }
+            else if (request.statusCode() == eOK)
             {
                 file.open("post.json");
                 this->contentType = Utility::getExtensions("", ".json");
@@ -98,18 +116,18 @@ std::string Response::processResponse(RequestParse &request, int state)
         size = getFileSize();
     }
     else
-        return FileToString(request);
+        return FileToString();
     firstCall = 0;
-    return getHeader(request, statusLine);
+    return getHeader();
 }
 
-std::string Response::getResponse(RequestParse &request)
+std::string Response::getResponse()
 {
     std::string str;
 
     if (request.statusCode() != eOK)
-        str = processResponse(request, 0);
+        str = processResponse(0);
     else
-        str = processResponse(request, 1);
+        str = processResponse(1);
     return str;
 }
