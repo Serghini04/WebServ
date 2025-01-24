@@ -168,12 +168,14 @@ void saveAttribute(const std::string& confline, Conserver& server, int index_lin
 		host = "";
 		return ;
 	}
-	if (key == "client_max_body_size")
+	if (key == "client_max_body_size" && !value.empty())
 		server.addBodySize(value);
-	else if (is_validAttServer(key, value, index_line))
+	else if (!(value.empty()) && is_validAttServer(key, value, index_line))
 		server.addAttribute(key, value);
-	else
-		throw("Invalid strecture in line :" + Utility::ToStr(index_line) + "!");
+	else{
+		std::cerr << "Invalid strecture in line :"<<index_line <<"!"<<std::endl;
+		exit (EXIT_FAILURE);
+	}
 }
 
 std::string	checklocationPat(std::string value)
@@ -192,7 +194,6 @@ std::string	checklocationPat(std::string value)
 			 sig = false;
 		}
 	}
-	std::cout << NewValue<<std::endl;
 	return value;
 }
 
@@ -258,6 +259,8 @@ void	processServerBlock(std::ifstream& infile, Conserver& server, int& index_lin
 	if (confline == "}")
 		ServStack.pop();
 	index_line++;
+	if (server.getAttributes("client_max_body_size").empty())
+		server.addBodySize("");
 }
 
 std::vector<Conserver>	parseConfigFile(char *in_file){
