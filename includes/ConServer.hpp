@@ -6,7 +6,7 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 16:02:15 by hidriouc          #+#    #+#             */
-/*   Updated: 2025/01/23 16:21:10 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/01/24 10:02:03 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ class Conserver {
 		std::list<std::map<std::string, std::string> > location_list;
 		std::vector<std::pair<std::string, std::string> > listening;
 		std::vector <std::string> AllPaths;
-		long long client_max_body_size = -1;
+		long long client_max_body_size;
 		
 	public:
 		void addAttribute(const std::string& key, const std::string& value);

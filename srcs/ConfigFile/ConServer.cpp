@@ -6,7 +6,7 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 16:54:05 by hidriouc          #+#    #+#             */
-/*   Updated: 2025/01/23 16:15:55 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/01/24 10:42:57 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ void	Conserver::addBodySize(std::string value)
 			exit(EXIT_FAILURE);
 		}
 	}
+	if (value.empty())
+		client_max_body_size = -1;
 }
 std::vector<std::string> Conserver::getphats()
 {
