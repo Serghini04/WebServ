@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 18:36:13 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/16 17:39:40 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/22 16:12:30 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,17 @@ public:
 		std::cout << str << "\n";
 		std::cout << "----------Debug------------" << "\n";
 		// exit(0);
+	}
+	static std::string toUpperCase(const std::string& input) {
+		std::string result = input;
+		for (size_t i = 0; i < result.size(); ++i)
+			if (std::isalpha(result[i]))
+				result[i] = std::toupper(result[i]);
+		return result;
+	}
+	static bool	compareByLength(const std::string &a, const std::string &b)
+	{
+		return a.size() > b.size();
 	}
 	static std::string getExtensions(std::string contentType, std::string extension)
 	{

@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:38:49 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/16 17:09:53 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/22 12:24:25 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,36 +21,40 @@ BodyParse::BodyParse()
 	_boundary = "";
 }
 
-// chunked && boundray ==>
-// "Content-Type" = "multipart/form-data" && "Transfer-Encoding" == "chunked"
-// chunked ==>
-//  "Transfer-Encoding" == "chunked"
-// boundray ==>
-// "Content-Type" == "multipart/form-data" && "Transfer-Encoding" != "chunked"
-//  Content-Length ==>
-// Content-Length || !Content-Length
-
 void		BodyParse::setMetaData(std::map<std::string, std::string> &data)
 {
 	_metaData = data;
 }
 
-BodyType	BodyParse::getTypeOfBody()
+BodyType	BodyParse::getTypeOfBody(methods method, long long maxBodySize)
 {
+	(void)maxBodySize;
+	if (_metaData["Content-Length"] != "")
+	{
+		_bodySize = atoll(_metaData["Content-Length"].c_str());
+		// if (_bodySize > maxBodySize)
+		// 	throw std::runtime_error("413 Content Too Large");
+		// puts("ff");
+	}
     if (_metaData["Transfer-Encoding"] == "chunked" && _metaData["Content-Type"].find("multipart/form-data; boundary=") != std::string::npos)
 		return eChunkedBoundary;
 	else if (_metaData["Transfer-Encoding"] == "chunked")
+	{
+		if (method == ePOST && _metaData["Content-Type"] == "")
+			throw std::runtime_error("400 Bad Request");
 		return eChunked;
+	}
 	else if (_metaData["Content-Type"].find("multipart/form-data; boundary=") != std::string::npos)
 		return eBoundary;
 	else if (_metaData["Content-Length"] != "")
 	{
-		_bodySize = atoi(_metaData["Content-Length"].c_str());
+		if (method == ePOST && _metaData["Content-Type"] == "")
+			throw std::runtime_error("400 Bad Request");
+		_bodySize = atoll(_metaData["Content-Length"].c_str());
 		return eContentLength;
 	}
-	// case : POST
-	// 411 Length Required
-	// 400 Bad Request if Content type is not define for case POST
+	if (method == ePOST)
+		throw std::length_error("411 Length Required");
 	return eNone;
 }
 
@@ -64,7 +68,7 @@ BodyType	BodyParse::bodyType()
 	return (_type);
 }
 
-size_t		BodyParse::sizeRead()
+long long		BodyParse::sizeRead()
 {
 	return (_bodySize);
 }
@@ -74,7 +78,7 @@ void BodyParse::openFileBasedOnContentType()
 	std::ostringstream oss;
 	if (_fileOutput.is_open())
 		_fileOutput.close();
-	oss << "/Users/mal-mora/goinfre/Output" << _indexFile;
+	oss << "/Users/mal-mora/goinfre/www/Output" << _indexFile;
 	std::string namefile = oss.str();
 	namefile += Utility::getExtensions(_metaData["Content-Type"], "");
 	_fileOutput.open(namefile.c_str(), std::ios::binary);
@@ -210,9 +214,9 @@ void	BodyParse::openFileOfBoundary(std::string buff)
 		filename = buff.substr(start, end - start);
 		start = filename.rfind(".");
 		if (start != std::string::npos)
-			oss << "/Users/mal-mora/goinfre/Output" << _indexFile << filename.substr(start);
+			oss << "/Users/mal-mora/goinfre/www/Output" << _indexFile << filename.substr(start);
 		else
-			oss << "/Users/mal-mora/goinfre/Output" << _indexFile << ".txt";
+			oss << "/Users/mal-mora/goinfre/www/Output" << _indexFile << ".txt";
 	}
 	else if (buff.find("Content-Type: ") != std::string::npos)
 	{
@@ -227,7 +231,7 @@ void	BodyParse::openFileOfBoundary(std::string buff)
 		return ;
 	}
 	else
-		oss << "/Users/mal-mora/goinfre/Output" << _indexFile << ".txt";
+		oss << "/Users/mal-mora/goinfre/www/Output" << _indexFile << ".txt";
 	std::cout <<"Create File :>>" << oss.str() << "<<\n";
 	_fileOutput.open(oss.str(), std::ios::binary);
 	if (_fileOutput.fail())
@@ -329,18 +333,15 @@ bool BodyParse::ChunkedParse(std::string &buff)
 	return false;
 }
 
-bool	BodyParse::ContentLengthParse(std::string &buff)
+bool BodyParse::ContentLengthParse(std::string &buff)
 {
-	if (_bodySize >= buff.size())
-	{
-		_fileOutput << buff;
-		_bodySize -= buff.size();
-	}
-	else
-		std::runtime_error("400 Bad Request");
 	if (_bodySize <= 0)
+		return true;
+	size_t bytesToProcess = buff.size();
+	_fileOutput.write(buff.data(), bytesToProcess);
+	_bodySize -= bytesToProcess;
+	if (_bodySize == 0)
 	{
-		puts("Request is done");
 		_fileOutput.flush();
 		return true;
 	}
