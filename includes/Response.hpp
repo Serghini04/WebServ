@@ -27,15 +27,18 @@ private:
     std::string                         filename;
     Conserver&                          conserver;
     static std::string                  errHtml;
-    std::string                        errMsg;
+    std::string                         errMsg;
+    RequestParse                        &request;
 public:
-    Response(Conserver &conserver);
+    Response(Conserver &conserver, RequestParse &request);
     ~Response();
-    std::string FileToString(RequestParse &request);
-    std::string getResponse(RequestParse &request);
-    std::string processResponse(RequestParse &request, int isSuccess);
-    std::string getHeader(RequestParse &request, const std::string &str);
-    void        handelRequestErrors(RequestParse &request);
+    std::string FileToString();
+    std::string getResponse();
+    std::string processResponse(int isSuccess);
+    std::string getHeader();
+    void        CheckConfig();
+    void        handelRequestErrors();
+    void        NotFoundError();
     int         getFileSize();
 };
 

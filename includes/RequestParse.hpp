@@ -73,7 +73,8 @@ class   RequestParse
 		std::string	URL();
 		std::string	statusCodeMessage();
 		methods		method();
-
+		void	setUrl(std::string s);
+		bool	isConnectionClosed();
 		// set :
 		void	SetisHeader(bool isHeader);
 		void	SetStatusCode(status s);
