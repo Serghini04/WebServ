@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/15 10:59:32 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/22 13:09:15 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,7 @@
 # include <string>
 # include <BodyParse.hpp>
 # include <map>
-
-enum	methods
-{
-	ePOST,
-	eGET,
-	eDELETE
-};
+# include <ConServer.hpp>
 
 enum status
 {
@@ -61,29 +55,35 @@ class   RequestParse
 		bool			_requestIsDone;
 		std::ofstream	_fd;
 		bool			_isHeader;
+		Conserver		&_configServer;
+		long long		_maxBodySize;
 		std::string		_statusCodeMessage;
-	public :
-		RequestParse();
 
+	public :
+		RequestParse(Conserver &conserver);
+	
 		// Get :
 		std::map<std::string, std::string>	&getMetaData();
 		status		statusCode();
+		std::string	statusCodeMessage();
 		bool		requestIsDone();
 		bool		isHeader();
 		std::string	URL();
-		std::string	statusCodeMessage();
 		methods		method();
 		void	setUrl(std::string s);
 		bool	isConnectionClosed();
 		// set :
-		void	SetisHeader(bool isHeader);
-		void	SetStatusCode(status s);
-		void	SetStatusCodeMsg(std::string s);
-		void	SetRequestIsDone(bool s);
+		void		SetisHeader(bool isHeader);
+		void		SetStatusCode(status s);
+		void		SetStatusCodeMsg(std::string message);
+		void		SetRequestIsDone(bool s);
 
-		bool	readHeader(std::string &buff);
-		void	readBuffer(std::string buff);
-		bool	parseHeader(std::string &header);
-		void	parseFirstLine(std::string  header);
-		void	parseMetaData(std::string header);
+		void		checkURL();
+		std::string matchingURL();
+		void		checkAllowedMethod();
+		bool		readHeader(std::string &header, std::string &buff);
+		void		readBuffer(std::string buff);
+		bool		parseHeader(std::string &header);
+		void		parseFirstLine(std::string  header);
+		void		parseMetaData(std::string header);
 };

@@ -1,6 +1,6 @@
 CC = c++ 
 
-CFLAGS = -I./includes -Wall -Wextra -Werror -g -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -O3 -I./includes -g -fsanitize=address
 
 REQ_FILES = srcs/request/RequestParse.cpp srcs/request/BodyParse.cpp
 
@@ -28,5 +28,5 @@ clean:
 
 fclean: clean
 	rm -rf $(TARGET)
-    
+
 re: fclean all

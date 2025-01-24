@@ -28,7 +28,6 @@ std::string Response::FileToString()
     buf.resize(file.gcount());
     return buf;
 }
-
 int Response::getFileSize()
 {
     file.seekg(0, std::ios::end);
@@ -75,16 +74,17 @@ void Response::NotFoundError()
     request.SetStatusCodeMsg("404 Not Found");
     handelRequestErrors();
 }
-void Response::CheckConfig()
-{
-    std::map<std::string, std::string> mapLocation = conserver.getLocation(request.URL());
-    if (!mapLocation.empty() && mapLocation["allowed_methods"].find("GET") != std::string::npos)
-    {
-        request.setUrl(mapLocation["root"]);
-    }
-    else
-        NotFoundError();
-}
+// void Response::CheckConfig()
+// {
+//     std::map<std::string, std::string> mapLocation = conserver.getLocation(request.URL());
+//     if (!mapLocation.empty() && mapLocation["allowed_methods"].find("GET") != std::string::npos)
+//     {
+//         request.setUrl(mapLocation["root"]);
+//     }
+//     else
+//         NotFoundError();
+// }
+
 std::string Response::processResponse(int state)
 {
     if (firstCall)
@@ -93,7 +93,7 @@ std::string Response::processResponse(int state)
             handelRequestErrors();
         else
         {
-            CheckConfig();
+            // CheckConfig();
             if (request.statusCode()== eOK && request.method() != ePOST)
             {
                 file.open(request.URL(), std::ios::binary | std::ios::in);

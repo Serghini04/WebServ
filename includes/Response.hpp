@@ -36,7 +36,7 @@ public:
     std::string getResponse();
     std::string processResponse(int isSuccess);
     std::string getHeader();
-    void        CheckConfig();
+    // void        CheckConfig();
     void        handelRequestErrors();
     void        NotFoundError();
     int         getFileSize();

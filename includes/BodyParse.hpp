@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:36:14 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/16 15:32:05 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/22 12:25:31 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,13 @@
 # include <Utility.hpp>
 
 class RequestParse;
+
+enum	methods
+{
+	ePOST,
+	eGET,
+	eDELETE
+};
 
 enum	BodyType
 {
@@ -33,7 +40,7 @@ class BodyParse
 {
 	private:
 		BodyType							_type;
-		size_t								_bodySize;
+		long long							_bodySize;
 		std::ofstream						_fileOutput;
 		std::string							_boundary;
 		std::string							_boundaryEnd;
@@ -50,8 +57,8 @@ class BodyParse
 
 		// Get
 		BodyType	bodyType();
-		size_t		sizeRead();
-		BodyType	getTypeOfBody();
+		long long	sizeRead();
+		BodyType	getTypeOfBody(methods method, long long maxBodySize);
 
 		bool		clearBuffers(std::string &data, std::string &accumulatedData, std::string &carryOver);
 		void		openFileBasedOnContentType();

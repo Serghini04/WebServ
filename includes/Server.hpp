@@ -16,8 +16,7 @@
 #include <map>
 #include <Response.hpp>
 #include <RequestParse.hpp>
-#include "ConServer.hpp"
-#define MAX_BUFFER 1024
+#define MAX_BUFFER 8096
 #define MAX_CLIENTS 128
 #define PORT 3938
 class Response;
@@ -45,4 +44,3 @@ public:
     ~Server();
     int CreateServer(std::vector<Conserver> &config);
 };
-
