@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/22 13:09:15 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/24 10:25:56 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ enum status
 	eMovedPermanently = 301,
 	eMethodNotAllowed = 405,
 	eRequestURITooLong = 414,
-	eRequestEntityTooLarge = 413,
+	eContentTooLarge = 413,
 	// if fail system call or not find file to open
     eInternalServerError = 500,
 	eHTTPVersionNotSupported = 505,
@@ -58,11 +58,13 @@ class   RequestParse
 		Conserver		&_configServer;
 		long long		_maxBodySize;
 		std::string		_statusCodeMessage;
+		std::string		_location;
 
 	public :
 		RequestParse(Conserver &conserver);
 	
 		// Get :
+		std::string	location();
 		std::map<std::string, std::string>	&getMetaData();
 		status		statusCode();
 		std::string	statusCodeMessage();
@@ -85,4 +87,6 @@ class   RequestParse
 		bool		parseHeader(std::string &header);
 		void		parseFirstLine(std::string  header);
 		void		parseMetaData(std::string header);
+
+		~RequestParse();
 };

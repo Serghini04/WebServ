@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/22 16:38:36 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/24 10:44:34 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 RequestParse::RequestParse(Conserver &conserver) : _configServer(conserver)
 {
+	std::cout << "\n============>> Request Start Here <<==============\n" << std::flush;
 	_fd.open("/Users/meserghi/goinfre/www/Output.trash", std::ios::binary | std::ios::app);
 	if (_fd.fail())
 	{
@@ -24,8 +25,8 @@ RequestParse::RequestParse(Conserver &conserver) : _configServer(conserver)
 	_requestIsDone = false;
 	_statusCode = eOK;
 	_statusCodeMessage = "200 OK";
-	std::cout << "\n==============================\n";
 	_maxBodySize = atoll(_configServer.getAttributes("client_max_body_size").c_str());
+	std::cout <<">>" << _maxBodySize << "<<\n" << std::flush;
 }
 
 void	RequestParse::checkURL()
@@ -182,12 +183,11 @@ void	RequestParse::checkAllowedMethod()
 {
 	std::string	location = matchingURL();
 
+	_location = location; 
 	std::cout << "based on this location =>" << location << "<" << std::endl;
-		std::cerr << ">>" <<_configServer.getLocation(location)["allowed_methods"] << "<<>>" << Utility::toUpperCase(_method) << "<<";
+		std::cerr << ">>" <<_configServer.getLocation(location)["allowed_methods"] << "<<>>" << Utility::toUpperCase(_method) << "<<" << std::endl;
 	if (_configServer.getLocation(location)["allowed_methods"].find(Utility::toUpperCase(_method)) == std::string::npos)
-	{
 		throw std::runtime_error("405 Method Not Allowed");
-	}
 }
 
 bool RequestParse::readHeader(std::string &header, std::string &buff)
@@ -217,13 +217,18 @@ bool RequestParse::readHeader(std::string &header, std::string &buff)
 	return isHeader;
 }
 
+std::string	RequestParse::location()
+{
+	return _location;
+}
+
 void    RequestParse::readBuffer(std::string buff)
 {
 	static std::string	header;
-	// _fd << "\n===========" << _body.bodyType() << "===========\n";
-	// _fd << buff; 
-	// _fd << "\n======================\n";
-	// _fd.flush();
+	_fd << "\n===========" << _body.bodyType() << "===========\n";
+	_fd << buff; 
+	_fd << "\n======================\n";
+	_fd.flush();
 	try
 	{
 		if (_requestIsDone)
@@ -262,4 +267,10 @@ void    RequestParse::readBuffer(std::string buff)
 		_statusCode = eBadRequest;
 		_requestIsDone = 1;
 	}
+}
+
+RequestParse::~RequestParse()
+{
+	_fd.close();
+	std::cout << "\n============>> Request Done Here <<==============\n" << std::flush;
 }
