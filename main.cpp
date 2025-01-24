@@ -27,8 +27,10 @@ int main(int ac, char **av)
 	// {
 	// 	std::cout << *it << std::endl; 
 	// }
-	if (servers.size()){
-	Server ser;
-	ser.CreateServer(servers);}
+
+	// if (servers.size()){
+	// Server ser;
+	// ser.CreateServer(servers);}
+	std::cout << servers[0].GetBodySize();
 	return 0;
 }

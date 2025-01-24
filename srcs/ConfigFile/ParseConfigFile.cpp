@@ -62,7 +62,7 @@ bool is_validvalueServer(std::string &key, std::string &value, int index_line)
 }
 bool	is_validAttServer(std::string &key, std::string &value, int inde)
 {
-	value.erase(value.end()-1);
+	value.erase(value.end());
 	std::vector<std::string> validATT;
 	validATT.push_back("host"),validATT.push_back("port"),validATT.push_back("server_name");
 	validATT.push_back("client_max_body_size"), validATT.push_back("error_page");
@@ -170,10 +170,10 @@ void saveAttribute(const std::string& confline, Conserver& server, int index_lin
 	}
 	if (key == "client_max_body_size" && !value.empty())
 		server.addBodySize(value);
-	else if (!(value.empty()) && is_validAttServer(key, value, index_line))
+	if (is_validAttServer(key, value, index_line))
 		server.addAttribute(key, value);
 	else{
-		std::cerr << "Invalid strecture in line :"<<index_line <<"!"<<std::endl;
+		std::cerr << "Invalid strecture in line :"<<index_line <<"!!"<<std::endl;
 		exit (EXIT_FAILURE);
 	}
 }
