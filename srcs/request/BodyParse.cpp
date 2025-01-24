@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:38:49 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/22 12:24:25 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/23 16:08:51 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,16 +25,19 @@ void		BodyParse::setMetaData(std::map<std::string, std::string> &data)
 {
 	_metaData = data;
 }
-
 BodyType	BodyParse::getTypeOfBody(methods method, long long maxBodySize)
 {
-	(void)maxBodySize;
+	char	*trash = NULL;
+
 	if (_metaData["Content-Length"] != "")
 	{
-		_bodySize = atoll(_metaData["Content-Length"].c_str());
-		// if (_bodySize > maxBodySize)
-		// 	throw std::runtime_error("413 Content Too Large");
-		// puts("ff");
+		_bodySize = strtoll(_metaData["Content-Length"].c_str(), &trash, 10);
+		std::cout << "Content length {" << _metaData["Content-Length"] <<"}=>>" << _bodySize << std::endl;
+		std::cout << "Body Size =>>" << maxBodySize << std::endl;
+		if (trash == _metaData["Content-Length"].c_str() || *trash != '\0' || errno == ERANGE || _bodySize < 0)
+			throw std::runtime_error("400 Bad Request 1");
+		if (_bodySize < 0 || _bodySize > maxBodySize)
+			throw std::runtime_error("413 Content Too Large");
 	}
     if (_metaData["Transfer-Encoding"] == "chunked" && _metaData["Content-Type"].find("multipart/form-data; boundary=") != std::string::npos)
 		return eChunkedBoundary;
@@ -346,4 +349,9 @@ bool BodyParse::ContentLengthParse(std::string &buff)
 		return true;
 	}
 	return false;
+}
+
+BodyParse::~BodyParse()
+{
+	_fileOutput.close();
 }

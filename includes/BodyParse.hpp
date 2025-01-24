@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:36:14 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/22 12:25:31 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/23 13:46:47 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,4 +70,6 @@ class BodyParse
 		bool		writeChunkToFile(std::string &buff, size_t &length, std::string &carryOver, std::string &accumulatedData);
 		bool		removeChunkedSize(std::string &buff, std::string &data, size_t &processed);
 		void		setMetaData(std::map<std::string, std::string> &data);
+
+		~BodyParse();
 };
