@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:38:49 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/23 16:08:51 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/24 16:49:51 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,9 @@
 
 size_t	BodyParse::_indexFile = 1;
 
-BodyParse::BodyParse()
+BodyParse::BodyParse(long long maxBodySize)
 {
+	_maxBodySize = maxBodySize;
     _type = eNone;
 	_bodySize = 0;
 	_boundary = "";
@@ -25,6 +26,25 @@ void		BodyParse::setMetaData(std::map<std::string, std::string> &data)
 {
 	_metaData = data;
 }
+
+bool	BodyParse::parseBody(std::string &buff)
+{
+	switch (bodyType())
+	{
+		case eChunked :
+			return ChunkedParse(buff);
+		case eBoundary :
+			return BoundaryParse(buff);
+		case eChunkedBoundary :
+			return ChunkedBoundaryParse(buff);
+		case eContentLength :
+			return ContentLengthParse(buff);
+		case eNone :
+			break;
+	}
+	return false;
+}
+
 BodyType	BodyParse::getTypeOfBody(methods method, long long maxBodySize)
 {
 	char	*trash = NULL;
@@ -32,11 +52,9 @@ BodyType	BodyParse::getTypeOfBody(methods method, long long maxBodySize)
 	if (_metaData["Content-Length"] != "")
 	{
 		_bodySize = strtoll(_metaData["Content-Length"].c_str(), &trash, 10);
-		std::cout << "Content length {" << _metaData["Content-Length"] <<"}=>>" << _bodySize << std::endl;
-		std::cout << "Body Size =>>" << maxBodySize << std::endl;
 		if (trash == _metaData["Content-Length"].c_str() || *trash != '\0' || errno == ERANGE || _bodySize < 0)
 			throw std::runtime_error("400 Bad Request 1");
-		if (_bodySize < 0 || _bodySize > maxBodySize)
+		if (_bodySize < 0 || (maxBodySize >= 0 && _bodySize > maxBodySize))
 			throw std::runtime_error("413 Content Too Large");
 	}
     if (_metaData["Transfer-Encoding"] == "chunked" && _metaData["Content-Type"].find("multipart/form-data; boundary=") != std::string::npos)
@@ -53,7 +71,6 @@ BodyType	BodyParse::getTypeOfBody(methods method, long long maxBodySize)
 	{
 		if (method == ePOST && _metaData["Content-Type"] == "")
 			throw std::runtime_error("400 Bad Request");
-		_bodySize = atoll(_metaData["Content-Length"].c_str());
 		return eContentLength;
 	}
 	if (method == ePOST)
@@ -294,6 +311,7 @@ bool BodyParse::ChunkedParse(std::string &buff)
 	static std::string data;
 	static size_t length = 0;
 	static bool readingChunk = false;
+	static bool	bodySizeExist = (_bodySize > 0);
 
 	if (!data.empty())
 	{
@@ -313,11 +331,15 @@ bool BodyParse::ChunkedParse(std::string &buff)
 				continue;
 			char *trash = NULL;
 			length = std::strtol(lengthStr.c_str(), &trash, 16);
-			if (*trash || length == SIZE_MAX)
+			if (*trash)
 			{
 				std::cerr << "Invalid chunk size format!" << std::endl;
 				return false;
 			}
+			if (bodySizeExist)
+				_bodySize -= length;
+			if (_maxBodySize >= 0 && _bodySize < _maxBodySize)
+				throw std::runtime_error("413 Content Too Large");
 			if (length == 0)
 				return _fileOutput.flush(), true;
 			readingChunk = true;
