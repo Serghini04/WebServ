@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:36:14 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/24 16:28:19 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/25 17:55:31 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ class BodyParse
 		
 		bool		parseBody(std::string &buff);
 		bool		clearBuffers(std::string &data, std::string &accumulatedData, std::string &carryOver);
+		void		checkContentTooLarge(size_t length);
 		void		openFileBasedOnContentType();
 		bool		BoundaryParse(std::string &buff);
 		bool		ChunkedParse(std::string &buff);

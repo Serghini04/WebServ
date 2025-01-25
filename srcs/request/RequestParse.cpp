@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/24 16:51:45 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/25 18:39:21 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ RequestParse::RequestParse(Conserver &conserver) : _body(conserver.getBodySize()
 	_requestIsDone = false;
 	_statusCode = eOK;
 	_statusCodeMessage = "200 OK";
-	_maxBodySize = atoll(_configServer.getAttributes("client_max_body_size").c_str());
+	std::cout << ">>" << _configServer.getBodySize() << "<<" << std::endl;
+	_maxBodySize = _configServer.getBodySize();
 }
 
 bool	isDuplicate(char a, char b)

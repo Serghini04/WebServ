@@ -11,6 +11,9 @@
 /* ************************************************************************** */
 
 #include "ConServer.hpp"
+#include <Utility.hpp>
+#include <cctype>
+#include <cstddef>
 #include <cstdlib>
 #include <ostream>
 #include <string>
@@ -20,28 +23,65 @@ std::string trim(const std::string& str) {
 	size_t end = str.find_last_not_of(" \t");
 	return (start == std::string::npos) ? "" : str.substr(start, end - start + 1);
 }
+bool is_validvalueServer(std::string &key, std::string &value, int index_line)
+{
+	std::string tb[3];
 
+	if (value.empty())
+		return false;
+	if (key == "client_max_body_size")
+	{
+		for (size_t i = 0; i < value.size(); i++)
+			if (!std::isdigit(value[i]))
+				return false;
+	}
+	if (key == "allowed_methods")
+	{
+		std::istringstream	ss(value);
+		for(int i = 0; i < 3; i++)
+		{
+			ss >> tb[i];
+			if (!tb[i].empty() && tb[i] != "GET" && tb[i] != "POST" && tb[i] != "DELETE")
+				std::cerr << "Invalid Methode in the line " << index_line<<"!"<<std::endl,exit(EXIT_FAILURE);
+		}
+	}
+	if (key == "return")
+	{
+		std::istringstream	ss(value);
+		for(int i = 0; i < 3; i++)
+			ss >> tb[i];
+		for(size_t i = 0; i < tb[0].size(); i++)
+			if (!std::isdigit(value[i]))
+				std::cerr << "Invalid structer in the line " << index_line<<"!"<<std::endl,exit(EXIT_FAILURE);
+		if (tb[1].empty()|| !tb[2].empty())
+				std::cerr << "Invalid Methode in the line " << index_line<<"!"<<std::endl,exit(EXIT_FAILURE);;
+	}
+	for (size_t i = 0; i < value.size(); i++);
+
+	return true;
+}
 bool	is_validAttServer(std::string &key, std::string &value, int inde)
 {
-	value.erase(value.end()-1);
+	value.erase(value.end());
 	std::vector<std::string> validATT;
 	validATT.push_back("host"),validATT.push_back("port"),validATT.push_back("server_name");
 	validATT.push_back("client_max_body_size"), validATT.push_back("error_page");
 	validATT.push_back("index"),validATT.push_back("root");
+	if (!is_validvalueServer(key,value, inde)) return false;
 	for (size_t i = 0; i < validATT.size(); i++){
 	if (validATT[i] == key)
 	{
 		if (key == "error_page")
 		{
 			key += "_";
-			key += std::to_string(inde);
+			key += Utility::ToStr(inde);
 		}
 		return true;
 	}
 	}
 	return false;
 }
-bool	is_validAttLocation(std::string key, std::string value)
+bool	is_validAttLocation(std::string key, std::string value, int index)
 {
 	(void)value;
 	std::vector<std::string> validATT;
@@ -51,7 +91,10 @@ bool	is_validAttLocation(std::string key, std::string value)
 	for (size_t i = 0; i <validATT.size(); i++){
 	if (validATT[i] == key)
 	{
-		return true;
+		if (value.empty())
+			return false;
+		is_validvalueServer(key,value, index);
+			return true;
 	}
 	}
 	return false;
@@ -94,7 +137,7 @@ bool	parseKeyValue(const std::string& line_content, int &index_line, std::string
 		std::cerr<<"Error: Missing ';' Or invalid Strecture in the value for key : ";
 		return false;
 	}
-	value.back() = '\0';
+	value.erase(value.length()-1);
 		return true;
 }
 
@@ -106,7 +149,7 @@ void saveAttribute(const std::string& confline, Conserver& server, int index_lin
 		return;
 	std::string key, value;
 	parseKeyValue(trimmed_line, index_line, key, value);
-	if (key == "host"){
+	if (key == "host" && value.empty()){
 		if (host.empty())
 			host = value;
 		else{
@@ -116,7 +159,7 @@ void saveAttribute(const std::string& confline, Conserver& server, int index_lin
 		sin = true;
 		return;
 	}
-	else if (key == "port"){
+	else if (key == "port" && value.empty()){
 		if (sin)
 			server.addlistening(std::pair<std::string, std::string>(host, value));
 		else
@@ -125,12 +168,34 @@ void saveAttribute(const std::string& confline, Conserver& server, int index_lin
 		host = "";
 		return ;
 	}
+	if (key == "client_max_body_size" && !value.empty())
+		server.addBodySize(value);
 	if (is_validAttServer(key, value, index_line))
 		server.addAttribute(key, value);
-	else
-		throw("Unowned element in line :" + std::to_string(index_line) + "!");
+	else{
+		std::cerr << "Invalid strecture in line :"<<index_line <<"!!"<<std::endl;
+		exit (EXIT_FAILURE);
+	}
 }
 
+std::string	checklocationPat(std::string value)
+{
+	std::string NewValue;
+	bool sig = true;
+
+	for(size_t i = 0; i < value.size(); i++)
+	{
+		if ((value[i] == '/' && sig) || value[i] != '/'){
+
+			NewValue.push_back(value[i]);
+		if (value[i] != '/')
+			sig = true;
+		else
+			 sig = false;
+		}
+	}
+	return value;
+}
 
 void	parseLocation(const std::string& confline, Conserver& server, std::ifstream& infile, int& index_line) {
 	std::map<std::string, std::string> location_map;
@@ -139,7 +204,9 @@ void	parseLocation(const std::string& confline, Conserver& server, std::ifstream
 
 	std::string Key, Value;
 	parseKeyValue(confline, index_line, Key, Value);
-	location_map["PATH"] = trim(Value);
+	if (Value.empty())
+		throw ((std::string)"Empty location Path in thr lin " + Utility::ToStr(index_line) + "!");
+	location_map["PATH"] = checklocationPat(trim(Value));
 	server.addPath(location_map["PATH"]);
 	LocationStack.push('{');
 	while (std::getline(infile, line_content) && (line_content = trim(line_content) )!= "}") {
@@ -153,18 +220,18 @@ void	parseLocation(const std::string& confline, Conserver& server, std::ifstream
 	}
 	if (Key == "cgi")
 		;
-	if (is_validAttLocation(Key, Value))
+	if (is_validAttLocation(Key, Value, index_line))
 		location_map[Key] = Value;
 	else
-		throw((std::string)("Error: Invalid structure(line " + std::to_string(index_line) + " )!"));
+		throw((std::string)("Error: Invalid structure(line " + Utility::ToStr(index_line) + " )!"));
 	}
 	if (line_content == "}"){
 	LocationStack.pop();
 	}
 	if (LocationStack.size())
-		throw (std::string("Error: Invalid structure (line ")+ std::to_string(index_line)+")!");
+		throw (std::string("Error: Invalid structure (line ")+ Utility::ToStr(index_line)+")!");
 	if (location_map.empty() || location_map.size() == 1) {
-		throw( std::string("Error: Invalid location block at line ") + std::to_string(index_line));
+		throw( std::string("Error: Invalid location block at line ") + Utility::ToStr(index_line));
 	}
 	if (location_map["allowed_methods"].find("POST")!= std::string::npos &&
 	(location_map["upload_store"].empty() || !location_map["upload_store"][0]))
@@ -192,6 +259,8 @@ void	processServerBlock(std::ifstream& infile, Conserver& server, int& index_lin
 	if (confline == "}")
 		ServStack.pop();
 	index_line++;
+	if (server.getAttributes("client_max_body_size").empty())
+		server.addBodySize("");
 }
 
 std::vector<Conserver>	parseConfigFile(char *in_file){
@@ -216,12 +285,12 @@ std::vector<Conserver>	parseConfigFile(char *in_file){
 		if (Check_Line(confline, ServStack)){
 			processServerBlock(infile, server, index_line, ServStack);
 		if(ServStack.size()){
-			throw (std::string("Error: Unbalanced brackets '}', line") + std::to_string(index_line));
+			throw (std::string("Error: Unbalanced brackets '}', line") + Utility::ToStr(index_line));
 		}
 		if (!server.getAttributes("root").empty())
 			servers.push_back(server);
 		else
-			throw((std::string )"Error: server without root line !");
+			throw((std::string )"Error: server without root line !"+ Utility::ToStr(index_line - 1));
 		if (trim(confline) == "}")
 			throw (std::string("Error: Unbalanced '}'" ));
 		}

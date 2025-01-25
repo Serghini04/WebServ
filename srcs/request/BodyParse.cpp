@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:38:49 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/24 16:49:51 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/25 17:57:04 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,9 @@ BodyType	BodyParse::getTypeOfBody(methods method, long long maxBodySize)
 		_bodySize = strtoll(_metaData["Content-Length"].c_str(), &trash, 10);
 		if (trash == _metaData["Content-Length"].c_str() || *trash != '\0' || errno == ERANGE || _bodySize < 0)
 			throw std::runtime_error("400 Bad Request 1");
-		if (_bodySize < 0 || (maxBodySize >= 0 && _bodySize > maxBodySize))
+		std::cout << "_bodySize =>>" << _bodySize << "<<" <<std::endl;
+		std::cout << "_Max =>>" << maxBodySize << "<<" <<std::endl;
+		if (maxBodySize >= 0 && _bodySize > maxBodySize)
 			throw std::runtime_error("413 Content Too Large");
 	}
     if (_metaData["Transfer-Encoding"] == "chunked" && _metaData["Content-Type"].find("multipart/form-data; boundary=") != std::string::npos)
@@ -306,12 +308,28 @@ bool BodyParse::BoundaryParse(std::string& buff)
     return false;
 }
 
+void	BodyParse::checkContentTooLarge(size_t length)
+{
+	if (_metaData["Content-Length"] != "")
+	{
+		_bodySize -= length;
+		std::cout << "=================> " << _bodySize << "<====================" <<std::endl;
+		if (_maxBodySize >= 0 && _bodySize < 0)
+			throw std::runtime_error("413 Content Too Large1");
+	}
+	else
+	{
+		_bodySize += length;
+		if (_maxBodySize >= 0 && _bodySize > _maxBodySize)
+			throw std::runtime_error("413 Content Too Large2");
+	}	
+}
+
 bool BodyParse::ChunkedParse(std::string &buff)
 {
 	static std::string data;
 	static size_t length = 0;
 	static bool readingChunk = false;
-	static bool	bodySizeExist = (_bodySize > 0);
 
 	if (!data.empty())
 	{
@@ -333,15 +351,15 @@ bool BodyParse::ChunkedParse(std::string &buff)
 			length = std::strtol(lengthStr.c_str(), &trash, 16);
 			if (*trash)
 			{
-				std::cerr << "Invalid chunk size format!" << std::endl;
-				return false;
+				data.clear();
+				throw std::runtime_error("404 Bad Request");
 			}
-			if (bodySizeExist)
-				_bodySize -= length;
-			if (_maxBodySize >= 0 && _bodySize < _maxBodySize)
-				throw std::runtime_error("413 Content Too Large");
+			checkContentTooLarge(length);
 			if (length == 0)
-				return _fileOutput.flush(), true;
+			{
+				_fileOutput.close();
+				throw std::runtime_error("201 Created");
+			}
 			readingChunk = true;
 		}
 		size_t bytesToRead = std::min(length, buff.size());
