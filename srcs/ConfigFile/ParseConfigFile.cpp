@@ -138,6 +138,11 @@ bool	parseKeyValue(const std::string& line_content, int &index_line, std::string
 		return false;
 	}
 	value.erase(value.length()-1);
+	if (value.find(';') != std::string::npos)
+	{
+		std::cerr << "Invalid strecture in line "<<index_line<<std::endl;
+		exit(EXIT_FAILURE);
+	}
 		return true;
 }
 
@@ -149,7 +154,7 @@ void saveAttribute(const std::string& confline, Conserver& server, int index_lin
 		return;
 	std::string key, value;
 	parseKeyValue(trimmed_line, index_line, key, value);
-	if (key == "host" && value.empty()){
+	if (key == "host" && !value.empty()){
 		if (host.empty())
 			host = value;
 		else{
@@ -159,7 +164,7 @@ void saveAttribute(const std::string& confline, Conserver& server, int index_lin
 		sin = true;
 		return;
 	}
-	else if (key == "port" && value.empty()){
+	else if (key == "port" && !value.empty()){
 		if (sin)
 			server.addlistening(std::pair<std::string, std::string>(host, value));
 		else
@@ -291,10 +296,14 @@ std::vector<Conserver>	parseConfigFile(char *in_file){
 			servers.push_back(server);
 		else
 			throw((std::string )"Error: server without root line !"+ Utility::ToStr(index_line - 1));
-		if (trim(confline) == "}")
+		if (confline == "}")
 			throw (std::string("Error: Unbalanced '}'" ));
 		}
-	}}
+		else{
+			throw (std::string("Error: Unbalanced brackets '}', line") + Utility::ToStr(index_line));
+		}
+	}
+	}
 	catch(std::string err){
 		std::cerr<<err<<std::endl;
 		exit(1);
