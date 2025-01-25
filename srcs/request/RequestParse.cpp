@@ -6,13 +6,13 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/24 10:44:34 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/24 16:51:45 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <RequestParse.hpp>
 
-RequestParse::RequestParse(Conserver &conserver) : _configServer(conserver)
+RequestParse::RequestParse(Conserver &conserver) : _body(conserver.getBodySize()), _configServer(conserver)
 {
 	std::cout << "\n============>> Request Start Here <<==============\n" << std::flush;
 	_fd.open("/Users/meserghi/goinfre/www/Output.trash", std::ios::binary | std::ios::app);
@@ -21,12 +21,17 @@ RequestParse::RequestParse(Conserver &conserver) : _configServer(conserver)
 		puts("open failed");
 		exit(1);
 	}
+	std::cout << ">>" << conserver.getBodySize() << "<<" <<std::endl;
 	_isHeader = true;
 	_requestIsDone = false;
 	_statusCode = eOK;
 	_statusCodeMessage = "200 OK";
 	_maxBodySize = atoll(_configServer.getAttributes("client_max_body_size").c_str());
-	std::cout <<">>" << _maxBodySize << "<<\n" << std::flush;
+}
+
+bool	isDuplicate(char a, char b)
+{
+	return a == '/' && b == '/';
 }
 
 void	RequestParse::checkURL()
@@ -40,6 +45,28 @@ void	RequestParse::checkURL()
 	if (_url[0] != '/')
 		throw std::runtime_error("400 Bad Request");
 	if (_url.find_first_of(invalidChars) != std::string::npos)
+		throw std::runtime_error("400 Bad Request");
+	_url.erase(std::unique(_url.begin(), _url.end(), isDuplicate), _url.end());
+	std::cout << "After : {" << _url << "}" << std::endl;
+	for (size_t i = 0; i < _url.length(); i++)
+	{
+		if (_url[i] == '%' && i + 2 < _url.length())
+		{
+			if (std::isxdigit(_url[i + 1]) && std::isxdigit(_url[i + 2]))
+				_url.replace(i, 3, Utility::percentEncoding(_url.substr(i, 3)));
+			else
+				throw std::runtime_error("400 Bad Request");
+			i++;
+		}
+		else if (_url[i] == '%')
+			throw std::runtime_error("400 Bad Request");
+	}
+	std::cout << "Before : {" << _url << "}" << std::endl;
+
+	// I need to add handel Query string
+	// Fragment Handing : * Validate fragment format * Ensure no sensitive data in fragments
+
+	if (_url.find("/../") != std::string::npos || _url == "/.." || _url.rfind("/..") == _url.length() - 3)
 		throw std::runtime_error("400 Bad Request");
 }
 
@@ -100,7 +127,7 @@ void	RequestParse::SetRequestIsDone(bool s)
 	_requestIsDone = s;
 }
 
-void	RequestParse::SetisHeader(bool isHeader)
+void	RequestParse::setIsHeader(bool isHeader)
 {
 	_isHeader = isHeader;
 }
@@ -185,12 +212,11 @@ void	RequestParse::checkAllowedMethod()
 
 	_location = location; 
 	std::cout << "based on this location =>" << location << "<" << std::endl;
-		std::cerr << ">>" <<_configServer.getLocation(location)["allowed_methods"] << "<<>>" << Utility::toUpperCase(_method) << "<<" << std::endl;
 	if (_configServer.getLocation(location)["allowed_methods"].find(Utility::toUpperCase(_method)) == std::string::npos)
 		throw std::runtime_error("405 Method Not Allowed");
 }
 
-bool RequestParse::readHeader(std::string &header, std::string &buff)
+bool RequestParse::parseHeader(std::string &header, std::string &buff)
 {
 	bool	isHeader = true;
 
@@ -234,24 +260,8 @@ void    RequestParse::readBuffer(std::string buff)
 		if (_requestIsDone)
 			return ;
 		if (isHeader())
-			SetisHeader(readHeader(header, buff));
-		switch (_body.bodyType())
-		{
-			case eBoundary :
-				_requestIsDone = _body.BoundaryParse(buff);
-				break;
-			case eChunked :
-				_requestIsDone = _body.ChunkedParse(buff);
-				break;
-			case eChunkedBoundary :
-				_requestIsDone = _body.ChunkedBoundaryParse(buff);
-				break;
-			case eContentLength :
-				_requestIsDone = _body.ContentLengthParse(buff);
-				break;
-			case eNone :
-				break;
-		}
+			setIsHeader(parseHeader(header, buff));
+		_requestIsDone = _body.parseBody(buff);
 	}
 	catch (std::exception &e)
 	{

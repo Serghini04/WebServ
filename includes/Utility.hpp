@@ -6,13 +6,14 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 18:36:13 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/22 16:12:30 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/24 15:58:06 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <vector>
+# include <vector>
+# include <map>
 
 class Utility
 {
@@ -126,6 +127,35 @@ public:
 		}
 		return ".txt";
 	}
+	static std::string percentEncoding(std::string key)
+	{
+		std::map<std::string, std::string> encoding;
+
+		encoding["%3A"] = ":";
+		encoding["%2F"] = "/";
+		encoding["%3F"] = "?";
+		encoding["%23"] = "#";
+		encoding["%5B"] = "[";
+		encoding["%5D"] = "]";
+		encoding["%40"] = "@";
+		encoding["%21"] = "!";
+		encoding["%24"] = "$";
+		encoding["%26"] = "&";
+		encoding["%27"] = "'";
+		encoding["%28"] = "(";
+		encoding["%29"] = ")";
+		encoding["%2A"] = "*";
+		encoding["%2B"] = "+";
+		encoding["%2C"] = ",";
+		encoding["%3B"] = ";";
+		encoding["%3D"] = "=";
+		encoding["%25"] = "%";
+		encoding["%20"] = " ";
+		encoding["+"]   = " ";
+		if (encoding[key] == "")
+			throw std::runtime_error("400 Bad Request");
+		return encoding[key];
+    }
 	static std::string trimSpace(std::string line)
 	{
 		std::string::iterator first = std::find_if(line.begin(), line.end(), isNotSpace);
@@ -152,5 +182,11 @@ public:
 		std::stringstream buffer;
 		buffer << file.rdbuf();
 		return buffer.str();
+	}
+	static std::string ToStr(long long nb)
+	{
+		std::stringstream ss;
+		ss << nb;
+		return ss.str();
 	}
 };

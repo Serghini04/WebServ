@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:36:14 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/23 13:46:47 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/24 16:28:19 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,14 @@ class BodyParse
 	private:
 		BodyType							_type;
 		long long							_bodySize;
+		long long							_maxBodySize;
 		std::ofstream						_fileOutput;
 		std::string							_boundary;
 		std::string							_boundaryEnd;
 		static size_t 						_indexFile;
 		std::map<std::string, std::string>	_metaData;
 	public:
-		BodyParse();
+		BodyParse(long long maxBodySize);
 
 
 		// Set
@@ -59,7 +60,8 @@ class BodyParse
 		BodyType	bodyType();
 		long long	sizeRead();
 		BodyType	getTypeOfBody(methods method, long long maxBodySize);
-
+		
+		bool		parseBody(std::string &buff);
 		bool		clearBuffers(std::string &data, std::string &accumulatedData, std::string &carryOver);
 		void		openFileBasedOnContentType();
 		bool		BoundaryParse(std::string &buff);
