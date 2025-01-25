@@ -1,0 +1,2819 @@
+2025/01/25 11:31:47 [debug] 81265#0: kevent set event: 6: ft:-1 fl:0005
+2025/01/25 11:31:50 [debug] 81265#0: accept on 0.0.0.0:4444, ready: 1
+2025/01/25 11:31:50 [debug] 81265#0: posix_memalign: 00007FA1D971E030:512 @16
+2025/01/25 11:31:50 [debug] 81265#0: *58 accept: 127.0.0.1:50972 fd:3
+2025/01/25 11:31:50 [debug] 81265#0: *58 event timer add: 3: 60000:11578865
+2025/01/25 11:31:50 [debug] 81265#0: *58 reusable connection: 1
+2025/01/25 11:31:50 [debug] 81265#0: *58 kevent set event: 3: ft:-1 fl:0025
+2025/01/25 11:31:50 [debug] 81265#0: *58 http wait request handler
+2025/01/25 11:31:50 [debug] 81265#0: *58 malloc: 00007FA1D980D800:1024
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:65794, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 1024 of 1024
+2025/01/25 11:31:50 [debug] 81265#0: *58 reusable connection: 0
+2025/01/25 11:31:50 [debug] 81265#0: *58 posix_memalign: 00007FA1D9811C00:4096 @16
+2025/01/25 11:31:50 [debug] 81265#0: *58 http process request line
+2025/01/25 11:31:50 [debug] 81265#0: *58 http request line: "GET /main.cpp HTTP/1.1"
+2025/01/25 11:31:50 [debug] 81265#0: *58 http uri: "/main.cpp"
+2025/01/25 11:31:50 [debug] 81265#0: *58 http args: ""
+2025/01/25 11:31:50 [debug] 81265#0: *58 http exten: "cpp"
+2025/01/25 11:31:50 [debug] 81265#0: *58 posix_memalign: 00007FA1D9812C00:4096 @16
+2025/01/25 11:31:50 [debug] 81265#0: *58 http process request header line
+2025/01/25 11:31:50 [debug] 81265#0: *58 http header: "User-Agent: PostmanRuntime/7.33.0"
+2025/01/25 11:31:50 [debug] 81265#0: *58 http header: "Accept: */*"
+2025/01/25 11:31:50 [debug] 81265#0: *58 http header: "Postman-Token: 94c5c56c-c4b3-449e-89d7-6117c49ccfc4"
+2025/01/25 11:31:50 [debug] 81265#0: *58 http header: "Host: 0.0.0.0:4444"
+2025/01/25 11:31:50 [debug] 81265#0: *58 http header: "Accept-Encoding: gzip, deflate, br"
+2025/01/25 11:31:50 [debug] 81265#0: *58 http header: "Connection: keep-alive"
+2025/01/25 11:31:50 [debug] 81265#0: *58 http header: "Content-Length: 3553840"
+2025/01/25 11:31:50 [debug] 81265#0: *58 http header: "Content-Type: image/jpeg"
+2025/01/25 11:31:50 [debug] 81265#0: *58 http header done
+2025/01/25 11:31:50 [debug] 81265#0: *58 event timer del: 3: 11578865
+2025/01/25 11:31:50 [debug] 81265#0: *58 generic phase: 0
+2025/01/25 11:31:50 [debug] 81265#0: *58 rewrite phase: 1
+2025/01/25 11:31:50 [debug] 81265#0: *58 test location: "/"
+2025/01/25 11:31:50 [debug] 81265#0: *58 using configuration "/"
+2025/01/25 11:31:50 [debug] 81265#0: *58 http cl:3553840 max:10737418240
+2025/01/25 11:31:50 [debug] 81265#0: *58 rewrite phase: 3
+2025/01/25 11:31:50 [debug] 81265#0: *58 post rewrite phase: 4
+2025/01/25 11:31:50 [debug] 81265#0: *58 generic phase: 5
+2025/01/25 11:31:50 [debug] 81265#0: *58 generic phase: 6
+2025/01/25 11:31:50 [debug] 81265#0: *58 generic phase: 7
+2025/01/25 11:31:50 [debug] 81265#0: *58 generic phase: 8
+2025/01/25 11:31:50 [debug] 81265#0: *58 access phase: 9
+2025/01/25 11:31:50 [debug] 81265#0: *58 access phase: 10
+2025/01/25 11:31:50 [debug] 81265#0: *58 access phase: 11
+2025/01/25 11:31:50 [debug] 81265#0: *58 post access phase: 12
+2025/01/25 11:31:50 [debug] 81265#0: *58 generic phase: 13
+2025/01/25 11:31:50 [debug] 81265#0: *58 generic phase: 14
+2025/01/25 11:31:50 [debug] 81265#0: *58 content phase: 15
+2025/01/25 11:31:50 [debug] 81265#0: *58 content phase: 16
+2025/01/25 11:31:50 [debug] 81265#0: *58 content phase: 17
+2025/01/25 11:31:50 [debug] 81265#0: *58 content phase: 18
+2025/01/25 11:31:50 [debug] 81265#0: *58 content phase: 19
+2025/01/25 11:31:50 [debug] 81265#0: *58 content phase: 20
+2025/01/25 11:31:50 [debug] 81265#0: *58 http filename: "/Users/meserghi/Desktop/WebServ/main.cpp"
+2025/01/25 11:31:50 [debug] 81265#0: *58 add cleanup: 00007FA1D9812A18
+2025/01/25 11:31:50 [debug] 81265#0: *58 http static fd: 8
+2025/01/25 11:31:50 [debug] 81265#0: *58 http set discard body
+2025/01/25 11:31:50 [debug] 81265#0: *58 http read discarded body
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:64770, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:60674, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:56578, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:52482, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:48386, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:44290, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:40194, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:36098, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:32002, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:27906, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:23810, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:19714, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:15618, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:11522, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:7426, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:3330, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 HTTP/1.1 200 OK
+Server: nginx/1.27.3
+Date: Sat, 25 Jan 2025 10:31:50 GMT
+Content-Type: text/plain
+Content-Length: 1219
+Last-Modified: Sat, 25 Jan 2025 09:03:10 GMT
+Connection: keep-alive
+ETag: "6794a8ce-4c3"
+Accept-Ranges: bytes
+
+2025/01/25 11:31:50 [debug] 81265#0: *58 write new buf t:1 f:0 00007FA1D9813080, pos 00007FA1D9813080, size: 240 file: 0, size: 0
+2025/01/25 11:31:50 [debug] 81265#0: *58 http write filter: l:0 f:0 s:240
+2025/01/25 11:31:50 [debug] 81265#0: *58 http output filter "/main.cpp?"
+2025/01/25 11:31:50 [debug] 81265#0: *58 http copy filter: "/main.cpp?"
+2025/01/25 11:31:50 [debug] 81265#0: *58 read: 8, 00007FA1D9813270, 1219, 0
+2025/01/25 11:31:50 [debug] 81265#0: *58 http postpone filter "/main.cpp?" 00007FA1D9813210
+2025/01/25 11:31:50 [debug] 81265#0: *58 write old buf t:1 f:0 00007FA1D9813080, pos 00007FA1D9813080, size: 240 file: 0, size: 0
+2025/01/25 11:31:50 [debug] 81265#0: *58 write new buf t:1 f:0 00007FA1D9813270, pos 00007FA1D9813270, size: 1219 file: 0, size: 0
+2025/01/25 11:31:50 [debug] 81265#0: *58 http write filter: l:1 f:0 s:1459
+2025/01/25 11:31:50 [debug] 81265#0: *58 http write filter limit 2097152
+2025/01/25 11:31:50 [debug] 81265#0: *58 writev: 1459 of 1459
+2025/01/25 11:31:50 [debug] 81265#0: *58 http write filter 0000000000000000
+2025/01/25 11:31:50 [debug] 81265#0: *58 http copy filter: 0 "/main.cpp?"
+2025/01/25 11:31:50 [debug] 81265#0: *58 http finalize request: 0, "/main.cpp?" a:1, c:2
+2025/01/25 11:31:50 [debug] 81265#0: *58 event timer add: 3: 5000:11523865
+2025/01/25 11:31:50 [debug] 81265#0: *58 http request count:2 blk:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 http run request: "/main.cpp?"
+2025/01/25 11:31:50 [debug] 81265#0: *58 http read discarded body
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:523522, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:519426, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:515330, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:511234, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:507138, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:503042, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:498946, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:494850, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:490754, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:486658, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:482562, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:478466, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:474370, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:470274, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:466178, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:462082, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:457986, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:453890, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:449794, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:445698, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:441602, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:437506, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:433410, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:429314, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:425218, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:421122, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:417026, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:412930, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:408834, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:404738, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:400642, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:396546, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:392450, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:388354, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:384258, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:380162, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:376066, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:371970, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:367874, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:363778, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:359682, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:355586, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:351490, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:347394, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:343298, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:339202, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:335106, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:331010, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:326914, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:322818, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:318722, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:314626, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:310530, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:306434, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:302338, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:298242, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:294146, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:290050, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:285954, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:281858, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:277762, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:273666, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:269570, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:265474, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:261378, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:257282, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:253186, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:249090, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:244994, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:240898, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:236802, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:232706, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:228610, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:224514, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:220418, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:216322, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:212226, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:208130, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:204034, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:199938, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:195842, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:191746, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:187650, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:183554, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:179458, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:175362, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:171266, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:167170, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:163074, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:158978, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:154882, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:150786, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:146690, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:142594, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:138498, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:134402, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:130306, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:126210, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:122114, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:118018, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:113922, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:109826, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:105730, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:101634, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:97538, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:93442, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:89346, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:85250, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:81154, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:77058, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:72962, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:68866, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:64770, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:60674, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:56578, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:52482, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:48386, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:44290, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:40194, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:36098, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:32002, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:27906, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:23810, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:19714, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:15618, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:11522, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:7426, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:3330, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 event timer: 3, old: 11523865, new: 11523867
+2025/01/25 11:31:50 [debug] 81265#0: *58 http run request: "/main.cpp?"
+2025/01/25 11:31:50 [debug] 81265#0: *58 http read discarded body
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:130306, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:126210, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:122114, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:118018, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:113922, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:109826, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:105730, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:101634, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:97538, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:93442, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:89346, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:85250, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:81154, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:77058, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:72962, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:68866, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:64770, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:60674, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:56578, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:52482, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:48386, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:44290, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:40194, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:36098, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:32002, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:27906, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:23810, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:19714, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:15618, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:11522, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:7426, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 4096 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: eof:0, avail:3330, err:0
+2025/01/25 11:31:50 [debug] 81265#0: *58 recv: fd:3 3330 of 4096
+2025/01/25 11:31:50 [debug] 81265#0: *58 event timer: 3, old: 11523865, new: 11523868
+2025/01/25 11:31:55 [debug] 81265#0: *58 event timer del: 3: 11523865
+2025/01/25 11:31:55 [debug] 81265#0: *58 http run request: "/main.cpp?"
+2025/01/25 11:31:55 [debug] 81265#0: *58 http finalize request: -1, "/main.cpp?" a:1, c:1
+2025/01/25 11:31:55 [debug] 81265#0: *58 http terminate request count:1
+2025/01/25 11:31:55 [debug] 81265#0: *58 http terminate cleanup count:1 blk:0
+2025/01/25 11:31:55 [debug] 81265#0: *58 http posted request: "/main.cpp?"
+2025/01/25 11:31:55 [debug] 81265#0: *58 http terminate handler count:1
+2025/01/25 11:31:55 [debug] 81265#0: *58 http request count:1 blk:0
+2025/01/25 11:31:55 [debug] 81265#0: *58 http close request
+2025/01/25 11:31:55 [debug] 81265#0: *58 http log handler
+2025/01/25 11:31:55 [debug] 81265#0: *58 run cleanup: 00007FA1D9812A18
+2025/01/25 11:31:55 [debug] 81265#0: *58 file cleanup: fd:8
+2025/01/25 11:31:55 [debug] 81265#0: *58 free: 00007FA1D9811C00, unused: 0
+2025/01/25 11:31:55 [debug] 81265#0: *58 free: 00007FA1D9812C00, unused: 1070
+2025/01/25 11:31:55 [debug] 81265#0: *58 close http connection: 3
+2025/01/25 11:31:55 [debug] 81265#0: *58 reusable connection: 0
+2025/01/25 11:31:55 [debug] 81265#0: *58 free: 00007FA1D980D800
+2025/01/25 11:31:55 [debug] 81265#0: *58 free: 00007FA1D971E030, unused: 136
+2025/01/25 11:31:57 [debug] 81265#0: accept on 0.0.0.0:4444, ready: 1
+2025/01/25 11:31:57 [debug] 81265#0: posix_memalign: 00007FA1D960DA50:512 @16
+2025/01/25 11:31:57 [debug] 81265#0: *59 accept: 127.0.0.1:50974 fd:3
+2025/01/25 11:31:57 [debug] 81265#0: *59 event timer add: 3: 60000:11586518
+2025/01/25 11:31:57 [debug] 81265#0: *59 reusable connection: 1
+2025/01/25 11:31:57 [debug] 81265#0: *59 kevent set event: 3: ft:-1 fl:0025
+2025/01/25 11:31:57 [debug] 81265#0: *59 http wait request handler
+2025/01/25 11:31:57 [debug] 81265#0: *59 malloc: 00007FA1DA034A00:1024
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:65787, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 1024 of 1024
+2025/01/25 11:31:57 [debug] 81265#0: *59 reusable connection: 0
+2025/01/25 11:31:57 [debug] 81265#0: *59 posix_memalign: 00007FA1DA05E200:4096 @16
+2025/01/25 11:31:57 [debug] 81265#0: *59 http process request line
+2025/01/25 11:31:57 [debug] 81265#0: *59 http request line: "POST / HTTP/1.1"
+2025/01/25 11:31:57 [debug] 81265#0: *59 http uri: "/"
+2025/01/25 11:31:57 [debug] 81265#0: *59 http args: ""
+2025/01/25 11:31:57 [debug] 81265#0: *59 http exten: ""
+2025/01/25 11:31:57 [debug] 81265#0: *59 posix_memalign: 00007FA1DA039000:4096 @16
+2025/01/25 11:31:57 [debug] 81265#0: *59 http process request header line
+2025/01/25 11:31:57 [debug] 81265#0: *59 http header: "User-Agent: PostmanRuntime/7.33.0"
+2025/01/25 11:31:57 [debug] 81265#0: *59 http header: "Accept: */*"
+2025/01/25 11:31:57 [debug] 81265#0: *59 http header: "Postman-Token: 7e58f614-d959-4a70-8f66-18e4c2b872a3"
+2025/01/25 11:31:57 [debug] 81265#0: *59 http header: "Host: 0.0.0.0:4444"
+2025/01/25 11:31:57 [debug] 81265#0: *59 http header: "Accept-Encoding: gzip, deflate, br"
+2025/01/25 11:31:57 [debug] 81265#0: *59 http header: "Connection: keep-alive"
+2025/01/25 11:31:57 [debug] 81265#0: *59 http header: "Content-Length: 3553840"
+2025/01/25 11:31:57 [debug] 81265#0: *59 http header: "Content-Type: image/jpeg"
+2025/01/25 11:31:57 [debug] 81265#0: *59 http header done
+2025/01/25 11:31:57 [debug] 81265#0: *59 event timer del: 3: 11586518
+2025/01/25 11:31:57 [debug] 81265#0: *59 generic phase: 0
+2025/01/25 11:31:57 [debug] 81265#0: *59 rewrite phase: 1
+2025/01/25 11:31:57 [debug] 81265#0: *59 test location: "/"
+2025/01/25 11:31:57 [debug] 81265#0: *59 using configuration "/"
+2025/01/25 11:31:57 [debug] 81265#0: *59 http cl:3553840 max:10737418240
+2025/01/25 11:31:57 [debug] 81265#0: *59 rewrite phase: 3
+2025/01/25 11:31:57 [debug] 81265#0: *59 post rewrite phase: 4
+2025/01/25 11:31:57 [debug] 81265#0: *59 generic phase: 5
+2025/01/25 11:31:57 [debug] 81265#0: *59 generic phase: 6
+2025/01/25 11:31:57 [debug] 81265#0: *59 generic phase: 7
+2025/01/25 11:31:57 [debug] 81265#0: *59 generic phase: 8
+2025/01/25 11:31:57 [debug] 81265#0: *59 access phase: 9
+2025/01/25 11:31:57 [debug] 81265#0: *59 access phase: 10
+2025/01/25 11:31:57 [debug] 81265#0: *59 access phase: 11
+2025/01/25 11:31:57 [debug] 81265#0: *59 post access phase: 12
+2025/01/25 11:31:57 [debug] 81265#0: *59 generic phase: 13
+2025/01/25 11:31:57 [debug] 81265#0: *59 generic phase: 14
+2025/01/25 11:31:57 [debug] 81265#0: *59 content phase: 15
+2025/01/25 11:31:57 [debug] 81265#0: *59 content phase: 16
+2025/01/25 11:31:57 [debug] 81265#0: *59 open index "/Users/meserghi/Desktop/WebServ/main.cpp"
+2025/01/25 11:31:57 [debug] 81265#0: *59 internal redirect: "/main.cpp?"
+2025/01/25 11:31:57 [debug] 81265#0: *59 rewrite phase: 1
+2025/01/25 11:31:57 [debug] 81265#0: *59 test location: "/"
+2025/01/25 11:31:57 [debug] 81265#0: *59 using configuration "/"
+2025/01/25 11:31:57 [debug] 81265#0: *59 http cl:3553840 max:10737418240
+2025/01/25 11:31:57 [debug] 81265#0: *59 rewrite phase: 3
+2025/01/25 11:31:57 [debug] 81265#0: *59 post rewrite phase: 4
+2025/01/25 11:31:57 [debug] 81265#0: *59 generic phase: 5
+2025/01/25 11:31:57 [debug] 81265#0: *59 generic phase: 6
+2025/01/25 11:31:57 [debug] 81265#0: *59 generic phase: 7
+2025/01/25 11:31:57 [debug] 81265#0: *59 generic phase: 8
+2025/01/25 11:31:57 [debug] 81265#0: *59 access phase: 9
+2025/01/25 11:31:57 [debug] 81265#0: *59 access phase: 10
+2025/01/25 11:31:57 [debug] 81265#0: *59 access phase: 11
+2025/01/25 11:31:57 [debug] 81265#0: *59 post access phase: 12
+2025/01/25 11:31:57 [debug] 81265#0: *59 generic phase: 13
+2025/01/25 11:31:57 [debug] 81265#0: *59 generic phase: 14
+2025/01/25 11:31:57 [debug] 81265#0: *59 content phase: 15
+2025/01/25 11:31:57 [debug] 81265#0: *59 content phase: 16
+2025/01/25 11:31:57 [debug] 81265#0: *59 content phase: 17
+2025/01/25 11:31:57 [debug] 81265#0: *59 content phase: 18
+2025/01/25 11:31:57 [debug] 81265#0: *59 content phase: 19
+2025/01/25 11:31:57 [debug] 81265#0: *59 content phase: 20
+2025/01/25 11:31:57 [debug] 81265#0: *59 http filename: "/Users/meserghi/Desktop/WebServ/main.cpp"
+2025/01/25 11:31:57 [debug] 81265#0: *59 add cleanup: 00007FA1DA05F040
+2025/01/25 11:31:57 [debug] 81265#0: *59 http static fd: 8
+2025/01/25 11:31:57 [debug] 81265#0: *59 http finalize request: 405, "/main.cpp?" a:1, c:2
+2025/01/25 11:31:57 [debug] 81265#0: *59 http special response: 405, "/main.cpp?"
+2025/01/25 11:31:57 [debug] 81265#0: *59 http set discard body
+2025/01/25 11:31:57 [debug] 81265#0: *59 http read discarded body
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:64763, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:60667, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:56571, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:52475, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:48379, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:44283, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:40187, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:36091, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:31995, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:27899, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:23803, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:19707, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:15611, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:11515, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:7419, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:3323, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 HTTP/1.1 405 Not Allowed
+Server: nginx/1.27.3
+Date: Sat, 25 Jan 2025 10:31:57 GMT
+Content-Type: text/html
+Content-Length: 157
+Connection: keep-alive
+
+2025/01/25 11:31:57 [debug] 81265#0: *59 write new buf t:1 f:0 00007FA1DA05F0C0, pos 00007FA1DA05F0C0, size: 157 file: 0, size: 0
+2025/01/25 11:31:57 [debug] 81265#0: *59 http write filter: l:0 f:0 s:157
+2025/01/25 11:31:57 [debug] 81265#0: *59 http output filter "/main.cpp?"
+2025/01/25 11:31:57 [debug] 81265#0: *59 http copy filter: "/main.cpp?"
+2025/01/25 11:31:57 [debug] 81265#0: *59 http postpone filter "/main.cpp?" 00007FA1DA05F1D0
+2025/01/25 11:31:57 [debug] 81265#0: *59 write old buf t:1 f:0 00007FA1DA05F0C0, pos 00007FA1DA05F0C0, size: 157 file: 0, size: 0
+2025/01/25 11:31:57 [debug] 81265#0: *59 write new buf t:0 f:0 0000000000000000, pos 0000000104D79B10, size: 104 file: 0, size: 0
+2025/01/25 11:31:57 [debug] 81265#0: *59 write new buf t:0 f:0 0000000000000000, pos 0000000104D79420, size: 53 file: 0, size: 0
+2025/01/25 11:31:57 [debug] 81265#0: *59 http write filter: l:1 f:0 s:314
+2025/01/25 11:31:57 [debug] 81265#0: *59 http write filter limit 2097152
+2025/01/25 11:31:57 [debug] 81265#0: *59 writev: 314 of 314
+2025/01/25 11:31:57 [debug] 81265#0: *59 http write filter 0000000000000000
+2025/01/25 11:31:57 [debug] 81265#0: *59 http copy filter: 0 "/main.cpp?"
+2025/01/25 11:31:57 [debug] 81265#0: *59 http finalize request: 0, "/main.cpp?" a:1, c:3
+2025/01/25 11:31:57 [debug] 81265#0: *59 event timer add: 3: 5000:11531518
+2025/01/25 11:31:57 [debug] 81265#0: *59 http request count:3 blk:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 http finalize request: -4, "/main.cpp?" a:1, c:2
+2025/01/25 11:31:57 [debug] 81265#0: *59 event timer: 3, old: 11531518, new: 11531518
+2025/01/25 11:31:57 [debug] 81265#0: *59 http request count:2 blk:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 http run request: "/main.cpp?"
+2025/01/25 11:31:57 [debug] 81265#0: *59 http read discarded body
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:589051, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:584955, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:580859, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:576763, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:572667, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:568571, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:564475, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:560379, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:556283, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:552187, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:548091, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:543995, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:539899, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:535803, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:531707, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:527611, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:523515, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:519419, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:515323, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:511227, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:507131, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:503035, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:498939, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:494843, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:490747, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:486651, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:482555, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:478459, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:474363, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:470267, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:466171, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:462075, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:457979, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:453883, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:449787, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:445691, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:441595, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:437499, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:433403, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:429307, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:425211, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:421115, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:417019, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:412923, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:408827, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:404731, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:400635, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:396539, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:392443, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:388347, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:384251, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:380155, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:376059, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:371963, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:367867, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:363771, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:359675, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:355579, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:351483, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:347387, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:343291, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:339195, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:335099, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:331003, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:326907, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:322811, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:318715, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:314619, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:310523, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:306427, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:302331, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:298235, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:294139, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:290043, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:285947, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:281851, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:277755, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:273659, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:269563, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:265467, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:261371, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:257275, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:253179, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:249083, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:244987, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:240891, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:236795, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:232699, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:228603, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:224507, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:220411, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:216315, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:212219, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:208123, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:204027, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:199931, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:195835, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:191739, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:187643, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:183547, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:179451, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:175355, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:171259, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:167163, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:163067, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:158971, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:154875, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:150779, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:146683, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:142587, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:138491, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:134395, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:130299, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:126203, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:122107, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:118011, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:113915, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:109819, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:105723, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:101627, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:97531, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:93435, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:89339, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:85243, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:81147, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:77051, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:72955, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:68859, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:64763, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:60667, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:56571, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:52475, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:48379, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:44283, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:40187, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:36091, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:31995, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:27899, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:23803, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:19707, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:15611, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:11515, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:7419, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:3323, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 event timer: 3, old: 11531518, new: 11531520
+2025/01/25 11:31:57 [debug] 81265#0: *59 http run request: "/main.cpp?"
+2025/01/25 11:31:57 [debug] 81265#0: *59 http read discarded body
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:64763, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:60667, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:56571, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:52475, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:48379, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:44283, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:40187, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:36091, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:31995, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:27899, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:23803, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:19707, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:15611, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:11515, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:7419, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 4096 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: eof:0, avail:3323, err:0
+2025/01/25 11:31:57 [debug] 81265#0: *59 recv: fd:3 3323 of 4096
+2025/01/25 11:31:57 [debug] 81265#0: *59 event timer: 3, old: 11531518, new: 11531521
+2025/01/25 11:32:02 [debug] 81265#0: *59 event timer del: 3: 11531518
+2025/01/25 11:32:02 [debug] 81265#0: *59 http run request: "/main.cpp?"
+2025/01/25 11:32:02 [debug] 81265#0: *59 http finalize request: -1, "/main.cpp?" a:1, c:1
+2025/01/25 11:32:02 [debug] 81265#0: *59 http terminate request count:1
+2025/01/25 11:32:02 [debug] 81265#0: *59 http terminate cleanup count:1 blk:0
+2025/01/25 11:32:02 [debug] 81265#0: *59 http posted request: "/main.cpp?"
+2025/01/25 11:32:02 [debug] 81265#0: *59 http terminate handler count:1
+2025/01/25 11:32:02 [debug] 81265#0: *59 http request count:1 blk:0
+2025/01/25 11:32:02 [debug] 81265#0: *59 http close request
+2025/01/25 11:32:02 [debug] 81265#0: *59 http log handler
+2025/01/25 11:32:02 [debug] 81265#0: *59 run cleanup: 00007FA1DA05F040
+2025/01/25 11:32:02 [debug] 81265#0: *59 file cleanup: fd:8
+2025/01/25 11:32:02 [debug] 81265#0: *59 free: 00007FA1DA05E200, unused: 0
+2025/01/25 11:32:02 [debug] 81265#0: *59 free: 00007FA1DA039000, unused: 2589
+2025/01/25 11:32:02 [debug] 81265#0: *59 close http connection: 3
+2025/01/25 11:32:02 [debug] 81265#0: *59 reusable connection: 0
+2025/01/25 11:32:02 [debug] 81265#0: *59 free: 00007FA1DA034A00
+2025/01/25 11:32:02 [debug] 81265#0: *59 free: 00007FA1D960DA50, unused: 136
+2025/01/25 11:35:43 [debug] 81887#0: kevent set event: 6: ft:-1 fl:0005
+2025/01/25 11:35:47 [debug] 81887#0: accept on 0.0.0.0:4444, ready: 1
+2025/01/25 11:35:47 [debug] 81887#0: posix_memalign: 00007FA1D940F7A0:512 @16
+2025/01/25 11:35:47 [debug] 81887#0: *60 accept: 127.0.0.1:51004 fd:3
+2025/01/25 11:35:47 [debug] 81887#0: *60 event timer add: 3: 60000:11815713
+2025/01/25 11:35:47 [debug] 81887#0: *60 reusable connection: 1
+2025/01/25 11:35:47 [debug] 81887#0: *60 kevent set event: 3: ft:-1 fl:0025
+2025/01/25 11:35:47 [debug] 81887#0: *60 http wait request handler
+2025/01/25 11:35:47 [debug] 81887#0: *60 malloc: 00007FA1DA045000:1024
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:65787, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 1024 of 1024
+2025/01/25 11:35:47 [debug] 81887#0: *60 reusable connection: 0
+2025/01/25 11:35:47 [debug] 81887#0: *60 posix_memalign: 00007FA1DA045400:4096 @16
+2025/01/25 11:35:47 [debug] 81887#0: *60 http process request line
+2025/01/25 11:35:47 [debug] 81887#0: *60 http request line: "POST / HTTP/1.1"
+2025/01/25 11:35:47 [debug] 81887#0: *60 http uri: "/"
+2025/01/25 11:35:47 [debug] 81887#0: *60 http args: ""
+2025/01/25 11:35:47 [debug] 81887#0: *60 http exten: ""
+2025/01/25 11:35:47 [debug] 81887#0: *60 posix_memalign: 00007FA1DA046400:4096 @16
+2025/01/25 11:35:47 [debug] 81887#0: *60 http process request header line
+2025/01/25 11:35:47 [debug] 81887#0: *60 http header: "User-Agent: PostmanRuntime/7.33.0"
+2025/01/25 11:35:47 [debug] 81887#0: *60 http header: "Accept: */*"
+2025/01/25 11:35:47 [debug] 81887#0: *60 http header: "Postman-Token: 325d00fb-8d13-486a-aca0-df437d21534f"
+2025/01/25 11:35:47 [debug] 81887#0: *60 http header: "Host: 0.0.0.0:4444"
+2025/01/25 11:35:47 [debug] 81887#0: *60 http header: "Accept-Encoding: gzip, deflate, br"
+2025/01/25 11:35:47 [debug] 81887#0: *60 http header: "Connection: keep-alive"
+2025/01/25 11:35:47 [debug] 81887#0: *60 http header: "Content-Length: 3553840"
+2025/01/25 11:35:47 [debug] 81887#0: *60 http header: "Content-Type: image/jpeg"
+2025/01/25 11:35:47 [debug] 81887#0: *60 http header done
+2025/01/25 11:35:47 [debug] 81887#0: *60 event timer del: 3: 11815713
+2025/01/25 11:35:47 [debug] 81887#0: *60 generic phase: 0
+2025/01/25 11:35:47 [debug] 81887#0: *60 rewrite phase: 1
+2025/01/25 11:35:47 [debug] 81887#0: *60 test location: "/"
+2025/01/25 11:35:47 [debug] 81887#0: *60 using configuration "/"
+2025/01/25 11:35:47 [debug] 81887#0: *60 http cl:3553840 max:10737418240
+2025/01/25 11:35:47 [debug] 81887#0: *60 rewrite phase: 3
+2025/01/25 11:35:47 [debug] 81887#0: *60 http script var
+2025/01/25 11:35:47 [debug] 81887#0: *60 http script var: "POST"
+2025/01/25 11:35:47 [debug] 81887#0: *60 http script value: "POST"
+2025/01/25 11:35:47 [debug] 81887#0: *60 http script equal
+2025/01/25 11:35:47 [debug] 81887#0: *60 http script if
+2025/01/25 11:35:47 [debug] 81887#0: *60 http script regex: "^"
+2025/01/25 11:35:47 [notice] 81887#0: *60 "^" matches "/", client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:35:47 [debug] 81887#0: *60 http script copy: "/post_handler"
+2025/01/25 11:35:47 [debug] 81887#0: *60 http script regex end
+2025/01/25 11:35:47 [notice] 81887#0: *60 rewritten data: "/post_handler", args: "", client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:35:47 [debug] 81887#0: *60 post rewrite phase: 4
+2025/01/25 11:35:47 [debug] 81887#0: *60 generic phase: 5
+2025/01/25 11:35:47 [debug] 81887#0: *60 generic phase: 6
+2025/01/25 11:35:47 [debug] 81887#0: *60 generic phase: 7
+2025/01/25 11:35:47 [debug] 81887#0: *60 generic phase: 8
+2025/01/25 11:35:47 [debug] 81887#0: *60 access phase: 9
+2025/01/25 11:35:47 [debug] 81887#0: *60 access phase: 10
+2025/01/25 11:35:47 [debug] 81887#0: *60 access phase: 11
+2025/01/25 11:35:47 [debug] 81887#0: *60 post access phase: 12
+2025/01/25 11:35:47 [debug] 81887#0: *60 generic phase: 13
+2025/01/25 11:35:47 [debug] 81887#0: *60 generic phase: 14
+2025/01/25 11:35:47 [debug] 81887#0: *60 content phase: 15
+2025/01/25 11:35:47 [debug] 81887#0: *60 content phase: 16
+2025/01/25 11:35:47 [debug] 81887#0: *60 content phase: 17
+2025/01/25 11:35:47 [debug] 81887#0: *60 content phase: 18
+2025/01/25 11:35:47 [debug] 81887#0: *60 content phase: 19
+2025/01/25 11:35:47 [debug] 81887#0: *60 content phase: 20
+2025/01/25 11:35:47 [debug] 81887#0: *60 http filename: "/Users/meserghi/Desktop/WebServ/post_handler"
+2025/01/25 11:35:47 [debug] 81887#0: *60 add cleanup: 00007FA1DA046338
+2025/01/25 11:35:47 [error] 81887#0: *60 open() "/Users/meserghi/Desktop/WebServ/post_handler" failed (2: No such file or directory), client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:35:47 [debug] 81887#0: *60 http finalize request: 404, "/post_handler?" a:1, c:1
+2025/01/25 11:35:47 [debug] 81887#0: *60 http special response: 404, "/post_handler?"
+2025/01/25 11:35:47 [debug] 81887#0: *60 internal redirect: "/errors/404.html?"
+2025/01/25 11:35:47 [debug] 81887#0: *60 rewrite phase: 1
+2025/01/25 11:35:47 [debug] 81887#0: *60 test location: "/"
+2025/01/25 11:35:47 [debug] 81887#0: *60 test location: "post_handler"
+2025/01/25 11:35:47 [debug] 81887#0: *60 using configuration "/"
+2025/01/25 11:35:47 [debug] 81887#0: *60 http cl:3553840 max:10737418240
+2025/01/25 11:35:47 [debug] 81887#0: *60 rewrite phase: 3
+2025/01/25 11:35:47 [debug] 81887#0: *60 http script var
+2025/01/25 11:35:47 [debug] 81887#0: *60 http script var: "GET"
+2025/01/25 11:35:47 [debug] 81887#0: *60 http script value: "POST"
+2025/01/25 11:35:47 [debug] 81887#0: *60 http script equal
+2025/01/25 11:35:47 [debug] 81887#0: *60 http script equal: no
+2025/01/25 11:35:47 [debug] 81887#0: *60 http script if
+2025/01/25 11:35:47 [debug] 81887#0: *60 http script if: false
+2025/01/25 11:35:47 [debug] 81887#0: *60 post rewrite phase: 4
+2025/01/25 11:35:47 [debug] 81887#0: *60 generic phase: 5
+2025/01/25 11:35:47 [debug] 81887#0: *60 generic phase: 6
+2025/01/25 11:35:47 [debug] 81887#0: *60 generic phase: 7
+2025/01/25 11:35:47 [debug] 81887#0: *60 generic phase: 8
+2025/01/25 11:35:47 [debug] 81887#0: *60 access phase: 9
+2025/01/25 11:35:47 [debug] 81887#0: *60 access phase: 10
+2025/01/25 11:35:47 [debug] 81887#0: *60 access phase: 11
+2025/01/25 11:35:47 [debug] 81887#0: *60 post access phase: 12
+2025/01/25 11:35:47 [debug] 81887#0: *60 generic phase: 13
+2025/01/25 11:35:47 [debug] 81887#0: *60 generic phase: 14
+2025/01/25 11:35:47 [debug] 81887#0: *60 content phase: 15
+2025/01/25 11:35:47 [debug] 81887#0: *60 content phase: 16
+2025/01/25 11:35:47 [debug] 81887#0: *60 content phase: 17
+2025/01/25 11:35:47 [debug] 81887#0: *60 content phase: 18
+2025/01/25 11:35:47 [debug] 81887#0: *60 content phase: 19
+2025/01/25 11:35:47 [debug] 81887#0: *60 content phase: 20
+2025/01/25 11:35:47 [debug] 81887#0: *60 http filename: "/Users/meserghi/Desktop/WebServ/errors/404.html"
+2025/01/25 11:35:47 [debug] 81887#0: *60 add cleanup: 00007FA1DA046920
+2025/01/25 11:35:47 [error] 81887#0: *60 open() "/Users/meserghi/Desktop/WebServ/errors/404.html" failed (2: No such file or directory), client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:35:47 [debug] 81887#0: *60 http finalize request: 404, "/errors/404.html?" a:1, c:2
+2025/01/25 11:35:47 [debug] 81887#0: *60 http special response: 404, "/errors/404.html?"
+2025/01/25 11:35:47 [debug] 81887#0: *60 http set discard body
+2025/01/25 11:35:47 [debug] 81887#0: *60 http read discarded body
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:64763, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:60667, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:56571, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:52475, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:48379, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:44283, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:40187, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:36091, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:31995, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:27899, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:23803, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:19707, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:15611, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:11515, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:7419, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:3323, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 HTTP/1.1 404 Not Found
+Server: nginx/1.27.3
+Date: Sat, 25 Jan 2025 10:35:47 GMT
+Content-Type: text/html
+Content-Length: 153
+Connection: keep-alive
+
+2025/01/25 11:35:47 [debug] 81887#0: *60 write new buf t:1 f:0 00007FA1DA0469A0, pos 00007FA1DA0469A0, size: 155 file: 0, size: 0
+2025/01/25 11:35:47 [debug] 81887#0: *60 http write filter: l:0 f:0 s:155
+2025/01/25 11:35:47 [debug] 81887#0: *60 http output filter "/errors/404.html?"
+2025/01/25 11:35:47 [debug] 81887#0: *60 http copy filter: "/errors/404.html?"
+2025/01/25 11:35:47 [debug] 81887#0: *60 http postpone filter "/errors/404.html?" 00007FA1DA046B70
+2025/01/25 11:35:47 [debug] 81887#0: *60 write old buf t:1 f:0 00007FA1DA0469A0, pos 00007FA1DA0469A0, size: 155 file: 0, size: 0
+2025/01/25 11:35:47 [debug] 81887#0: *60 write new buf t:0 f:0 0000000000000000, pos 0000000104D79AA0, size: 100 file: 0, size: 0
+2025/01/25 11:35:47 [debug] 81887#0: *60 write new buf t:0 f:0 0000000000000000, pos 0000000104D79420, size: 53 file: 0, size: 0
+2025/01/25 11:35:47 [debug] 81887#0: *60 http write filter: l:1 f:0 s:308
+2025/01/25 11:35:47 [debug] 81887#0: *60 http write filter limit 2097152
+2025/01/25 11:35:47 [debug] 81887#0: *60 writev: 308 of 308
+2025/01/25 11:35:47 [debug] 81887#0: *60 http write filter 0000000000000000
+2025/01/25 11:35:47 [debug] 81887#0: *60 http copy filter: 0 "/errors/404.html?"
+2025/01/25 11:35:47 [debug] 81887#0: *60 http finalize request: 0, "/errors/404.html?" a:1, c:3
+2025/01/25 11:35:47 [debug] 81887#0: *60 event timer add: 3: 5000:11760714
+2025/01/25 11:35:47 [debug] 81887#0: *60 http request count:3 blk:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 http finalize request: -4, "/errors/404.html?" a:1, c:2
+2025/01/25 11:35:47 [debug] 81887#0: *60 event timer: 3, old: 11760714, new: 11760714
+2025/01/25 11:35:47 [debug] 81887#0: *60 http request count:2 blk:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 http run request: "/errors/404.html?"
+2025/01/25 11:35:47 [debug] 81887#0: *60 http read discarded body
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:523515, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:519419, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:515323, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:511227, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:507131, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:503035, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:498939, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:494843, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:490747, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:486651, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:482555, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:478459, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:474363, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:470267, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:466171, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:462075, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:457979, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:453883, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:449787, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:445691, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:441595, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:437499, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:433403, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:429307, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:425211, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:421115, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:417019, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:412923, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:408827, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:404731, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:400635, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:396539, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:392443, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:388347, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:384251, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:380155, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:376059, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:371963, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:367867, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:363771, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:359675, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:355579, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:351483, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:347387, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:343291, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:339195, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:335099, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:331003, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:326907, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:322811, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:318715, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:314619, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:310523, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:306427, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:302331, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:298235, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:294139, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:290043, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:285947, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:281851, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:277755, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:273659, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:269563, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:265467, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:261371, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:257275, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:253179, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:249083, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:244987, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:240891, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:236795, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:232699, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:228603, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:224507, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:220411, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:216315, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:212219, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:208123, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:204027, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:199931, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:195835, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:191739, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:187643, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:183547, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:179451, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:175355, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:171259, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:167163, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:163067, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:158971, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:154875, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:150779, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:146683, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:142587, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:138491, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:134395, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:130299, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:126203, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:122107, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:118011, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:113915, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:109819, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:105723, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:101627, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:97531, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:93435, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:89339, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:85243, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:81147, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:77051, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:72955, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:68859, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:64763, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:60667, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:56571, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:52475, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:48379, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:44283, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:40187, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:36091, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:31995, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:27899, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:23803, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:19707, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:15611, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:11515, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:7419, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:3323, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 event timer: 3, old: 11760714, new: 11760715
+2025/01/25 11:35:47 [debug] 81887#0: *60 http run request: "/errors/404.html?"
+2025/01/25 11:35:47 [debug] 81887#0: *60 http read discarded body
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:130299, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:126203, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:122107, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:118011, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:113915, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:109819, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:105723, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:101627, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:97531, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:93435, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:89339, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:85243, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:81147, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:77051, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:72955, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:68859, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:64763, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:60667, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:56571, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:52475, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:48379, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:44283, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:40187, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:36091, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:31995, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:27899, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:23803, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:19707, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:15611, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:11515, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:7419, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 4096 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: eof:0, avail:3323, err:0
+2025/01/25 11:35:47 [debug] 81887#0: *60 recv: fd:3 3323 of 4096
+2025/01/25 11:35:47 [debug] 81887#0: *60 event timer: 3, old: 11760714, new: 11760716
+2025/01/25 11:35:52 [debug] 81887#0: *60 event timer del: 3: 11760714
+2025/01/25 11:35:52 [debug] 81887#0: *60 http run request: "/errors/404.html?"
+2025/01/25 11:35:52 [debug] 81887#0: *60 http finalize request: -1, "/errors/404.html?" a:1, c:1
+2025/01/25 11:35:52 [debug] 81887#0: *60 http terminate request count:1
+2025/01/25 11:35:52 [debug] 81887#0: *60 http terminate cleanup count:1 blk:0
+2025/01/25 11:35:52 [debug] 81887#0: *60 http posted request: "/errors/404.html?"
+2025/01/25 11:35:52 [debug] 81887#0: *60 http terminate handler count:1
+2025/01/25 11:35:52 [debug] 81887#0: *60 http request count:1 blk:0
+2025/01/25 11:35:52 [debug] 81887#0: *60 http close request
+2025/01/25 11:35:52 [debug] 81887#0: *60 http log handler
+2025/01/25 11:35:52 [debug] 81887#0: *60 free: 00007FA1DA045400, unused: 0
+2025/01/25 11:35:52 [debug] 81887#0: *60 free: 00007FA1DA046400, unused: 1997
+2025/01/25 11:35:52 [debug] 81887#0: *60 close http connection: 3
+2025/01/25 11:35:52 [debug] 81887#0: *60 reusable connection: 0
+2025/01/25 11:35:52 [debug] 81887#0: *60 free: 00007FA1DA045000
+2025/01/25 11:35:52 [debug] 81887#0: *60 free: 00007FA1D940F7A0, unused: 136
+2025/01/25 11:37:56 [debug] 81887#0: accept on 0.0.0.0:4444, ready: 1
+2025/01/25 11:37:56 [debug] 81887#0: posix_memalign: 00007FA1D940F7A0:512 @16
+2025/01/25 11:37:56 [debug] 81887#0: *61 accept: 127.0.0.1:51022 fd:3
+2025/01/25 11:37:56 [debug] 81887#0: *61 event timer add: 3: 60000:11945239
+2025/01/25 11:37:56 [debug] 81887#0: *61 reusable connection: 1
+2025/01/25 11:37:56 [debug] 81887#0: *61 kevent set event: 3: ft:-1 fl:0025
+2025/01/25 11:37:56 [debug] 81887#0: *61 http wait request handler
+2025/01/25 11:37:56 [debug] 81887#0: *61 malloc: 00007FA1D980D800:1024
+2025/01/25 11:37:56 [debug] 81887#0: *61 recv: eof:0, avail:219, err:0
+2025/01/25 11:37:56 [debug] 81887#0: *61 recv: fd:3 219 of 1024
+2025/01/25 11:37:56 [debug] 81887#0: *61 reusable connection: 0
+2025/01/25 11:37:56 [debug] 81887#0: *61 posix_memalign: 00007FA1D981AA00:4096 @16
+2025/01/25 11:37:56 [debug] 81887#0: *61 http process request line
+2025/01/25 11:37:56 [debug] 81887#0: *61 http request line: "POST / HTTP/1.1"
+2025/01/25 11:37:56 [debug] 81887#0: *61 http uri: "/"
+2025/01/25 11:37:56 [debug] 81887#0: *61 http args: ""
+2025/01/25 11:37:56 [debug] 81887#0: *61 http exten: ""
+2025/01/25 11:37:56 [debug] 81887#0: *61 posix_memalign: 00007FA1D981BA00:4096 @16
+2025/01/25 11:37:56 [debug] 81887#0: *61 http process request header line
+2025/01/25 11:37:56 [debug] 81887#0: *61 http header: "User-Agent: PostmanRuntime/7.33.0"
+2025/01/25 11:37:56 [debug] 81887#0: *61 http header: "Accept: */*"
+2025/01/25 11:37:56 [debug] 81887#0: *61 http header: "Postman-Token: dc2fd676-01c7-471e-8887-45d3306ad808"
+2025/01/25 11:37:56 [debug] 81887#0: *61 http header: "Host: 0.0.0.0:4444"
+2025/01/25 11:37:56 [debug] 81887#0: *61 http header: "Accept-Encoding: gzip, deflate, br"
+2025/01/25 11:37:56 [debug] 81887#0: *61 http header: "Connection: keep-alive"
+2025/01/25 11:37:56 [debug] 81887#0: *61 http header: "Content-Length: 0"
+2025/01/25 11:37:56 [debug] 81887#0: *61 http header done
+2025/01/25 11:37:56 [debug] 81887#0: *61 event timer del: 3: 11945239
+2025/01/25 11:37:56 [debug] 81887#0: *61 generic phase: 0
+2025/01/25 11:37:56 [debug] 81887#0: *61 rewrite phase: 1
+2025/01/25 11:37:56 [debug] 81887#0: *61 test location: "/"
+2025/01/25 11:37:56 [debug] 81887#0: *61 using configuration "/"
+2025/01/25 11:37:56 [debug] 81887#0: *61 http cl:0 max:10737418240
+2025/01/25 11:37:56 [debug] 81887#0: *61 rewrite phase: 3
+2025/01/25 11:37:56 [debug] 81887#0: *61 http script var
+2025/01/25 11:37:56 [debug] 81887#0: *61 http script var: "POST"
+2025/01/25 11:37:56 [debug] 81887#0: *61 http script value: "POST"
+2025/01/25 11:37:56 [debug] 81887#0: *61 http script equal
+2025/01/25 11:37:56 [debug] 81887#0: *61 http script if
+2025/01/25 11:37:56 [debug] 81887#0: *61 http script regex: "^"
+2025/01/25 11:37:56 [notice] 81887#0: *61 "^" matches "/", client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:37:56 [debug] 81887#0: *61 http script copy: "/post_handler"
+2025/01/25 11:37:56 [debug] 81887#0: *61 http script regex end
+2025/01/25 11:37:56 [notice] 81887#0: *61 rewritten data: "/post_handler", args: "", client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:37:56 [debug] 81887#0: *61 post rewrite phase: 4
+2025/01/25 11:37:56 [debug] 81887#0: *61 generic phase: 5
+2025/01/25 11:37:56 [debug] 81887#0: *61 generic phase: 6
+2025/01/25 11:37:56 [debug] 81887#0: *61 generic phase: 7
+2025/01/25 11:37:56 [debug] 81887#0: *61 generic phase: 8
+2025/01/25 11:37:56 [debug] 81887#0: *61 access phase: 9
+2025/01/25 11:37:56 [debug] 81887#0: *61 access phase: 10
+2025/01/25 11:37:56 [debug] 81887#0: *61 access phase: 11
+2025/01/25 11:37:56 [debug] 81887#0: *61 post access phase: 12
+2025/01/25 11:37:56 [debug] 81887#0: *61 generic phase: 13
+2025/01/25 11:37:56 [debug] 81887#0: *61 generic phase: 14
+2025/01/25 11:37:56 [debug] 81887#0: *61 content phase: 15
+2025/01/25 11:37:56 [debug] 81887#0: *61 content phase: 16
+2025/01/25 11:37:56 [debug] 81887#0: *61 content phase: 17
+2025/01/25 11:37:56 [debug] 81887#0: *61 content phase: 18
+2025/01/25 11:37:56 [debug] 81887#0: *61 content phase: 19
+2025/01/25 11:37:56 [debug] 81887#0: *61 content phase: 20
+2025/01/25 11:37:56 [debug] 81887#0: *61 http filename: "/Users/meserghi/Desktop/WebServ/post_handler"
+2025/01/25 11:37:56 [debug] 81887#0: *61 add cleanup: 00007FA1D981B928
+2025/01/25 11:37:56 [error] 81887#0: *61 open() "/Users/meserghi/Desktop/WebServ/post_handler" failed (2: No such file or directory), client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:37:56 [debug] 81887#0: *61 http finalize request: 404, "/post_handler?" a:1, c:1
+2025/01/25 11:37:56 [debug] 81887#0: *61 http special response: 404, "/post_handler?"
+2025/01/25 11:37:56 [debug] 81887#0: *61 internal redirect: "/errors/404.html?"
+2025/01/25 11:37:56 [debug] 81887#0: *61 rewrite phase: 1
+2025/01/25 11:37:56 [debug] 81887#0: *61 test location: "/"
+2025/01/25 11:37:56 [debug] 81887#0: *61 test location: "post_handler"
+2025/01/25 11:37:56 [debug] 81887#0: *61 using configuration "/"
+2025/01/25 11:37:56 [debug] 81887#0: *61 http cl:0 max:10737418240
+2025/01/25 11:37:56 [debug] 81887#0: *61 rewrite phase: 3
+2025/01/25 11:37:56 [debug] 81887#0: *61 http script var
+2025/01/25 11:37:56 [debug] 81887#0: *61 http script var: "GET"
+2025/01/25 11:37:56 [debug] 81887#0: *61 http script value: "POST"
+2025/01/25 11:37:56 [debug] 81887#0: *61 http script equal
+2025/01/25 11:37:56 [debug] 81887#0: *61 http script equal: no
+2025/01/25 11:37:56 [debug] 81887#0: *61 http script if
+2025/01/25 11:37:56 [debug] 81887#0: *61 http script if: false
+2025/01/25 11:37:56 [debug] 81887#0: *61 post rewrite phase: 4
+2025/01/25 11:37:56 [debug] 81887#0: *61 generic phase: 5
+2025/01/25 11:37:56 [debug] 81887#0: *61 generic phase: 6
+2025/01/25 11:37:56 [debug] 81887#0: *61 generic phase: 7
+2025/01/25 11:37:56 [debug] 81887#0: *61 generic phase: 8
+2025/01/25 11:37:56 [debug] 81887#0: *61 access phase: 9
+2025/01/25 11:37:56 [debug] 81887#0: *61 access phase: 10
+2025/01/25 11:37:56 [debug] 81887#0: *61 access phase: 11
+2025/01/25 11:37:56 [debug] 81887#0: *61 post access phase: 12
+2025/01/25 11:37:56 [debug] 81887#0: *61 generic phase: 13
+2025/01/25 11:37:56 [debug] 81887#0: *61 generic phase: 14
+2025/01/25 11:37:56 [debug] 81887#0: *61 content phase: 15
+2025/01/25 11:37:56 [debug] 81887#0: *61 content phase: 16
+2025/01/25 11:37:56 [debug] 81887#0: *61 content phase: 17
+2025/01/25 11:37:56 [debug] 81887#0: *61 content phase: 18
+2025/01/25 11:37:56 [debug] 81887#0: *61 content phase: 19
+2025/01/25 11:37:56 [debug] 81887#0: *61 content phase: 20
+2025/01/25 11:37:56 [debug] 81887#0: *61 http filename: "/Users/meserghi/Desktop/WebServ/errors/404.html"
+2025/01/25 11:37:56 [debug] 81887#0: *61 add cleanup: 00007FA1D981B9E0
+2025/01/25 11:37:56 [error] 81887#0: *61 open() "/Users/meserghi/Desktop/WebServ/errors/404.html" failed (2: No such file or directory), client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:37:56 [debug] 81887#0: *61 http finalize request: 404, "/errors/404.html?" a:1, c:2
+2025/01/25 11:37:56 [debug] 81887#0: *61 http special response: 404, "/errors/404.html?"
+2025/01/25 11:37:56 [debug] 81887#0: *61 http set discard body
+2025/01/25 11:37:56 [debug] 81887#0: *61 HTTP/1.1 404 Not Found
+Server: nginx/1.27.3
+Date: Sat, 25 Jan 2025 10:37:56 GMT
+Content-Type: text/html
+Content-Length: 153
+Connection: keep-alive
+
+2025/01/25 11:37:56 [debug] 81887#0: *61 write new buf t:1 f:0 00007FA1D981BF88, pos 00007FA1D981BF88, size: 155 file: 0, size: 0
+2025/01/25 11:37:56 [debug] 81887#0: *61 http write filter: l:0 f:0 s:155
+2025/01/25 11:37:56 [debug] 81887#0: *61 http output filter "/errors/404.html?"
+2025/01/25 11:37:56 [debug] 81887#0: *61 http copy filter: "/errors/404.html?"
+2025/01/25 11:37:56 [debug] 81887#0: *61 http postpone filter "/errors/404.html?" 00007FA1D981C168
+2025/01/25 11:37:56 [debug] 81887#0: *61 write old buf t:1 f:0 00007FA1D981BF88, pos 00007FA1D981BF88, size: 155 file: 0, size: 0
+2025/01/25 11:37:56 [debug] 81887#0: *61 write new buf t:0 f:0 0000000000000000, pos 0000000104D79AA0, size: 100 file: 0, size: 0
+2025/01/25 11:37:56 [debug] 81887#0: *61 write new buf t:0 f:0 0000000000000000, pos 0000000104D79420, size: 53 file: 0, size: 0
+2025/01/25 11:37:56 [debug] 81887#0: *61 http write filter: l:1 f:0 s:308
+2025/01/25 11:37:56 [debug] 81887#0: *61 http write filter limit 2097152
+2025/01/25 11:37:56 [debug] 81887#0: *61 writev: 308 of 308
+2025/01/25 11:37:56 [debug] 81887#0: *61 http write filter 0000000000000000
+2025/01/25 11:37:56 [debug] 81887#0: *61 http copy filter: 0 "/errors/404.html?"
+2025/01/25 11:37:56 [debug] 81887#0: *61 http finalize request: 0, "/errors/404.html?" a:1, c:2
+2025/01/25 11:37:56 [debug] 81887#0: *61 http request count:2 blk:0
+2025/01/25 11:37:56 [debug] 81887#0: *61 http finalize request: -4, "/errors/404.html?" a:1, c:1
+2025/01/25 11:37:56 [debug] 81887#0: *61 set http keepalive handler
+2025/01/25 11:37:56 [debug] 81887#0: *61 http close request
+2025/01/25 11:37:56 [debug] 81887#0: *61 http log handler
+2025/01/25 11:37:56 [debug] 81887#0: *61 free: 00007FA1D981AA00, unused: 8
+2025/01/25 11:37:56 [debug] 81887#0: *61 free: 00007FA1D981BA00, unused: 2005
+2025/01/25 11:37:56 [debug] 81887#0: *61 free: 00007FA1D980D800
+2025/01/25 11:37:56 [debug] 81887#0: *61 hc free: 0000000000000000
+2025/01/25 11:37:56 [debug] 81887#0: *61 hc busy: 0000000000000000 0
+2025/01/25 11:37:56 [debug] 81887#0: *61 tcp_nodelay
+2025/01/25 11:37:56 [debug] 81887#0: *61 reusable connection: 1
+2025/01/25 11:37:56 [debug] 81887#0: *61 event timer add: 3: 75000:11960240
+2025/01/25 11:38:24 [debug] 81887#0: accept on 0.0.0.0:4444, ready: 1
+2025/01/25 11:38:24 [debug] 81887#0: posix_memalign: 00007FA1DB826C90:512 @16
+2025/01/25 11:38:24 [debug] 81887#0: *62 accept: 127.0.0.1:51026 fd:4
+2025/01/25 11:38:24 [debug] 81887#0: *62 event timer add: 4: 60000:11972764
+2025/01/25 11:38:24 [debug] 81887#0: *62 reusable connection: 1
+2025/01/25 11:38:24 [debug] 81887#0: *62 kevent set event: 4: ft:-1 fl:0025
+2025/01/25 11:38:24 [debug] 81887#0: *62 http wait request handler
+2025/01/25 11:38:24 [debug] 81887#0: *62 malloc: 00007FA1DB008A00:1024
+2025/01/25 11:38:24 [debug] 81887#0: *62 recv: eof:0, avail:153, err:0
+2025/01/25 11:38:24 [debug] 81887#0: *62 recv: fd:4 153 of 1024
+2025/01/25 11:38:24 [debug] 81887#0: *62 reusable connection: 0
+2025/01/25 11:38:24 [debug] 81887#0: *62 posix_memalign: 00007FA1DB00D800:4096 @16
+2025/01/25 11:38:24 [debug] 81887#0: *62 http process request line
+2025/01/25 11:38:24 [debug] 81887#0: *62 http request line: "POST / HTTP/1.1"
+2025/01/25 11:38:24 [debug] 81887#0: *62 http uri: "/"
+2025/01/25 11:38:24 [debug] 81887#0: *62 http args: ""
+2025/01/25 11:38:24 [debug] 81887#0: *62 http exten: ""
+2025/01/25 11:38:24 [debug] 81887#0: *62 posix_memalign: 00007FA1DB00E800:4096 @16
+2025/01/25 11:38:24 [debug] 81887#0: *62 http process request header line
+2025/01/25 11:38:24 [debug] 81887#0: *62 http header: "Host: 0.0.0.0:4444"
+2025/01/25 11:38:24 [debug] 81887#0: *62 http header: "User-Agent: curl/7.64.1"
+2025/01/25 11:38:24 [debug] 81887#0: *62 http header: "Accept: */*"
+2025/01/25 11:38:24 [debug] 81887#0: *62 http header: "Content-Length: 8"
+2025/01/25 11:38:24 [debug] 81887#0: *62 http header: "Content-Type: application/x-www-form-urlencoded"
+2025/01/25 11:38:24 [debug] 81887#0: *62 http header done
+2025/01/25 11:38:24 [debug] 81887#0: *62 event timer del: 4: 11972764
+2025/01/25 11:38:24 [debug] 81887#0: *62 generic phase: 0
+2025/01/25 11:38:24 [debug] 81887#0: *62 rewrite phase: 1
+2025/01/25 11:38:24 [debug] 81887#0: *62 test location: "/"
+2025/01/25 11:38:24 [debug] 81887#0: *62 using configuration "/"
+2025/01/25 11:38:24 [debug] 81887#0: *62 http cl:8 max:10737418240
+2025/01/25 11:38:24 [debug] 81887#0: *62 rewrite phase: 3
+2025/01/25 11:38:24 [debug] 81887#0: *62 http script var
+2025/01/25 11:38:24 [debug] 81887#0: *62 http script var: "POST"
+2025/01/25 11:38:24 [debug] 81887#0: *62 http script value: "POST"
+2025/01/25 11:38:24 [debug] 81887#0: *62 http script equal
+2025/01/25 11:38:24 [debug] 81887#0: *62 http script if
+2025/01/25 11:38:24 [debug] 81887#0: *62 http script regex: "^"
+2025/01/25 11:38:24 [notice] 81887#0: *62 "^" matches "/", client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:38:24 [debug] 81887#0: *62 http script copy: "/post_handler"
+2025/01/25 11:38:24 [debug] 81887#0: *62 http script regex end
+2025/01/25 11:38:24 [notice] 81887#0: *62 rewritten data: "/post_handler", args: "", client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:38:24 [debug] 81887#0: *62 post rewrite phase: 4
+2025/01/25 11:38:24 [debug] 81887#0: *62 generic phase: 5
+2025/01/25 11:38:24 [debug] 81887#0: *62 generic phase: 6
+2025/01/25 11:38:24 [debug] 81887#0: *62 generic phase: 7
+2025/01/25 11:38:24 [debug] 81887#0: *62 generic phase: 8
+2025/01/25 11:38:24 [debug] 81887#0: *62 access phase: 9
+2025/01/25 11:38:24 [debug] 81887#0: *62 access phase: 10
+2025/01/25 11:38:24 [debug] 81887#0: *62 access phase: 11
+2025/01/25 11:38:24 [debug] 81887#0: *62 post access phase: 12
+2025/01/25 11:38:24 [debug] 81887#0: *62 generic phase: 13
+2025/01/25 11:38:24 [debug] 81887#0: *62 generic phase: 14
+2025/01/25 11:38:24 [debug] 81887#0: *62 content phase: 15
+2025/01/25 11:38:24 [debug] 81887#0: *62 content phase: 16
+2025/01/25 11:38:24 [debug] 81887#0: *62 content phase: 17
+2025/01/25 11:38:24 [debug] 81887#0: *62 content phase: 18
+2025/01/25 11:38:24 [debug] 81887#0: *62 content phase: 19
+2025/01/25 11:38:24 [debug] 81887#0: *62 content phase: 20
+2025/01/25 11:38:24 [debug] 81887#0: *62 http filename: "/Users/meserghi/Desktop/WebServ/post_handler"
+2025/01/25 11:38:24 [debug] 81887#0: *62 add cleanup: 00007FA1DB00E710
+2025/01/25 11:38:24 [error] 81887#0: *62 open() "/Users/meserghi/Desktop/WebServ/post_handler" failed (2: No such file or directory), client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:38:24 [debug] 81887#0: *62 http finalize request: 404, "/post_handler?" a:1, c:1
+2025/01/25 11:38:24 [debug] 81887#0: *62 http special response: 404, "/post_handler?"
+2025/01/25 11:38:24 [debug] 81887#0: *62 internal redirect: "/errors/404.html?"
+2025/01/25 11:38:24 [debug] 81887#0: *62 rewrite phase: 1
+2025/01/25 11:38:24 [debug] 81887#0: *62 test location: "/"
+2025/01/25 11:38:24 [debug] 81887#0: *62 test location: "post_handler"
+2025/01/25 11:38:24 [debug] 81887#0: *62 using configuration "/"
+2025/01/25 11:38:24 [debug] 81887#0: *62 http cl:8 max:10737418240
+2025/01/25 11:38:24 [debug] 81887#0: *62 rewrite phase: 3
+2025/01/25 11:38:24 [debug] 81887#0: *62 http script var
+2025/01/25 11:38:24 [debug] 81887#0: *62 http script var: "GET"
+2025/01/25 11:38:24 [debug] 81887#0: *62 http script value: "POST"
+2025/01/25 11:38:24 [debug] 81887#0: *62 http script equal
+2025/01/25 11:38:24 [debug] 81887#0: *62 http script equal: no
+2025/01/25 11:38:24 [debug] 81887#0: *62 http script if
+2025/01/25 11:38:24 [debug] 81887#0: *62 http script if: false
+2025/01/25 11:38:24 [debug] 81887#0: *62 post rewrite phase: 4
+2025/01/25 11:38:24 [debug] 81887#0: *62 generic phase: 5
+2025/01/25 11:38:24 [debug] 81887#0: *62 generic phase: 6
+2025/01/25 11:38:24 [debug] 81887#0: *62 generic phase: 7
+2025/01/25 11:38:24 [debug] 81887#0: *62 generic phase: 8
+2025/01/25 11:38:24 [debug] 81887#0: *62 access phase: 9
+2025/01/25 11:38:24 [debug] 81887#0: *62 access phase: 10
+2025/01/25 11:38:24 [debug] 81887#0: *62 access phase: 11
+2025/01/25 11:38:24 [debug] 81887#0: *62 post access phase: 12
+2025/01/25 11:38:24 [debug] 81887#0: *62 generic phase: 13
+2025/01/25 11:38:24 [debug] 81887#0: *62 generic phase: 14
+2025/01/25 11:38:24 [debug] 81887#0: *62 content phase: 15
+2025/01/25 11:38:24 [debug] 81887#0: *62 content phase: 16
+2025/01/25 11:38:24 [debug] 81887#0: *62 content phase: 17
+2025/01/25 11:38:24 [debug] 81887#0: *62 content phase: 18
+2025/01/25 11:38:24 [debug] 81887#0: *62 content phase: 19
+2025/01/25 11:38:24 [debug] 81887#0: *62 content phase: 20
+2025/01/25 11:38:24 [debug] 81887#0: *62 http filename: "/Users/meserghi/Desktop/WebServ/errors/404.html"
+2025/01/25 11:38:24 [debug] 81887#0: *62 add cleanup: 00007FA1DB00E7C8
+2025/01/25 11:38:24 [error] 81887#0: *62 open() "/Users/meserghi/Desktop/WebServ/errors/404.html" failed (2: No such file or directory), client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:38:24 [debug] 81887#0: *62 http finalize request: 404, "/errors/404.html?" a:1, c:2
+2025/01/25 11:38:24 [debug] 81887#0: *62 http special response: 404, "/errors/404.html?"
+2025/01/25 11:38:24 [debug] 81887#0: *62 http set discard body
+2025/01/25 11:38:24 [debug] 81887#0: *62 HTTP/1.1 404 Not Found
+Server: nginx/1.27.3
+Date: Sat, 25 Jan 2025 10:38:24 GMT
+Content-Type: text/html
+Content-Length: 153
+Connection: keep-alive
+
+2025/01/25 11:38:24 [debug] 81887#0: *62 write new buf t:1 f:0 00007FA1DB00ED70, pos 00007FA1DB00ED70, size: 155 file: 0, size: 0
+2025/01/25 11:38:24 [debug] 81887#0: *62 http write filter: l:0 f:0 s:155
+2025/01/25 11:38:24 [debug] 81887#0: *62 http output filter "/errors/404.html?"
+2025/01/25 11:38:24 [debug] 81887#0: *62 http copy filter: "/errors/404.html?"
+2025/01/25 11:38:24 [debug] 81887#0: *62 http postpone filter "/errors/404.html?" 00007FA1DB00EF50
+2025/01/25 11:38:24 [debug] 81887#0: *62 write old buf t:1 f:0 00007FA1DB00ED70, pos 00007FA1DB00ED70, size: 155 file: 0, size: 0
+2025/01/25 11:38:24 [debug] 81887#0: *62 write new buf t:0 f:0 0000000000000000, pos 0000000104D79AA0, size: 100 file: 0, size: 0
+2025/01/25 11:38:24 [debug] 81887#0: *62 write new buf t:0 f:0 0000000000000000, pos 0000000104D79420, size: 53 file: 0, size: 0
+2025/01/25 11:38:24 [debug] 81887#0: *62 http write filter: l:1 f:0 s:308
+2025/01/25 11:38:24 [debug] 81887#0: *62 http write filter limit 2097152
+2025/01/25 11:38:24 [debug] 81887#0: *62 writev: 308 of 308
+2025/01/25 11:38:24 [debug] 81887#0: *62 http write filter 0000000000000000
+2025/01/25 11:38:24 [debug] 81887#0: *62 http copy filter: 0 "/errors/404.html?"
+2025/01/25 11:38:24 [debug] 81887#0: *62 http finalize request: 0, "/errors/404.html?" a:1, c:2
+2025/01/25 11:38:24 [debug] 81887#0: *62 http request count:2 blk:0
+2025/01/25 11:38:24 [debug] 81887#0: *62 http finalize request: -4, "/errors/404.html?" a:1, c:1
+2025/01/25 11:38:24 [debug] 81887#0: *62 set http keepalive handler
+2025/01/25 11:38:24 [debug] 81887#0: *62 http close request
+2025/01/25 11:38:24 [debug] 81887#0: *62 http log handler
+2025/01/25 11:38:24 [debug] 81887#0: *62 free: 00007FA1DB00D800, unused: 8
+2025/01/25 11:38:24 [debug] 81887#0: *62 free: 00007FA1DB00E800, unused: 2039
+2025/01/25 11:38:24 [debug] 81887#0: *62 free: 00007FA1DB008A00
+2025/01/25 11:38:24 [debug] 81887#0: *62 hc free: 0000000000000000
+2025/01/25 11:38:24 [debug] 81887#0: *62 hc busy: 0000000000000000 0
+2025/01/25 11:38:24 [debug] 81887#0: *62 tcp_nodelay
+2025/01/25 11:38:24 [debug] 81887#0: *62 reusable connection: 1
+2025/01/25 11:38:24 [debug] 81887#0: *62 event timer add: 4: 75000:11987764
+2025/01/25 11:38:24 [debug] 81887#0: *62 http keepalive handler
+2025/01/25 11:38:24 [info] 81887#0: *62 kevent() reported that client 127.0.0.1 closed keepalive connection
+2025/01/25 11:38:24 [debug] 81887#0: *62 close http connection: 4
+2025/01/25 11:38:24 [debug] 81887#0: *62 event timer del: 4: 11987764
+2025/01/25 11:38:24 [debug] 81887#0: *62 reusable connection: 0
+2025/01/25 11:38:24 [debug] 81887#0: *62 free: 0000000000000000
+2025/01/25 11:38:24 [debug] 81887#0: *62 free: 00007FA1DB826C90, unused: 136
+2025/01/25 11:38:33 [debug] 81887#0: accept on 0.0.0.0:4444, ready: 1
+2025/01/25 11:38:33 [debug] 81887#0: posix_memalign: 00007FA1D960DA10:512 @16
+2025/01/25 11:38:33 [debug] 81887#0: *63 accept: 127.0.0.1:51027 fd:4
+2025/01/25 11:38:33 [debug] 81887#0: *63 event timer add: 4: 60000:11982214
+2025/01/25 11:38:33 [debug] 81887#0: *63 reusable connection: 1
+2025/01/25 11:38:33 [debug] 81887#0: *63 kevent set event: 4: ft:-1 fl:0025
+2025/01/25 11:38:33 [debug] 81887#0: *63 http wait request handler
+2025/01/25 11:38:33 [debug] 81887#0: *63 malloc: 00007FA1DA808200:1024
+2025/01/25 11:38:33 [debug] 81887#0: *63 recv: eof:0, avail:153, err:0
+2025/01/25 11:38:33 [debug] 81887#0: *63 recv: fd:4 153 of 1024
+2025/01/25 11:38:33 [debug] 81887#0: *63 reusable connection: 0
+2025/01/25 11:38:33 [debug] 81887#0: *63 posix_memalign: 00007FA1DA808600:4096 @16
+2025/01/25 11:38:33 [debug] 81887#0: *63 http process request line
+2025/01/25 11:38:33 [debug] 81887#0: *63 http request line: "POST / HTTP/1.1"
+2025/01/25 11:38:33 [debug] 81887#0: *63 http uri: "/"
+2025/01/25 11:38:33 [debug] 81887#0: *63 http args: ""
+2025/01/25 11:38:33 [debug] 81887#0: *63 http exten: ""
+2025/01/25 11:38:33 [debug] 81887#0: *63 posix_memalign: 00007FA1DA809600:4096 @16
+2025/01/25 11:38:33 [debug] 81887#0: *63 http process request header line
+2025/01/25 11:38:33 [debug] 81887#0: *63 http header: "Host: 0.0.0.0:4444"
+2025/01/25 11:38:33 [debug] 81887#0: *63 http header: "User-Agent: curl/7.64.1"
+2025/01/25 11:38:33 [debug] 81887#0: *63 http header: "Accept: */*"
+2025/01/25 11:38:33 [debug] 81887#0: *63 http header: "Content-Length: 8"
+2025/01/25 11:38:33 [debug] 81887#0: *63 http header: "Content-Type: application/x-www-form-urlencoded"
+2025/01/25 11:38:33 [debug] 81887#0: *63 http header done
+2025/01/25 11:38:33 [debug] 81887#0: *63 event timer del: 4: 11982214
+2025/01/25 11:38:33 [debug] 81887#0: *63 generic phase: 0
+2025/01/25 11:38:33 [debug] 81887#0: *63 rewrite phase: 1
+2025/01/25 11:38:33 [debug] 81887#0: *63 test location: "/"
+2025/01/25 11:38:33 [debug] 81887#0: *63 using configuration "/"
+2025/01/25 11:38:33 [debug] 81887#0: *63 http cl:8 max:10737418240
+2025/01/25 11:38:33 [debug] 81887#0: *63 rewrite phase: 3
+2025/01/25 11:38:33 [debug] 81887#0: *63 http script var
+2025/01/25 11:38:33 [debug] 81887#0: *63 http script var: "POST"
+2025/01/25 11:38:33 [debug] 81887#0: *63 http script value: "POST"
+2025/01/25 11:38:33 [debug] 81887#0: *63 http script equal
+2025/01/25 11:38:33 [debug] 81887#0: *63 http script if
+2025/01/25 11:38:33 [debug] 81887#0: *63 http script regex: "^"
+2025/01/25 11:38:33 [notice] 81887#0: *63 "^" matches "/", client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:38:33 [debug] 81887#0: *63 http script copy: "/post_handler"
+2025/01/25 11:38:33 [debug] 81887#0: *63 http script regex end
+2025/01/25 11:38:33 [notice] 81887#0: *63 rewritten data: "/post_handler", args: "", client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:38:33 [debug] 81887#0: *63 post rewrite phase: 4
+2025/01/25 11:38:33 [debug] 81887#0: *63 generic phase: 5
+2025/01/25 11:38:33 [debug] 81887#0: *63 generic phase: 6
+2025/01/25 11:38:33 [debug] 81887#0: *63 generic phase: 7
+2025/01/25 11:38:33 [debug] 81887#0: *63 generic phase: 8
+2025/01/25 11:38:33 [debug] 81887#0: *63 access phase: 9
+2025/01/25 11:38:33 [debug] 81887#0: *63 access phase: 10
+2025/01/25 11:38:33 [debug] 81887#0: *63 access phase: 11
+2025/01/25 11:38:33 [debug] 81887#0: *63 post access phase: 12
+2025/01/25 11:38:33 [debug] 81887#0: *63 generic phase: 13
+2025/01/25 11:38:33 [debug] 81887#0: *63 generic phase: 14
+2025/01/25 11:38:33 [debug] 81887#0: *63 content phase: 15
+2025/01/25 11:38:33 [debug] 81887#0: *63 content phase: 16
+2025/01/25 11:38:33 [debug] 81887#0: *63 content phase: 17
+2025/01/25 11:38:33 [debug] 81887#0: *63 content phase: 18
+2025/01/25 11:38:33 [debug] 81887#0: *63 content phase: 19
+2025/01/25 11:38:33 [debug] 81887#0: *63 content phase: 20
+2025/01/25 11:38:33 [debug] 81887#0: *63 http filename: "/Users/meserghi/Desktop/WebServ/post_handler"
+2025/01/25 11:38:33 [debug] 81887#0: *63 add cleanup: 00007FA1DA809510
+2025/01/25 11:38:33 [error] 81887#0: *63 open() "/Users/meserghi/Desktop/WebServ/post_handler" failed (2: No such file or directory), client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:38:33 [debug] 81887#0: *63 http finalize request: 404, "/post_handler?" a:1, c:1
+2025/01/25 11:38:33 [debug] 81887#0: *63 http special response: 404, "/post_handler?"
+2025/01/25 11:38:33 [debug] 81887#0: *63 internal redirect: "/errors/404.html?"
+2025/01/25 11:38:33 [debug] 81887#0: *63 rewrite phase: 1
+2025/01/25 11:38:33 [debug] 81887#0: *63 test location: "/"
+2025/01/25 11:38:33 [debug] 81887#0: *63 test location: "post_handler"
+2025/01/25 11:38:33 [debug] 81887#0: *63 using configuration "/"
+2025/01/25 11:38:33 [debug] 81887#0: *63 http cl:8 max:10737418240
+2025/01/25 11:38:33 [debug] 81887#0: *63 rewrite phase: 3
+2025/01/25 11:38:33 [debug] 81887#0: *63 http script var
+2025/01/25 11:38:33 [debug] 81887#0: *63 http script var: "GET"
+2025/01/25 11:38:33 [debug] 81887#0: *63 http script value: "POST"
+2025/01/25 11:38:33 [debug] 81887#0: *63 http script equal
+2025/01/25 11:38:33 [debug] 81887#0: *63 http script equal: no
+2025/01/25 11:38:33 [debug] 81887#0: *63 http script if
+2025/01/25 11:38:33 [debug] 81887#0: *63 http script if: false
+2025/01/25 11:38:33 [debug] 81887#0: *63 post rewrite phase: 4
+2025/01/25 11:38:33 [debug] 81887#0: *63 generic phase: 5
+2025/01/25 11:38:33 [debug] 81887#0: *63 generic phase: 6
+2025/01/25 11:38:33 [debug] 81887#0: *63 generic phase: 7
+2025/01/25 11:38:33 [debug] 81887#0: *63 generic phase: 8
+2025/01/25 11:38:33 [debug] 81887#0: *63 access phase: 9
+2025/01/25 11:38:33 [debug] 81887#0: *63 access phase: 10
+2025/01/25 11:38:33 [debug] 81887#0: *63 access phase: 11
+2025/01/25 11:38:33 [debug] 81887#0: *63 post access phase: 12
+2025/01/25 11:38:33 [debug] 81887#0: *63 generic phase: 13
+2025/01/25 11:38:33 [debug] 81887#0: *63 generic phase: 14
+2025/01/25 11:38:33 [debug] 81887#0: *63 content phase: 15
+2025/01/25 11:38:33 [debug] 81887#0: *63 content phase: 16
+2025/01/25 11:38:33 [debug] 81887#0: *63 content phase: 17
+2025/01/25 11:38:33 [debug] 81887#0: *63 content phase: 18
+2025/01/25 11:38:33 [debug] 81887#0: *63 content phase: 19
+2025/01/25 11:38:33 [debug] 81887#0: *63 content phase: 20
+2025/01/25 11:38:33 [debug] 81887#0: *63 http filename: "/Users/meserghi/Desktop/WebServ/errors/404.html"
+2025/01/25 11:38:33 [debug] 81887#0: *63 add cleanup: 00007FA1DA8095C8
+2025/01/25 11:38:33 [error] 81887#0: *63 open() "/Users/meserghi/Desktop/WebServ/errors/404.html" failed (2: No such file or directory), client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:38:33 [debug] 81887#0: *63 http finalize request: 404, "/errors/404.html?" a:1, c:2
+2025/01/25 11:38:33 [debug] 81887#0: *63 http special response: 404, "/errors/404.html?"
+2025/01/25 11:38:33 [debug] 81887#0: *63 http set discard body
+2025/01/25 11:38:33 [debug] 81887#0: *63 HTTP/1.1 404 Not Found
+Server: nginx/1.27.3
+Date: Sat, 25 Jan 2025 10:38:33 GMT
+Content-Type: text/html
+Content-Length: 153
+Connection: keep-alive
+
+2025/01/25 11:38:33 [debug] 81887#0: *63 write new buf t:1 f:0 00007FA1DA809B70, pos 00007FA1DA809B70, size: 155 file: 0, size: 0
+2025/01/25 11:38:33 [debug] 81887#0: *63 http write filter: l:0 f:0 s:155
+2025/01/25 11:38:33 [debug] 81887#0: *63 http output filter "/errors/404.html?"
+2025/01/25 11:38:33 [debug] 81887#0: *63 http copy filter: "/errors/404.html?"
+2025/01/25 11:38:33 [debug] 81887#0: *63 http postpone filter "/errors/404.html?" 00007FA1DA809D50
+2025/01/25 11:38:33 [debug] 81887#0: *63 write old buf t:1 f:0 00007FA1DA809B70, pos 00007FA1DA809B70, size: 155 file: 0, size: 0
+2025/01/25 11:38:33 [debug] 81887#0: *63 write new buf t:0 f:0 0000000000000000, pos 0000000104D79AA0, size: 100 file: 0, size: 0
+2025/01/25 11:38:33 [debug] 81887#0: *63 write new buf t:0 f:0 0000000000000000, pos 0000000104D79420, size: 53 file: 0, size: 0
+2025/01/25 11:38:33 [debug] 81887#0: *63 http write filter: l:1 f:0 s:308
+2025/01/25 11:38:33 [debug] 81887#0: *63 http write filter limit 2097152
+2025/01/25 11:38:33 [debug] 81887#0: *63 writev: 308 of 308
+2025/01/25 11:38:33 [debug] 81887#0: *63 http write filter 0000000000000000
+2025/01/25 11:38:33 [debug] 81887#0: *63 http copy filter: 0 "/errors/404.html?"
+2025/01/25 11:38:33 [debug] 81887#0: *63 http finalize request: 0, "/errors/404.html?" a:1, c:2
+2025/01/25 11:38:33 [debug] 81887#0: *63 http request count:2 blk:0
+2025/01/25 11:38:33 [debug] 81887#0: *63 http finalize request: -4, "/errors/404.html?" a:1, c:1
+2025/01/25 11:38:33 [debug] 81887#0: *63 set http keepalive handler
+2025/01/25 11:38:33 [debug] 81887#0: *63 http close request
+2025/01/25 11:38:33 [debug] 81887#0: *63 http log handler
+2025/01/25 11:38:33 [debug] 81887#0: *63 free: 00007FA1DA808600, unused: 8
+2025/01/25 11:38:33 [debug] 81887#0: *63 free: 00007FA1DA809600, unused: 2039
+2025/01/25 11:38:33 [debug] 81887#0: *63 free: 00007FA1DA808200
+2025/01/25 11:38:33 [debug] 81887#0: *63 hc free: 0000000000000000
+2025/01/25 11:38:33 [debug] 81887#0: *63 hc busy: 0000000000000000 0
+2025/01/25 11:38:33 [debug] 81887#0: *63 tcp_nodelay
+2025/01/25 11:38:33 [debug] 81887#0: *63 reusable connection: 1
+2025/01/25 11:38:33 [debug] 81887#0: *63 event timer add: 4: 75000:11997214
+2025/01/25 11:38:33 [debug] 81887#0: *63 http keepalive handler
+2025/01/25 11:38:33 [info] 81887#0: *63 kevent() reported that client 127.0.0.1 closed keepalive connection
+2025/01/25 11:38:33 [debug] 81887#0: *63 close http connection: 4
+2025/01/25 11:38:33 [debug] 81887#0: *63 event timer del: 4: 11997214
+2025/01/25 11:38:33 [debug] 81887#0: *63 reusable connection: 0
+2025/01/25 11:38:33 [debug] 81887#0: *63 free: 0000000000000000
+2025/01/25 11:38:33 [debug] 81887#0: *63 free: 00007FA1D960DA10, unused: 136
+2025/01/25 11:38:35 [debug] 81887#0: accept on 0.0.0.0:4444, ready: 1
+2025/01/25 11:38:35 [debug] 81887#0: posix_memalign: 00007FA1DB826C90:512 @16
+2025/01/25 11:38:35 [debug] 81887#0: *64 accept: 127.0.0.1:51028 fd:4
+2025/01/25 11:38:35 [debug] 81887#0: *64 event timer add: 4: 60000:11984317
+2025/01/25 11:38:35 [debug] 81887#0: *64 reusable connection: 1
+2025/01/25 11:38:35 [debug] 81887#0: *64 kevent set event: 4: ft:-1 fl:0025
+2025/01/25 11:38:35 [debug] 81887#0: *64 http wait request handler
+2025/01/25 11:38:35 [debug] 81887#0: *64 malloc: 00007FA1DB008A00:1024
+2025/01/25 11:38:35 [debug] 81887#0: *64 recv: eof:0, avail:153, err:0
+2025/01/25 11:38:35 [debug] 81887#0: *64 recv: fd:4 153 of 1024
+2025/01/25 11:38:35 [debug] 81887#0: *64 reusable connection: 0
+2025/01/25 11:38:35 [debug] 81887#0: *64 posix_memalign: 00007FA1DB00DC00:4096 @16
+2025/01/25 11:38:35 [debug] 81887#0: *64 http process request line
+2025/01/25 11:38:35 [debug] 81887#0: *64 http request line: "POST / HTTP/1.1"
+2025/01/25 11:38:35 [debug] 81887#0: *64 http uri: "/"
+2025/01/25 11:38:35 [debug] 81887#0: *64 http args: ""
+2025/01/25 11:38:35 [debug] 81887#0: *64 http exten: ""
+2025/01/25 11:38:35 [debug] 81887#0: *64 posix_memalign: 00007FA1DB00EC00:4096 @16
+2025/01/25 11:38:35 [debug] 81887#0: *64 http process request header line
+2025/01/25 11:38:35 [debug] 81887#0: *64 http header: "Host: 0.0.0.0:4444"
+2025/01/25 11:38:35 [debug] 81887#0: *64 http header: "User-Agent: curl/7.64.1"
+2025/01/25 11:38:35 [debug] 81887#0: *64 http header: "Accept: */*"
+2025/01/25 11:38:35 [debug] 81887#0: *64 http header: "Content-Length: 8"
+2025/01/25 11:38:35 [debug] 81887#0: *64 http header: "Content-Type: application/x-www-form-urlencoded"
+2025/01/25 11:38:35 [debug] 81887#0: *64 http header done
+2025/01/25 11:38:35 [debug] 81887#0: *64 event timer del: 4: 11984317
+2025/01/25 11:38:35 [debug] 81887#0: *64 generic phase: 0
+2025/01/25 11:38:35 [debug] 81887#0: *64 rewrite phase: 1
+2025/01/25 11:38:35 [debug] 81887#0: *64 test location: "/"
+2025/01/25 11:38:35 [debug] 81887#0: *64 using configuration "/"
+2025/01/25 11:38:35 [debug] 81887#0: *64 http cl:8 max:10737418240
+2025/01/25 11:38:35 [debug] 81887#0: *64 rewrite phase: 3
+2025/01/25 11:38:35 [debug] 81887#0: *64 http script var
+2025/01/25 11:38:35 [debug] 81887#0: *64 http script var: "POST"
+2025/01/25 11:38:35 [debug] 81887#0: *64 http script value: "POST"
+2025/01/25 11:38:35 [debug] 81887#0: *64 http script equal
+2025/01/25 11:38:35 [debug] 81887#0: *64 http script if
+2025/01/25 11:38:35 [debug] 81887#0: *64 http script regex: "^"
+2025/01/25 11:38:35 [notice] 81887#0: *64 "^" matches "/", client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:38:35 [debug] 81887#0: *64 http script copy: "/post_handler"
+2025/01/25 11:38:35 [debug] 81887#0: *64 http script regex end
+2025/01/25 11:38:35 [notice] 81887#0: *64 rewritten data: "/post_handler", args: "", client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:38:35 [debug] 81887#0: *64 post rewrite phase: 4
+2025/01/25 11:38:35 [debug] 81887#0: *64 generic phase: 5
+2025/01/25 11:38:35 [debug] 81887#0: *64 generic phase: 6
+2025/01/25 11:38:35 [debug] 81887#0: *64 generic phase: 7
+2025/01/25 11:38:35 [debug] 81887#0: *64 generic phase: 8
+2025/01/25 11:38:35 [debug] 81887#0: *64 access phase: 9
+2025/01/25 11:38:35 [debug] 81887#0: *64 access phase: 10
+2025/01/25 11:38:35 [debug] 81887#0: *64 access phase: 11
+2025/01/25 11:38:35 [debug] 81887#0: *64 post access phase: 12
+2025/01/25 11:38:35 [debug] 81887#0: *64 generic phase: 13
+2025/01/25 11:38:35 [debug] 81887#0: *64 generic phase: 14
+2025/01/25 11:38:35 [debug] 81887#0: *64 content phase: 15
+2025/01/25 11:38:35 [debug] 81887#0: *64 content phase: 16
+2025/01/25 11:38:35 [debug] 81887#0: *64 content phase: 17
+2025/01/25 11:38:35 [debug] 81887#0: *64 content phase: 18
+2025/01/25 11:38:35 [debug] 81887#0: *64 content phase: 19
+2025/01/25 11:38:35 [debug] 81887#0: *64 content phase: 20
+2025/01/25 11:38:35 [debug] 81887#0: *64 http filename: "/Users/meserghi/Desktop/WebServ/post_handler"
+2025/01/25 11:38:35 [debug] 81887#0: *64 add cleanup: 00007FA1DB00EB10
+2025/01/25 11:38:35 [error] 81887#0: *64 open() "/Users/meserghi/Desktop/WebServ/post_handler" failed (2: No such file or directory), client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:38:35 [debug] 81887#0: *64 http finalize request: 404, "/post_handler?" a:1, c:1
+2025/01/25 11:38:35 [debug] 81887#0: *64 http special response: 404, "/post_handler?"
+2025/01/25 11:38:35 [debug] 81887#0: *64 internal redirect: "/errors/404.html?"
+2025/01/25 11:38:35 [debug] 81887#0: *64 rewrite phase: 1
+2025/01/25 11:38:35 [debug] 81887#0: *64 test location: "/"
+2025/01/25 11:38:35 [debug] 81887#0: *64 test location: "post_handler"
+2025/01/25 11:38:35 [debug] 81887#0: *64 using configuration "/"
+2025/01/25 11:38:35 [debug] 81887#0: *64 http cl:8 max:10737418240
+2025/01/25 11:38:35 [debug] 81887#0: *64 rewrite phase: 3
+2025/01/25 11:38:35 [debug] 81887#0: *64 http script var
+2025/01/25 11:38:35 [debug] 81887#0: *64 http script var: "GET"
+2025/01/25 11:38:35 [debug] 81887#0: *64 http script value: "POST"
+2025/01/25 11:38:35 [debug] 81887#0: *64 http script equal
+2025/01/25 11:38:35 [debug] 81887#0: *64 http script equal: no
+2025/01/25 11:38:35 [debug] 81887#0: *64 http script if
+2025/01/25 11:38:35 [debug] 81887#0: *64 http script if: false
+2025/01/25 11:38:35 [debug] 81887#0: *64 post rewrite phase: 4
+2025/01/25 11:38:35 [debug] 81887#0: *64 generic phase: 5
+2025/01/25 11:38:35 [debug] 81887#0: *64 generic phase: 6
+2025/01/25 11:38:35 [debug] 81887#0: *64 generic phase: 7
+2025/01/25 11:38:35 [debug] 81887#0: *64 generic phase: 8
+2025/01/25 11:38:35 [debug] 81887#0: *64 access phase: 9
+2025/01/25 11:38:35 [debug] 81887#0: *64 access phase: 10
+2025/01/25 11:38:35 [debug] 81887#0: *64 access phase: 11
+2025/01/25 11:38:35 [debug] 81887#0: *64 post access phase: 12
+2025/01/25 11:38:35 [debug] 81887#0: *64 generic phase: 13
+2025/01/25 11:38:35 [debug] 81887#0: *64 generic phase: 14
+2025/01/25 11:38:35 [debug] 81887#0: *64 content phase: 15
+2025/01/25 11:38:35 [debug] 81887#0: *64 content phase: 16
+2025/01/25 11:38:35 [debug] 81887#0: *64 content phase: 17
+2025/01/25 11:38:35 [debug] 81887#0: *64 content phase: 18
+2025/01/25 11:38:35 [debug] 81887#0: *64 content phase: 19
+2025/01/25 11:38:35 [debug] 81887#0: *64 content phase: 20
+2025/01/25 11:38:35 [debug] 81887#0: *64 http filename: "/Users/meserghi/Desktop/WebServ/errors/404.html"
+2025/01/25 11:38:35 [debug] 81887#0: *64 add cleanup: 00007FA1DB00EBC8
+2025/01/25 11:38:35 [error] 81887#0: *64 open() "/Users/meserghi/Desktop/WebServ/errors/404.html" failed (2: No such file or directory), client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:38:35 [debug] 81887#0: *64 http finalize request: 404, "/errors/404.html?" a:1, c:2
+2025/01/25 11:38:35 [debug] 81887#0: *64 http special response: 404, "/errors/404.html?"
+2025/01/25 11:38:35 [debug] 81887#0: *64 http set discard body
+2025/01/25 11:38:35 [debug] 81887#0: *64 HTTP/1.1 404 Not Found
+Server: nginx/1.27.3
+Date: Sat, 25 Jan 2025 10:38:35 GMT
+Content-Type: text/html
+Content-Length: 153
+Connection: keep-alive
+
+2025/01/25 11:38:35 [debug] 81887#0: *64 write new buf t:1 f:0 00007FA1DB00F170, pos 00007FA1DB00F170, size: 155 file: 0, size: 0
+2025/01/25 11:38:35 [debug] 81887#0: *64 http write filter: l:0 f:0 s:155
+2025/01/25 11:38:35 [debug] 81887#0: *64 http output filter "/errors/404.html?"
+2025/01/25 11:38:35 [debug] 81887#0: *64 http copy filter: "/errors/404.html?"
+2025/01/25 11:38:35 [debug] 81887#0: *64 http postpone filter "/errors/404.html?" 00007FA1DB00F350
+2025/01/25 11:38:35 [debug] 81887#0: *64 write old buf t:1 f:0 00007FA1DB00F170, pos 00007FA1DB00F170, size: 155 file: 0, size: 0
+2025/01/25 11:38:35 [debug] 81887#0: *64 write new buf t:0 f:0 0000000000000000, pos 0000000104D79AA0, size: 100 file: 0, size: 0
+2025/01/25 11:38:35 [debug] 81887#0: *64 write new buf t:0 f:0 0000000000000000, pos 0000000104D79420, size: 53 file: 0, size: 0
+2025/01/25 11:38:35 [debug] 81887#0: *64 http write filter: l:1 f:0 s:308
+2025/01/25 11:38:35 [debug] 81887#0: *64 http write filter limit 2097152
+2025/01/25 11:38:35 [debug] 81887#0: *64 writev: 308 of 308
+2025/01/25 11:38:35 [debug] 81887#0: *64 http write filter 0000000000000000
+2025/01/25 11:38:35 [debug] 81887#0: *64 http copy filter: 0 "/errors/404.html?"
+2025/01/25 11:38:35 [debug] 81887#0: *64 http finalize request: 0, "/errors/404.html?" a:1, c:2
+2025/01/25 11:38:35 [debug] 81887#0: *64 http request count:2 blk:0
+2025/01/25 11:38:35 [debug] 81887#0: *64 http finalize request: -4, "/errors/404.html?" a:1, c:1
+2025/01/25 11:38:35 [debug] 81887#0: *64 set http keepalive handler
+2025/01/25 11:38:35 [debug] 81887#0: *64 http close request
+2025/01/25 11:38:35 [debug] 81887#0: *64 http log handler
+2025/01/25 11:38:35 [debug] 81887#0: *64 free: 00007FA1DB00DC00, unused: 8
+2025/01/25 11:38:35 [debug] 81887#0: *64 free: 00007FA1DB00EC00, unused: 2039
+2025/01/25 11:38:35 [debug] 81887#0: *64 free: 00007FA1DB008A00
+2025/01/25 11:38:35 [debug] 81887#0: *64 hc free: 0000000000000000
+2025/01/25 11:38:35 [debug] 81887#0: *64 hc busy: 0000000000000000 0
+2025/01/25 11:38:35 [debug] 81887#0: *64 tcp_nodelay
+2025/01/25 11:38:35 [debug] 81887#0: *64 reusable connection: 1
+2025/01/25 11:38:35 [debug] 81887#0: *64 event timer add: 4: 75000:11999317
+2025/01/25 11:38:35 [debug] 81887#0: *64 http keepalive handler
+2025/01/25 11:38:35 [info] 81887#0: *64 kevent() reported that client 127.0.0.1 closed keepalive connection
+2025/01/25 11:38:35 [debug] 81887#0: *64 close http connection: 4
+2025/01/25 11:38:35 [debug] 81887#0: *64 event timer del: 4: 11999317
+2025/01/25 11:38:35 [debug] 81887#0: *64 reusable connection: 0
+2025/01/25 11:38:35 [debug] 81887#0: *64 free: 0000000000000000
+2025/01/25 11:38:35 [debug] 81887#0: *64 free: 00007FA1DB826C90, unused: 136
+2025/01/25 11:38:47 [debug] 81887#0: accept on 0.0.0.0:4444, ready: 1
+2025/01/25 11:38:47 [debug] 81887#0: posix_memalign: 00007FA1D960DA10:512 @16
+2025/01/25 11:38:47 [debug] 81887#0: *65 accept: 127.0.0.1:51031 fd:4
+2025/01/25 11:38:47 [debug] 81887#0: *65 event timer add: 4: 60000:11995870
+2025/01/25 11:38:47 [debug] 81887#0: *65 reusable connection: 1
+2025/01/25 11:38:47 [debug] 81887#0: *65 kevent set event: 4: ft:-1 fl:0025
+2025/01/25 11:38:47 [debug] 81887#0: *65 http wait request handler
+2025/01/25 11:38:47 [debug] 81887#0: *65 malloc: 00007FA1DA808200:1024
+2025/01/25 11:38:47 [debug] 81887#0: *65 recv: eof:0, avail:153, err:0
+2025/01/25 11:38:47 [debug] 81887#0: *65 recv: fd:4 153 of 1024
+2025/01/25 11:38:47 [debug] 81887#0: *65 reusable connection: 0
+2025/01/25 11:38:47 [debug] 81887#0: *65 posix_memalign: 00007FA1DA80D400:4096 @16
+2025/01/25 11:38:47 [debug] 81887#0: *65 http process request line
+2025/01/25 11:38:47 [debug] 81887#0: *65 http request line: "POST / HTTP/1.1"
+2025/01/25 11:38:47 [debug] 81887#0: *65 http uri: "/"
+2025/01/25 11:38:47 [debug] 81887#0: *65 http args: ""
+2025/01/25 11:38:47 [debug] 81887#0: *65 http exten: ""
+2025/01/25 11:38:47 [debug] 81887#0: *65 posix_memalign: 00007FA1DA80E400:4096 @16
+2025/01/25 11:38:47 [debug] 81887#0: *65 http process request header line
+2025/01/25 11:38:47 [debug] 81887#0: *65 http header: "Host: 0.0.0.0:4444"
+2025/01/25 11:38:47 [debug] 81887#0: *65 http header: "User-Agent: curl/7.64.1"
+2025/01/25 11:38:47 [debug] 81887#0: *65 http header: "Accept: */*"
+2025/01/25 11:38:47 [debug] 81887#0: *65 http header: "Content-Length: 8"
+2025/01/25 11:38:47 [debug] 81887#0: *65 http header: "Content-Type: application/x-www-form-urlencoded"
+2025/01/25 11:38:47 [debug] 81887#0: *65 http header done
+2025/01/25 11:38:47 [debug] 81887#0: *65 event timer del: 4: 11995870
+2025/01/25 11:38:47 [debug] 81887#0: *65 generic phase: 0
+2025/01/25 11:38:47 [debug] 81887#0: *65 rewrite phase: 1
+2025/01/25 11:38:47 [debug] 81887#0: *65 test location: "/"
+2025/01/25 11:38:47 [debug] 81887#0: *65 using configuration "/"
+2025/01/25 11:38:47 [debug] 81887#0: *65 http cl:8 max:10737418240
+2025/01/25 11:38:47 [debug] 81887#0: *65 rewrite phase: 3
+2025/01/25 11:38:47 [debug] 81887#0: *65 http script var
+2025/01/25 11:38:47 [debug] 81887#0: *65 http script var: "POST"
+2025/01/25 11:38:47 [debug] 81887#0: *65 http script value: "POST"
+2025/01/25 11:38:47 [debug] 81887#0: *65 http script equal
+2025/01/25 11:38:47 [debug] 81887#0: *65 http script if
+2025/01/25 11:38:47 [debug] 81887#0: *65 http script regex: "^"
+2025/01/25 11:38:47 [notice] 81887#0: *65 "^" matches "/", client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:38:47 [debug] 81887#0: *65 http script copy: "/post_handler"
+2025/01/25 11:38:47 [debug] 81887#0: *65 http script regex end
+2025/01/25 11:38:47 [notice] 81887#0: *65 rewritten data: "/post_handler", args: "", client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:38:47 [debug] 81887#0: *65 post rewrite phase: 4
+2025/01/25 11:38:47 [debug] 81887#0: *65 generic phase: 5
+2025/01/25 11:38:47 [debug] 81887#0: *65 generic phase: 6
+2025/01/25 11:38:47 [debug] 81887#0: *65 generic phase: 7
+2025/01/25 11:38:47 [debug] 81887#0: *65 generic phase: 8
+2025/01/25 11:38:47 [debug] 81887#0: *65 access phase: 9
+2025/01/25 11:38:47 [debug] 81887#0: *65 access phase: 10
+2025/01/25 11:38:47 [debug] 81887#0: *65 access phase: 11
+2025/01/25 11:38:47 [debug] 81887#0: *65 post access phase: 12
+2025/01/25 11:38:47 [debug] 81887#0: *65 generic phase: 13
+2025/01/25 11:38:47 [debug] 81887#0: *65 generic phase: 14
+2025/01/25 11:38:47 [debug] 81887#0: *65 content phase: 15
+2025/01/25 11:38:47 [debug] 81887#0: *65 content phase: 16
+2025/01/25 11:38:47 [debug] 81887#0: *65 content phase: 17
+2025/01/25 11:38:47 [debug] 81887#0: *65 content phase: 18
+2025/01/25 11:38:47 [debug] 81887#0: *65 content phase: 19
+2025/01/25 11:38:47 [debug] 81887#0: *65 content phase: 20
+2025/01/25 11:38:47 [debug] 81887#0: *65 http filename: "/Users/meserghi/Desktop/WebServ/post_handler"
+2025/01/25 11:38:47 [debug] 81887#0: *65 add cleanup: 00007FA1DA80E310
+2025/01/25 11:38:47 [error] 81887#0: *65 open() "/Users/meserghi/Desktop/WebServ/post_handler" failed (2: No such file or directory), client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:38:47 [debug] 81887#0: *65 http finalize request: 404, "/post_handler?" a:1, c:1
+2025/01/25 11:38:47 [debug] 81887#0: *65 http special response: 404, "/post_handler?"
+2025/01/25 11:38:47 [debug] 81887#0: *65 internal redirect: "/errors/404.html?"
+2025/01/25 11:38:47 [debug] 81887#0: *65 rewrite phase: 1
+2025/01/25 11:38:47 [debug] 81887#0: *65 test location: "/"
+2025/01/25 11:38:47 [debug] 81887#0: *65 test location: "post_handler"
+2025/01/25 11:38:47 [debug] 81887#0: *65 using configuration "/"
+2025/01/25 11:38:47 [debug] 81887#0: *65 http cl:8 max:10737418240
+2025/01/25 11:38:47 [debug] 81887#0: *65 rewrite phase: 3
+2025/01/25 11:38:47 [debug] 81887#0: *65 http script var
+2025/01/25 11:38:47 [debug] 81887#0: *65 http script var: "GET"
+2025/01/25 11:38:47 [debug] 81887#0: *65 http script value: "POST"
+2025/01/25 11:38:47 [debug] 81887#0: *65 http script equal
+2025/01/25 11:38:47 [debug] 81887#0: *65 http script equal: no
+2025/01/25 11:38:47 [debug] 81887#0: *65 http script if
+2025/01/25 11:38:47 [debug] 81887#0: *65 http script if: false
+2025/01/25 11:38:47 [debug] 81887#0: *65 post rewrite phase: 4
+2025/01/25 11:38:47 [debug] 81887#0: *65 generic phase: 5
+2025/01/25 11:38:47 [debug] 81887#0: *65 generic phase: 6
+2025/01/25 11:38:47 [debug] 81887#0: *65 generic phase: 7
+2025/01/25 11:38:47 [debug] 81887#0: *65 generic phase: 8
+2025/01/25 11:38:47 [debug] 81887#0: *65 access phase: 9
+2025/01/25 11:38:47 [debug] 81887#0: *65 access phase: 10
+2025/01/25 11:38:47 [debug] 81887#0: *65 access phase: 11
+2025/01/25 11:38:47 [debug] 81887#0: *65 post access phase: 12
+2025/01/25 11:38:47 [debug] 81887#0: *65 generic phase: 13
+2025/01/25 11:38:47 [debug] 81887#0: *65 generic phase: 14
+2025/01/25 11:38:47 [debug] 81887#0: *65 content phase: 15
+2025/01/25 11:38:47 [debug] 81887#0: *65 content phase: 16
+2025/01/25 11:38:47 [debug] 81887#0: *65 content phase: 17
+2025/01/25 11:38:47 [debug] 81887#0: *65 content phase: 18
+2025/01/25 11:38:47 [debug] 81887#0: *65 content phase: 19
+2025/01/25 11:38:47 [debug] 81887#0: *65 content phase: 20
+2025/01/25 11:38:47 [debug] 81887#0: *65 http filename: "/Users/meserghi/Desktop/WebServ/errors/404.html"
+2025/01/25 11:38:47 [debug] 81887#0: *65 add cleanup: 00007FA1DA80E3C8
+2025/01/25 11:38:47 [error] 81887#0: *65 open() "/Users/meserghi/Desktop/WebServ/errors/404.html" failed (2: No such file or directory), client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:38:47 [debug] 81887#0: *65 http finalize request: 404, "/errors/404.html?" a:1, c:2
+2025/01/25 11:38:47 [debug] 81887#0: *65 http special response: 404, "/errors/404.html?"
+2025/01/25 11:38:47 [debug] 81887#0: *65 http set discard body
+2025/01/25 11:38:47 [debug] 81887#0: *65 HTTP/1.1 404 Not Found
+Server: nginx/1.27.3
+Date: Sat, 25 Jan 2025 10:38:47 GMT
+Content-Type: text/html
+Content-Length: 153
+Connection: keep-alive
+
+2025/01/25 11:38:47 [debug] 81887#0: *65 write new buf t:1 f:0 00007FA1DA80E970, pos 00007FA1DA80E970, size: 155 file: 0, size: 0
+2025/01/25 11:38:47 [debug] 81887#0: *65 http write filter: l:0 f:0 s:155
+2025/01/25 11:38:47 [debug] 81887#0: *65 http output filter "/errors/404.html?"
+2025/01/25 11:38:47 [debug] 81887#0: *65 http copy filter: "/errors/404.html?"
+2025/01/25 11:38:47 [debug] 81887#0: *65 http postpone filter "/errors/404.html?" 00007FA1DA80EB50
+2025/01/25 11:38:47 [debug] 81887#0: *65 write old buf t:1 f:0 00007FA1DA80E970, pos 00007FA1DA80E970, size: 155 file: 0, size: 0
+2025/01/25 11:38:47 [debug] 81887#0: *65 write new buf t:0 f:0 0000000000000000, pos 0000000104D79AA0, size: 100 file: 0, size: 0
+2025/01/25 11:38:47 [debug] 81887#0: *65 write new buf t:0 f:0 0000000000000000, pos 0000000104D79420, size: 53 file: 0, size: 0
+2025/01/25 11:38:47 [debug] 81887#0: *65 http write filter: l:1 f:0 s:308
+2025/01/25 11:38:47 [debug] 81887#0: *65 http write filter limit 2097152
+2025/01/25 11:38:47 [debug] 81887#0: *65 writev: 308 of 308
+2025/01/25 11:38:47 [debug] 81887#0: *65 http write filter 0000000000000000
+2025/01/25 11:38:47 [debug] 81887#0: *65 http copy filter: 0 "/errors/404.html?"
+2025/01/25 11:38:47 [debug] 81887#0: *65 http finalize request: 0, "/errors/404.html?" a:1, c:2
+2025/01/25 11:38:47 [debug] 81887#0: *65 http request count:2 blk:0
+2025/01/25 11:38:47 [debug] 81887#0: *65 http finalize request: -4, "/errors/404.html?" a:1, c:1
+2025/01/25 11:38:47 [debug] 81887#0: *65 set http keepalive handler
+2025/01/25 11:38:47 [debug] 81887#0: *65 http close request
+2025/01/25 11:38:47 [debug] 81887#0: *65 http log handler
+2025/01/25 11:38:47 [debug] 81887#0: *65 free: 00007FA1DA80D400, unused: 8
+2025/01/25 11:38:47 [debug] 81887#0: *65 free: 00007FA1DA80E400, unused: 2039
+2025/01/25 11:38:47 [debug] 81887#0: *65 free: 00007FA1DA808200
+2025/01/25 11:38:47 [debug] 81887#0: *65 hc free: 0000000000000000
+2025/01/25 11:38:47 [debug] 81887#0: *65 hc busy: 0000000000000000 0
+2025/01/25 11:38:47 [debug] 81887#0: *65 tcp_nodelay
+2025/01/25 11:38:47 [debug] 81887#0: *65 reusable connection: 1
+2025/01/25 11:38:47 [debug] 81887#0: *65 event timer add: 4: 75000:12010870
+2025/01/25 11:38:47 [debug] 81887#0: *65 http keepalive handler
+2025/01/25 11:38:47 [info] 81887#0: *65 kevent() reported that client 127.0.0.1 closed keepalive connection
+2025/01/25 11:38:47 [debug] 81887#0: *65 close http connection: 4
+2025/01/25 11:38:47 [debug] 81887#0: *65 event timer del: 4: 12010870
+2025/01/25 11:38:47 [debug] 81887#0: *65 reusable connection: 0
+2025/01/25 11:38:47 [debug] 81887#0: *65 free: 0000000000000000
+2025/01/25 11:38:47 [debug] 81887#0: *65 free: 00007FA1D960DA10, unused: 136
+2025/01/25 11:38:50 [debug] 81887#0: accept on 0.0.0.0:4444, ready: 1
+2025/01/25 11:38:50 [debug] 81887#0: posix_memalign: 00007FA1D960DA10:512 @16
+2025/01/25 11:38:50 [debug] 81887#0: *66 accept: 127.0.0.1:51032 fd:4
+2025/01/25 11:38:50 [debug] 81887#0: *66 event timer add: 4: 60000:11999319
+2025/01/25 11:38:50 [debug] 81887#0: *66 reusable connection: 1
+2025/01/25 11:38:50 [debug] 81887#0: *66 kevent set event: 4: ft:-1 fl:0025
+2025/01/25 11:38:50 [debug] 81887#0: *66 http wait request handler
+2025/01/25 11:38:50 [debug] 81887#0: *66 malloc: 00007FA1DA808200:1024
+2025/01/25 11:38:50 [debug] 81887#0: *66 recv: eof:0, avail:152, err:0
+2025/01/25 11:38:50 [debug] 81887#0: *66 recv: fd:4 152 of 1024
+2025/01/25 11:38:50 [debug] 81887#0: *66 reusable connection: 0
+2025/01/25 11:38:50 [debug] 81887#0: *66 posix_memalign: 00007FA1DA80D400:4096 @16
+2025/01/25 11:38:50 [debug] 81887#0: *66 http process request line
+2025/01/25 11:38:50 [debug] 81887#0: *66 http request line: "GET / HTTP/1.1"
+2025/01/25 11:38:50 [debug] 81887#0: *66 http uri: "/"
+2025/01/25 11:38:50 [debug] 81887#0: *66 http args: ""
+2025/01/25 11:38:50 [debug] 81887#0: *66 http exten: ""
+2025/01/25 11:38:50 [debug] 81887#0: *66 posix_memalign: 00007FA1DA80E400:4096 @16
+2025/01/25 11:38:50 [debug] 81887#0: *66 http process request header line
+2025/01/25 11:38:50 [debug] 81887#0: *66 http header: "Host: 0.0.0.0:4444"
+2025/01/25 11:38:50 [debug] 81887#0: *66 http header: "User-Agent: curl/7.64.1"
+2025/01/25 11:38:50 [debug] 81887#0: *66 http header: "Accept: */*"
+2025/01/25 11:38:50 [debug] 81887#0: *66 http header: "Content-Length: 8"
+2025/01/25 11:38:50 [debug] 81887#0: *66 http header: "Content-Type: application/x-www-form-urlencoded"
+2025/01/25 11:38:50 [debug] 81887#0: *66 http header done
+2025/01/25 11:38:50 [debug] 81887#0: *66 event timer del: 4: 11999319
+2025/01/25 11:38:50 [debug] 81887#0: *66 generic phase: 0
+2025/01/25 11:38:50 [debug] 81887#0: *66 rewrite phase: 1
+2025/01/25 11:38:50 [debug] 81887#0: *66 test location: "/"
+2025/01/25 11:38:50 [debug] 81887#0: *66 using configuration "/"
+2025/01/25 11:38:50 [debug] 81887#0: *66 http cl:8 max:10737418240
+2025/01/25 11:38:50 [debug] 81887#0: *66 rewrite phase: 3
+2025/01/25 11:38:50 [debug] 81887#0: *66 http script var
+2025/01/25 11:38:50 [debug] 81887#0: *66 http script var: "GET"
+2025/01/25 11:38:50 [debug] 81887#0: *66 http script value: "POST"
+2025/01/25 11:38:50 [debug] 81887#0: *66 http script equal
+2025/01/25 11:38:50 [debug] 81887#0: *66 http script equal: no
+2025/01/25 11:38:50 [debug] 81887#0: *66 http script if
+2025/01/25 11:38:50 [debug] 81887#0: *66 http script if: false
+2025/01/25 11:38:50 [debug] 81887#0: *66 post rewrite phase: 4
+2025/01/25 11:38:50 [debug] 81887#0: *66 generic phase: 5
+2025/01/25 11:38:50 [debug] 81887#0: *66 generic phase: 6
+2025/01/25 11:38:50 [debug] 81887#0: *66 generic phase: 7
+2025/01/25 11:38:50 [debug] 81887#0: *66 generic phase: 8
+2025/01/25 11:38:50 [debug] 81887#0: *66 access phase: 9
+2025/01/25 11:38:50 [debug] 81887#0: *66 access phase: 10
+2025/01/25 11:38:50 [debug] 81887#0: *66 access phase: 11
+2025/01/25 11:38:50 [debug] 81887#0: *66 post access phase: 12
+2025/01/25 11:38:50 [debug] 81887#0: *66 generic phase: 13
+2025/01/25 11:38:50 [debug] 81887#0: *66 generic phase: 14
+2025/01/25 11:38:50 [debug] 81887#0: *66 content phase: 15
+2025/01/25 11:38:50 [debug] 81887#0: *66 content phase: 16
+2025/01/25 11:38:50 [debug] 81887#0: *66 open index "/Users/meserghi/Desktop/WebServ/main.cpp"
+2025/01/25 11:38:50 [debug] 81887#0: *66 internal redirect: "/main.cpp?"
+2025/01/25 11:38:50 [debug] 81887#0: *66 rewrite phase: 1
+2025/01/25 11:38:50 [debug] 81887#0: *66 test location: "/"
+2025/01/25 11:38:50 [debug] 81887#0: *66 test location: "post_handler"
+2025/01/25 11:38:50 [debug] 81887#0: *66 using configuration "/"
+2025/01/25 11:38:50 [debug] 81887#0: *66 http cl:8 max:10737418240
+2025/01/25 11:38:50 [debug] 81887#0: *66 rewrite phase: 3
+2025/01/25 11:38:50 [debug] 81887#0: *66 http script var
+2025/01/25 11:38:50 [debug] 81887#0: *66 http script var: "GET"
+2025/01/25 11:38:50 [debug] 81887#0: *66 http script value: "POST"
+2025/01/25 11:38:50 [debug] 81887#0: *66 http script equal
+2025/01/25 11:38:50 [debug] 81887#0: *66 http script equal: no
+2025/01/25 11:38:50 [debug] 81887#0: *66 http script if
+2025/01/25 11:38:50 [debug] 81887#0: *66 http script if: false
+2025/01/25 11:38:50 [debug] 81887#0: *66 post rewrite phase: 4
+2025/01/25 11:38:50 [debug] 81887#0: *66 generic phase: 5
+2025/01/25 11:38:50 [debug] 81887#0: *66 generic phase: 6
+2025/01/25 11:38:50 [debug] 81887#0: *66 generic phase: 7
+2025/01/25 11:38:50 [debug] 81887#0: *66 generic phase: 8
+2025/01/25 11:38:50 [debug] 81887#0: *66 access phase: 9
+2025/01/25 11:38:50 [debug] 81887#0: *66 access phase: 10
+2025/01/25 11:38:50 [debug] 81887#0: *66 access phase: 11
+2025/01/25 11:38:50 [debug] 81887#0: *66 post access phase: 12
+2025/01/25 11:38:50 [debug] 81887#0: *66 generic phase: 13
+2025/01/25 11:38:50 [debug] 81887#0: *66 generic phase: 14
+2025/01/25 11:38:50 [debug] 81887#0: *66 content phase: 15
+2025/01/25 11:38:50 [debug] 81887#0: *66 content phase: 16
+2025/01/25 11:38:50 [debug] 81887#0: *66 content phase: 17
+2025/01/25 11:38:50 [debug] 81887#0: *66 content phase: 18
+2025/01/25 11:38:50 [debug] 81887#0: *66 content phase: 19
+2025/01/25 11:38:50 [debug] 81887#0: *66 content phase: 20
+2025/01/25 11:38:50 [debug] 81887#0: *66 http filename: "/Users/meserghi/Desktop/WebServ/main.cpp"
+2025/01/25 11:38:50 [debug] 81887#0: *66 add cleanup: 00007FA1DA80E8B0
+2025/01/25 11:38:50 [debug] 81887#0: *66 http static fd: 7
+2025/01/25 11:38:50 [debug] 81887#0: *66 http set discard body
+2025/01/25 11:38:50 [debug] 81887#0: *66 HTTP/1.1 200 OK
+Server: nginx/1.27.3
+Date: Sat, 25 Jan 2025 10:38:50 GMT
+Content-Type: text/plain
+Content-Length: 1219
+Last-Modified: Sat, 25 Jan 2025 09:03:10 GMT
+Connection: keep-alive
+ETag: "6794a8ce-4c3"
+Accept-Ranges: bytes
+
+2025/01/25 11:38:50 [debug] 81887#0: *66 write new buf t:1 f:0 00007FA1DA80EA98, pos 00007FA1DA80EA98, size: 240 file: 0, size: 0
+2025/01/25 11:38:50 [debug] 81887#0: *66 http write filter: l:0 f:0 s:240
+2025/01/25 11:38:50 [debug] 81887#0: *66 http output filter "/main.cpp?"
+2025/01/25 11:38:50 [debug] 81887#0: *66 http copy filter: "/main.cpp?"
+2025/01/25 11:38:50 [debug] 81887#0: *66 read: 7, 00007FA1DA80EC88, 1219, 0
+2025/01/25 11:38:50 [debug] 81887#0: *66 http postpone filter "/main.cpp?" 00007FA1DA80EC28
+2025/01/25 11:38:50 [debug] 81887#0: *66 write old buf t:1 f:0 00007FA1DA80EA98, pos 00007FA1DA80EA98, size: 240 file: 0, size: 0
+2025/01/25 11:38:50 [debug] 81887#0: *66 write new buf t:1 f:0 00007FA1DA80EC88, pos 00007FA1DA80EC88, size: 1219 file: 0, size: 0
+2025/01/25 11:38:50 [debug] 81887#0: *66 http write filter: l:1 f:0 s:1459
+2025/01/25 11:38:50 [debug] 81887#0: *66 http write filter limit 2097152
+2025/01/25 11:38:50 [debug] 81887#0: *66 writev: 1459 of 1459
+2025/01/25 11:38:50 [debug] 81887#0: *66 http write filter 0000000000000000
+2025/01/25 11:38:50 [debug] 81887#0: *66 http copy filter: 0 "/main.cpp?"
+2025/01/25 11:38:50 [debug] 81887#0: *66 http finalize request: 0, "/main.cpp?" a:1, c:2
+2025/01/25 11:38:50 [debug] 81887#0: *66 http request count:2 blk:0
+2025/01/25 11:38:50 [debug] 81887#0: *66 http finalize request: -4, "/main.cpp?" a:1, c:1
+2025/01/25 11:38:50 [debug] 81887#0: *66 set http keepalive handler
+2025/01/25 11:38:50 [debug] 81887#0: *66 http close request
+2025/01/25 11:38:50 [debug] 81887#0: *66 http log handler
+2025/01/25 11:38:50 [debug] 81887#0: *66 run cleanup: 00007FA1DA80E8B0
+2025/01/25 11:38:50 [debug] 81887#0: *66 file cleanup: fd:7
+2025/01/25 11:38:50 [debug] 81887#0: *66 free: 00007FA1DA80D400, unused: 8
+2025/01/25 11:38:50 [debug] 81887#0: *66 free: 00007FA1DA80E400, unused: 552
+2025/01/25 11:38:50 [debug] 81887#0: *66 free: 00007FA1DA808200
+2025/01/25 11:38:50 [debug] 81887#0: *66 hc free: 0000000000000000
+2025/01/25 11:38:50 [debug] 81887#0: *66 hc busy: 0000000000000000 0
+2025/01/25 11:38:50 [debug] 81887#0: *66 tcp_nodelay
+2025/01/25 11:38:50 [debug] 81887#0: *66 reusable connection: 1
+2025/01/25 11:38:50 [debug] 81887#0: *66 event timer add: 4: 75000:12014319
+2025/01/25 11:38:50 [debug] 81887#0: *66 http keepalive handler
+2025/01/25 11:38:50 [info] 81887#0: *66 kevent() reported that client 127.0.0.1 closed keepalive connection
+2025/01/25 11:38:50 [debug] 81887#0: *66 close http connection: 4
+2025/01/25 11:38:50 [debug] 81887#0: *66 event timer del: 4: 12014319
+2025/01/25 11:38:50 [debug] 81887#0: *66 reusable connection: 0
+2025/01/25 11:38:50 [debug] 81887#0: *66 free: 0000000000000000
+2025/01/25 11:38:50 [debug] 81887#0: *66 free: 00007FA1D960DA10, unused: 136
+2025/01/25 11:38:54 [debug] 81887#0: accept on 0.0.0.0:4444, ready: 1
+2025/01/25 11:38:54 [debug] 81887#0: posix_memalign: 00007FA1DB826C90:512 @16
+2025/01/25 11:38:54 [debug] 81887#0: *67 accept: 127.0.0.1:51033 fd:4
+2025/01/25 11:38:54 [debug] 81887#0: *67 event timer add: 4: 60000:12003479
+2025/01/25 11:38:54 [debug] 81887#0: *67 reusable connection: 1
+2025/01/25 11:38:54 [debug] 81887#0: *67 kevent set event: 4: ft:-1 fl:0025
+2025/01/25 11:38:54 [debug] 81887#0: *67 http wait request handler
+2025/01/25 11:38:54 [debug] 81887#0: *67 malloc: 00007FA1DB008A00:1024
+2025/01/25 11:38:54 [debug] 81887#0: *67 recv: eof:0, avail:153, err:0
+2025/01/25 11:38:54 [debug] 81887#0: *67 recv: fd:4 153 of 1024
+2025/01/25 11:38:54 [debug] 81887#0: *67 reusable connection: 0
+2025/01/25 11:38:54 [debug] 81887#0: *67 posix_memalign: 00007FA1DB00DC00:4096 @16
+2025/01/25 11:38:54 [debug] 81887#0: *67 http process request line
+2025/01/25 11:38:54 [debug] 81887#0: *67 http request line: "POST / HTTP/1.1"
+2025/01/25 11:38:54 [debug] 81887#0: *67 http uri: "/"
+2025/01/25 11:38:54 [debug] 81887#0: *67 http args: ""
+2025/01/25 11:38:54 [debug] 81887#0: *67 http exten: ""
+2025/01/25 11:38:54 [debug] 81887#0: *67 posix_memalign: 00007FA1DB00EC00:4096 @16
+2025/01/25 11:38:54 [debug] 81887#0: *67 http process request header line
+2025/01/25 11:38:54 [debug] 81887#0: *67 http header: "Host: 0.0.0.0:4444"
+2025/01/25 11:38:54 [debug] 81887#0: *67 http header: "User-Agent: curl/7.64.1"
+2025/01/25 11:38:54 [debug] 81887#0: *67 http header: "Accept: */*"
+2025/01/25 11:38:54 [debug] 81887#0: *67 http header: "Content-Length: 8"
+2025/01/25 11:38:54 [debug] 81887#0: *67 http header: "Content-Type: application/x-www-form-urlencoded"
+2025/01/25 11:38:54 [debug] 81887#0: *67 http header done
+2025/01/25 11:38:54 [debug] 81887#0: *67 event timer del: 4: 12003479
+2025/01/25 11:38:54 [debug] 81887#0: *67 generic phase: 0
+2025/01/25 11:38:54 [debug] 81887#0: *67 rewrite phase: 1
+2025/01/25 11:38:54 [debug] 81887#0: *67 test location: "/"
+2025/01/25 11:38:54 [debug] 81887#0: *67 using configuration "/"
+2025/01/25 11:38:54 [debug] 81887#0: *67 http cl:8 max:10737418240
+2025/01/25 11:38:54 [debug] 81887#0: *67 rewrite phase: 3
+2025/01/25 11:38:54 [debug] 81887#0: *67 http script var
+2025/01/25 11:38:54 [debug] 81887#0: *67 http script var: "POST"
+2025/01/25 11:38:54 [debug] 81887#0: *67 http script value: "POST"
+2025/01/25 11:38:54 [debug] 81887#0: *67 http script equal
+2025/01/25 11:38:54 [debug] 81887#0: *67 http script if
+2025/01/25 11:38:54 [debug] 81887#0: *67 http script regex: "^"
+2025/01/25 11:38:54 [notice] 81887#0: *67 "^" matches "/", client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:38:54 [debug] 81887#0: *67 http script copy: "/post_handler"
+2025/01/25 11:38:54 [debug] 81887#0: *67 http script regex end
+2025/01/25 11:38:54 [notice] 81887#0: *67 rewritten data: "/post_handler", args: "", client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:38:54 [debug] 81887#0: *67 post rewrite phase: 4
+2025/01/25 11:38:54 [debug] 81887#0: *67 generic phase: 5
+2025/01/25 11:38:54 [debug] 81887#0: *67 generic phase: 6
+2025/01/25 11:38:54 [debug] 81887#0: *67 generic phase: 7
+2025/01/25 11:38:54 [debug] 81887#0: *67 generic phase: 8
+2025/01/25 11:38:54 [debug] 81887#0: *67 access phase: 9
+2025/01/25 11:38:54 [debug] 81887#0: *67 access phase: 10
+2025/01/25 11:38:54 [debug] 81887#0: *67 access phase: 11
+2025/01/25 11:38:54 [debug] 81887#0: *67 post access phase: 12
+2025/01/25 11:38:54 [debug] 81887#0: *67 generic phase: 13
+2025/01/25 11:38:54 [debug] 81887#0: *67 generic phase: 14
+2025/01/25 11:38:54 [debug] 81887#0: *67 content phase: 15
+2025/01/25 11:38:54 [debug] 81887#0: *67 content phase: 16
+2025/01/25 11:38:54 [debug] 81887#0: *67 content phase: 17
+2025/01/25 11:38:54 [debug] 81887#0: *67 content phase: 18
+2025/01/25 11:38:54 [debug] 81887#0: *67 content phase: 19
+2025/01/25 11:38:54 [debug] 81887#0: *67 content phase: 20
+2025/01/25 11:38:54 [debug] 81887#0: *67 http filename: "/Users/meserghi/Desktop/WebServ/post_handler"
+2025/01/25 11:38:54 [debug] 81887#0: *67 add cleanup: 00007FA1DB00EB10
+2025/01/25 11:38:54 [error] 81887#0: *67 open() "/Users/meserghi/Desktop/WebServ/post_handler" failed (2: No such file or directory), client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:38:54 [debug] 81887#0: *67 http finalize request: 404, "/post_handler?" a:1, c:1
+2025/01/25 11:38:54 [debug] 81887#0: *67 http special response: 404, "/post_handler?"
+2025/01/25 11:38:54 [debug] 81887#0: *67 internal redirect: "/errors/404.html?"
+2025/01/25 11:38:54 [debug] 81887#0: *67 rewrite phase: 1
+2025/01/25 11:38:54 [debug] 81887#0: *67 test location: "/"
+2025/01/25 11:38:54 [debug] 81887#0: *67 test location: "post_handler"
+2025/01/25 11:38:54 [debug] 81887#0: *67 using configuration "/"
+2025/01/25 11:38:54 [debug] 81887#0: *67 http cl:8 max:10737418240
+2025/01/25 11:38:54 [debug] 81887#0: *67 rewrite phase: 3
+2025/01/25 11:38:54 [debug] 81887#0: *67 http script var
+2025/01/25 11:38:54 [debug] 81887#0: *67 http script var: "GET"
+2025/01/25 11:38:54 [debug] 81887#0: *67 http script value: "POST"
+2025/01/25 11:38:54 [debug] 81887#0: *67 http script equal
+2025/01/25 11:38:54 [debug] 81887#0: *67 http script equal: no
+2025/01/25 11:38:54 [debug] 81887#0: *67 http script if
+2025/01/25 11:38:54 [debug] 81887#0: *67 http script if: false
+2025/01/25 11:38:54 [debug] 81887#0: *67 post rewrite phase: 4
+2025/01/25 11:38:54 [debug] 81887#0: *67 generic phase: 5
+2025/01/25 11:38:54 [debug] 81887#0: *67 generic phase: 6
+2025/01/25 11:38:54 [debug] 81887#0: *67 generic phase: 7
+2025/01/25 11:38:54 [debug] 81887#0: *67 generic phase: 8
+2025/01/25 11:38:54 [debug] 81887#0: *67 access phase: 9
+2025/01/25 11:38:54 [debug] 81887#0: *67 access phase: 10
+2025/01/25 11:38:54 [debug] 81887#0: *67 access phase: 11
+2025/01/25 11:38:54 [debug] 81887#0: *67 post access phase: 12
+2025/01/25 11:38:54 [debug] 81887#0: *67 generic phase: 13
+2025/01/25 11:38:54 [debug] 81887#0: *67 generic phase: 14
+2025/01/25 11:38:54 [debug] 81887#0: *67 content phase: 15
+2025/01/25 11:38:54 [debug] 81887#0: *67 content phase: 16
+2025/01/25 11:38:54 [debug] 81887#0: *67 content phase: 17
+2025/01/25 11:38:54 [debug] 81887#0: *67 content phase: 18
+2025/01/25 11:38:54 [debug] 81887#0: *67 content phase: 19
+2025/01/25 11:38:54 [debug] 81887#0: *67 content phase: 20
+2025/01/25 11:38:54 [debug] 81887#0: *67 http filename: "/Users/meserghi/Desktop/WebServ/errors/404.html"
+2025/01/25 11:38:54 [debug] 81887#0: *67 add cleanup: 00007FA1DB00EBC8
+2025/01/25 11:38:54 [error] 81887#0: *67 open() "/Users/meserghi/Desktop/WebServ/errors/404.html" failed (2: No such file or directory), client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:38:54 [debug] 81887#0: *67 http finalize request: 404, "/errors/404.html?" a:1, c:2
+2025/01/25 11:38:54 [debug] 81887#0: *67 http special response: 404, "/errors/404.html?"
+2025/01/25 11:38:54 [debug] 81887#0: *67 http set discard body
+2025/01/25 11:38:54 [debug] 81887#0: *67 HTTP/1.1 404 Not Found
+Server: nginx/1.27.3
+Date: Sat, 25 Jan 2025 10:38:54 GMT
+Content-Type: text/html
+Content-Length: 153
+Connection: keep-alive
+
+2025/01/25 11:38:54 [debug] 81887#0: *67 write new buf t:1 f:0 00007FA1DB00F170, pos 00007FA1DB00F170, size: 155 file: 0, size: 0
+2025/01/25 11:38:54 [debug] 81887#0: *67 http write filter: l:0 f:0 s:155
+2025/01/25 11:38:54 [debug] 81887#0: *67 http output filter "/errors/404.html?"
+2025/01/25 11:38:54 [debug] 81887#0: *67 http copy filter: "/errors/404.html?"
+2025/01/25 11:38:54 [debug] 81887#0: *67 http postpone filter "/errors/404.html?" 00007FA1DB00F350
+2025/01/25 11:38:54 [debug] 81887#0: *67 write old buf t:1 f:0 00007FA1DB00F170, pos 00007FA1DB00F170, size: 155 file: 0, size: 0
+2025/01/25 11:38:54 [debug] 81887#0: *67 write new buf t:0 f:0 0000000000000000, pos 0000000104D79AA0, size: 100 file: 0, size: 0
+2025/01/25 11:38:54 [debug] 81887#0: *67 write new buf t:0 f:0 0000000000000000, pos 0000000104D79420, size: 53 file: 0, size: 0
+2025/01/25 11:38:54 [debug] 81887#0: *67 http write filter: l:1 f:0 s:308
+2025/01/25 11:38:54 [debug] 81887#0: *67 http write filter limit 2097152
+2025/01/25 11:38:54 [debug] 81887#0: *67 writev: 308 of 308
+2025/01/25 11:38:54 [debug] 81887#0: *67 http write filter 0000000000000000
+2025/01/25 11:38:54 [debug] 81887#0: *67 http copy filter: 0 "/errors/404.html?"
+2025/01/25 11:38:54 [debug] 81887#0: *67 http finalize request: 0, "/errors/404.html?" a:1, c:2
+2025/01/25 11:38:54 [debug] 81887#0: *67 http request count:2 blk:0
+2025/01/25 11:38:54 [debug] 81887#0: *67 http finalize request: -4, "/errors/404.html?" a:1, c:1
+2025/01/25 11:38:54 [debug] 81887#0: *67 set http keepalive handler
+2025/01/25 11:38:54 [debug] 81887#0: *67 http close request
+2025/01/25 11:38:54 [debug] 81887#0: *67 http log handler
+2025/01/25 11:38:54 [debug] 81887#0: *67 free: 00007FA1DB00DC00, unused: 8
+2025/01/25 11:38:54 [debug] 81887#0: *67 free: 00007FA1DB00EC00, unused: 2039
+2025/01/25 11:38:54 [debug] 81887#0: *67 free: 00007FA1DB008A00
+2025/01/25 11:38:54 [debug] 81887#0: *67 hc free: 0000000000000000
+2025/01/25 11:38:54 [debug] 81887#0: *67 hc busy: 0000000000000000 0
+2025/01/25 11:38:54 [debug] 81887#0: *67 tcp_nodelay
+2025/01/25 11:38:54 [debug] 81887#0: *67 reusable connection: 1
+2025/01/25 11:38:54 [debug] 81887#0: *67 event timer add: 4: 75000:12018479
+2025/01/25 11:38:54 [debug] 81887#0: *67 http keepalive handler
+2025/01/25 11:38:54 [info] 81887#0: *67 kevent() reported that client 127.0.0.1 closed keepalive connection
+2025/01/25 11:38:54 [debug] 81887#0: *67 close http connection: 4
+2025/01/25 11:38:54 [debug] 81887#0: *67 event timer del: 4: 12018479
+2025/01/25 11:38:54 [debug] 81887#0: *67 reusable connection: 0
+2025/01/25 11:38:54 [debug] 81887#0: *67 free: 0000000000000000
+2025/01/25 11:38:54 [debug] 81887#0: *67 free: 00007FA1DB826C90, unused: 136
+2025/01/25 11:39:11 [debug] 81887#0: *61 event timer del: 3: 11960240
+2025/01/25 11:39:11 [debug] 81887#0: *61 http keepalive handler
+2025/01/25 11:39:11 [debug] 81887#0: *61 close http connection: 3
+2025/01/25 11:39:11 [debug] 81887#0: *61 reusable connection: 0
+2025/01/25 11:39:11 [debug] 81887#0: *61 free: 0000000000000000
+2025/01/25 11:39:11 [debug] 81887#0: *61 free: 00007FA1D940F7A0, unused: 136
+2025/01/25 11:39:12 [debug] 81887#0: accept on 0.0.0.0:4444, ready: 1
+2025/01/25 11:39:12 [debug] 81887#0: posix_memalign: 00007FA1D940F7A0:512 @16
+2025/01/25 11:39:12 [debug] 81887#0: *68 accept: 127.0.0.1:51034 fd:3
+2025/01/25 11:39:12 [debug] 81887#0: *68 event timer add: 3: 60000:12021034
+2025/01/25 11:39:12 [debug] 81887#0: *68 reusable connection: 1
+2025/01/25 11:39:12 [debug] 81887#0: *68 kevent set event: 3: ft:-1 fl:0025
+2025/01/25 11:39:12 [debug] 81887#0: *68 http wait request handler
+2025/01/25 11:39:12 [debug] 81887#0: *68 malloc: 00007FA1D980D800:1024
+2025/01/25 11:39:12 [debug] 81887#0: *68 recv: eof:0, avail:1465, err:0
+2025/01/25 11:39:12 [debug] 81887#0: *68 recv: fd:3 1024 of 1024
+2025/01/25 11:39:12 [debug] 81887#0: *68 reusable connection: 0
+2025/01/25 11:39:12 [debug] 81887#0: *68 posix_memalign: 00007FA1D981AA00:4096 @16
+2025/01/25 11:39:12 [debug] 81887#0: *68 http process request line
+2025/01/25 11:39:12 [debug] 81887#0: *68 http request line: "POST / HTTP/1.1"
+2025/01/25 11:39:12 [debug] 81887#0: *68 http uri: "/"
+2025/01/25 11:39:12 [debug] 81887#0: *68 http args: ""
+2025/01/25 11:39:12 [debug] 81887#0: *68 http exten: ""
+2025/01/25 11:39:12 [debug] 81887#0: *68 posix_memalign: 00007FA1D981BA00:4096 @16
+2025/01/25 11:39:12 [debug] 81887#0: *68 http process request header line
+2025/01/25 11:39:12 [debug] 81887#0: *68 http header: "User-Agent: PostmanRuntime/7.33.0"
+2025/01/25 11:39:12 [debug] 81887#0: *68 http header: "Accept: */*"
+2025/01/25 11:39:12 [debug] 81887#0: *68 http header: "Postman-Token: 7eddca74-7d38-4809-8303-ea30aaef1073"
+2025/01/25 11:39:12 [debug] 81887#0: *68 http header: "Host: 0.0.0.0:4444"
+2025/01/25 11:39:12 [debug] 81887#0: *68 http header: "Accept-Encoding: gzip, deflate, br"
+2025/01/25 11:39:12 [debug] 81887#0: *68 http header: "Connection: keep-alive"
+2025/01/25 11:39:12 [debug] 81887#0: *68 http header: "Content-Length: 1219"
+2025/01/25 11:39:12 [debug] 81887#0: *68 http header: "Content-Type: text/x-c"
+2025/01/25 11:39:12 [debug] 81887#0: *68 http header done
+2025/01/25 11:39:12 [debug] 81887#0: *68 event timer del: 3: 12021034
+2025/01/25 11:39:12 [debug] 81887#0: *68 generic phase: 0
+2025/01/25 11:39:12 [debug] 81887#0: *68 rewrite phase: 1
+2025/01/25 11:39:12 [debug] 81887#0: *68 test location: "/"
+2025/01/25 11:39:12 [debug] 81887#0: *68 using configuration "/"
+2025/01/25 11:39:12 [debug] 81887#0: *68 http cl:1219 max:10737418240
+2025/01/25 11:39:12 [debug] 81887#0: *68 rewrite phase: 3
+2025/01/25 11:39:12 [debug] 81887#0: *68 http script var
+2025/01/25 11:39:12 [debug] 81887#0: *68 http script var: "POST"
+2025/01/25 11:39:12 [debug] 81887#0: *68 http script value: "POST"
+2025/01/25 11:39:12 [debug] 81887#0: *68 http script equal
+2025/01/25 11:39:12 [debug] 81887#0: *68 http script if
+2025/01/25 11:39:12 [debug] 81887#0: *68 http script regex: "^"
+2025/01/25 11:39:12 [notice] 81887#0: *68 "^" matches "/", client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:39:12 [debug] 81887#0: *68 http script copy: "/post_handler"
+2025/01/25 11:39:12 [debug] 81887#0: *68 http script regex end
+2025/01/25 11:39:12 [notice] 81887#0: *68 rewritten data: "/post_handler", args: "", client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:39:12 [debug] 81887#0: *68 post rewrite phase: 4
+2025/01/25 11:39:12 [debug] 81887#0: *68 generic phase: 5
+2025/01/25 11:39:12 [debug] 81887#0: *68 generic phase: 6
+2025/01/25 11:39:12 [debug] 81887#0: *68 generic phase: 7
+2025/01/25 11:39:12 [debug] 81887#0: *68 generic phase: 8
+2025/01/25 11:39:12 [debug] 81887#0: *68 access phase: 9
+2025/01/25 11:39:12 [debug] 81887#0: *68 access phase: 10
+2025/01/25 11:39:12 [debug] 81887#0: *68 access phase: 11
+2025/01/25 11:39:12 [debug] 81887#0: *68 post access phase: 12
+2025/01/25 11:39:12 [debug] 81887#0: *68 generic phase: 13
+2025/01/25 11:39:12 [debug] 81887#0: *68 generic phase: 14
+2025/01/25 11:39:12 [debug] 81887#0: *68 content phase: 15
+2025/01/25 11:39:12 [debug] 81887#0: *68 content phase: 16
+2025/01/25 11:39:12 [debug] 81887#0: *68 content phase: 17
+2025/01/25 11:39:12 [debug] 81887#0: *68 content phase: 18
+2025/01/25 11:39:12 [debug] 81887#0: *68 content phase: 19
+2025/01/25 11:39:12 [debug] 81887#0: *68 content phase: 20
+2025/01/25 11:39:12 [debug] 81887#0: *68 http filename: "/Users/meserghi/Desktop/WebServ/post_handler"
+2025/01/25 11:39:12 [debug] 81887#0: *68 add cleanup: 00007FA1D981B938
+2025/01/25 11:39:12 [error] 81887#0: *68 open() "/Users/meserghi/Desktop/WebServ/post_handler" failed (2: No such file or directory), client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:39:12 [debug] 81887#0: *68 http finalize request: 404, "/post_handler?" a:1, c:1
+2025/01/25 11:39:12 [debug] 81887#0: *68 http special response: 404, "/post_handler?"
+2025/01/25 11:39:12 [debug] 81887#0: *68 internal redirect: "/errors/404.html?"
+2025/01/25 11:39:12 [debug] 81887#0: *68 rewrite phase: 1
+2025/01/25 11:39:12 [debug] 81887#0: *68 test location: "/"
+2025/01/25 11:39:12 [debug] 81887#0: *68 test location: "post_handler"
+2025/01/25 11:39:12 [debug] 81887#0: *68 using configuration "/"
+2025/01/25 11:39:12 [debug] 81887#0: *68 http cl:1219 max:10737418240
+2025/01/25 11:39:12 [debug] 81887#0: *68 rewrite phase: 3
+2025/01/25 11:39:12 [debug] 81887#0: *68 http script var
+2025/01/25 11:39:12 [debug] 81887#0: *68 http script var: "GET"
+2025/01/25 11:39:12 [debug] 81887#0: *68 http script value: "POST"
+2025/01/25 11:39:12 [debug] 81887#0: *68 http script equal
+2025/01/25 11:39:12 [debug] 81887#0: *68 http script equal: no
+2025/01/25 11:39:12 [debug] 81887#0: *68 http script if
+2025/01/25 11:39:12 [debug] 81887#0: *68 http script if: false
+2025/01/25 11:39:12 [debug] 81887#0: *68 post rewrite phase: 4
+2025/01/25 11:39:12 [debug] 81887#0: *68 generic phase: 5
+2025/01/25 11:39:12 [debug] 81887#0: *68 generic phase: 6
+2025/01/25 11:39:12 [debug] 81887#0: *68 generic phase: 7
+2025/01/25 11:39:12 [debug] 81887#0: *68 generic phase: 8
+2025/01/25 11:39:12 [debug] 81887#0: *68 access phase: 9
+2025/01/25 11:39:12 [debug] 81887#0: *68 access phase: 10
+2025/01/25 11:39:12 [debug] 81887#0: *68 access phase: 11
+2025/01/25 11:39:12 [debug] 81887#0: *68 post access phase: 12
+2025/01/25 11:39:12 [debug] 81887#0: *68 generic phase: 13
+2025/01/25 11:39:12 [debug] 81887#0: *68 generic phase: 14
+2025/01/25 11:39:12 [debug] 81887#0: *68 content phase: 15
+2025/01/25 11:39:12 [debug] 81887#0: *68 content phase: 16
+2025/01/25 11:39:12 [debug] 81887#0: *68 content phase: 17
+2025/01/25 11:39:12 [debug] 81887#0: *68 content phase: 18
+2025/01/25 11:39:12 [debug] 81887#0: *68 content phase: 19
+2025/01/25 11:39:12 [debug] 81887#0: *68 content phase: 20
+2025/01/25 11:39:12 [debug] 81887#0: *68 http filename: "/Users/meserghi/Desktop/WebServ/errors/404.html"
+2025/01/25 11:39:12 [debug] 81887#0: *68 add cleanup: 00007FA1D981BF20
+2025/01/25 11:39:12 [error] 81887#0: *68 open() "/Users/meserghi/Desktop/WebServ/errors/404.html" failed (2: No such file or directory), client: 127.0.0.1, server: server, request: "POST / HTTP/1.1", host: "0.0.0.0:4444"
+2025/01/25 11:39:12 [debug] 81887#0: *68 http finalize request: 404, "/errors/404.html?" a:1, c:2
+2025/01/25 11:39:12 [debug] 81887#0: *68 http special response: 404, "/errors/404.html?"
+2025/01/25 11:39:12 [debug] 81887#0: *68 http set discard body
+2025/01/25 11:39:12 [debug] 81887#0: *68 http read discarded body
+2025/01/25 11:39:12 [debug] 81887#0: *68 recv: eof:0, avail:441, err:0
+2025/01/25 11:39:12 [debug] 81887#0: *68 recv: fd:3 441 of 441
+2025/01/25 11:39:12 [debug] 81887#0: *68 HTTP/1.1 404 Not Found
+Server: nginx/1.27.3
+Date: Sat, 25 Jan 2025 10:39:12 GMT
+Content-Type: text/html
+Content-Length: 153
+Connection: keep-alive
+
+2025/01/25 11:39:12 [debug] 81887#0: *68 write new buf t:1 f:0 00007FA1D981BFA0, pos 00007FA1D981BFA0, size: 155 file: 0, size: 0
+2025/01/25 11:39:12 [debug] 81887#0: *68 http write filter: l:0 f:0 s:155
+2025/01/25 11:39:12 [debug] 81887#0: *68 http output filter "/errors/404.html?"
+2025/01/25 11:39:12 [debug] 81887#0: *68 http copy filter: "/errors/404.html?"
+2025/01/25 11:39:12 [debug] 81887#0: *68 http postpone filter "/errors/404.html?" 00007FA1D981C170
+2025/01/25 11:39:12 [debug] 81887#0: *68 write old buf t:1 f:0 00007FA1D981BFA0, pos 00007FA1D981BFA0, size: 155 file: 0, size: 0
+2025/01/25 11:39:12 [debug] 81887#0: *68 write new buf t:0 f:0 0000000000000000, pos 0000000104D79AA0, size: 100 file: 0, size: 0
+2025/01/25 11:39:12 [debug] 81887#0: *68 write new buf t:0 f:0 0000000000000000, pos 0000000104D79420, size: 53 file: 0, size: 0
+2025/01/25 11:39:12 [debug] 81887#0: *68 http write filter: l:1 f:0 s:308
+2025/01/25 11:39:12 [debug] 81887#0: *68 http write filter limit 2097152
+2025/01/25 11:39:12 [debug] 81887#0: *68 writev: 308 of 308
+2025/01/25 11:39:12 [debug] 81887#0: *68 http write filter 0000000000000000
+2025/01/25 11:39:12 [debug] 81887#0: *68 http copy filter: 0 "/errors/404.html?"
+2025/01/25 11:39:12 [debug] 81887#0: *68 http finalize request: 0, "/errors/404.html?" a:1, c:2
+2025/01/25 11:39:12 [debug] 81887#0: *68 http request count:2 blk:0
+2025/01/25 11:39:12 [debug] 81887#0: *68 http finalize request: -4, "/errors/404.html?" a:1, c:1
+2025/01/25 11:39:12 [debug] 81887#0: *68 set http keepalive handler
+2025/01/25 11:39:12 [debug] 81887#0: *68 http close request
+2025/01/25 11:39:12 [debug] 81887#0: *68 http log handler
+2025/01/25 11:39:12 [debug] 81887#0: *68 free: 00007FA1D981AA00, unused: 0
+2025/01/25 11:39:12 [debug] 81887#0: *68 free: 00007FA1D981BA00, unused: 1997
+2025/01/25 11:39:12 [debug] 81887#0: *68 free: 00007FA1D980D800
+2025/01/25 11:39:12 [debug] 81887#0: *68 hc free: 0000000000000000
+2025/01/25 11:39:12 [debug] 81887#0: *68 hc busy: 0000000000000000 0
+2025/01/25 11:39:12 [debug] 81887#0: *68 tcp_nodelay
+2025/01/25 11:39:12 [debug] 81887#0: *68 reusable connection: 1
+2025/01/25 11:39:12 [debug] 81887#0: *68 event timer add: 3: 75000:12036035
+2025/01/25 11:39:43 [debug] 82676#0: kevent set event: 6: ft:-1 fl:0005
+2025/01/25 11:39:43 [debug] 81887#0: *68 http keepalive handler
+2025/01/25 11:39:43 [debug] 81887#0: *68 close http connection: 3
+2025/01/25 11:39:43 [debug] 81887#0: *68 event timer del: 3: 12036035
+2025/01/25 11:39:43 [debug] 81887#0: *68 reusable connection: 0
+2025/01/25 11:39:43 [debug] 81887#0: *68 free: 0000000000000000
+2025/01/25 11:39:43 [debug] 81887#0: *68 free: 00007FA1D940F7A0, unused: 136
+2025/01/25 11:39:46 [debug] 82676#0: accept on 0.0.0.0:4444, ready: 1
+2025/01/25 11:39:46 [debug] 82676#0: posix_memalign: 00007FA1DB826C90:512 @16
+2025/01/25 11:39:46 [debug] 82676#0: *69 accept: 127.0.0.1:51040 fd:4
+2025/01/25 11:39:46 [debug] 82676#0: *69 event timer add: 4: 60000:12055508
+2025/01/25 11:39:46 [debug] 82676#0: *69 reusable connection: 1
+2025/01/25 11:39:46 [debug] 82676#0: *69 kevent set event: 4: ft:-1 fl:0025
+2025/01/25 11:39:46 [debug] 82676#0: *69 http wait request handler
+2025/01/25 11:39:46 [debug] 82676#0: *69 malloc: 00007FA1DB008A00:1024
+2025/01/25 11:39:46 [debug] 82676#0: *69 recv: eof:0, avail:153, err:0
+2025/01/25 11:39:46 [debug] 82676#0: *69 recv: fd:4 153 of 1024
+2025/01/25 11:39:46 [debug] 82676#0: *69 reusable connection: 0
+2025/01/25 11:39:46 [debug] 82676#0: *69 posix_memalign: 00007FA1DB008E00:4096 @16
+2025/01/25 11:39:46 [debug] 82676#0: *69 http process request line
+2025/01/25 11:39:46 [debug] 82676#0: *69 http request line: "POST / HTTP/1.1"
+2025/01/25 11:39:46 [debug] 82676#0: *69 http uri: "/"
+2025/01/25 11:39:46 [debug] 82676#0: *69 http args: ""
+2025/01/25 11:39:46 [debug] 82676#0: *69 http exten: ""
+2025/01/25 11:39:46 [debug] 82676#0: *69 posix_memalign: 00007FA1DB009E00:4096 @16
+2025/01/25 11:39:46 [debug] 82676#0: *69 http process request header line
+2025/01/25 11:39:46 [debug] 82676#0: *69 http header: "Host: 0.0.0.0:4444"
+2025/01/25 11:39:46 [debug] 82676#0: *69 http header: "User-Agent: curl/7.64.1"
+2025/01/25 11:39:46 [debug] 82676#0: *69 http header: "Accept: */*"
+2025/01/25 11:39:46 [debug] 82676#0: *69 http header: "Content-Length: 8"
+2025/01/25 11:39:46 [debug] 82676#0: *69 http header: "Content-Type: application/x-www-form-urlencoded"
+2025/01/25 11:39:46 [debug] 82676#0: *69 http header done
+2025/01/25 11:39:46 [debug] 82676#0: *69 event timer del: 4: 12055508
+2025/01/25 11:39:46 [debug] 82676#0: *69 generic phase: 0
+2025/01/25 11:39:46 [debug] 82676#0: *69 rewrite phase: 1
+2025/01/25 11:39:46 [debug] 82676#0: *69 test location: "/"
+2025/01/25 11:39:46 [debug] 82676#0: *69 using configuration "/"
+2025/01/25 11:39:46 [debug] 82676#0: *69 http cl:8 max:10737418240
+2025/01/25 11:39:46 [debug] 82676#0: *69 rewrite phase: 3
+2025/01/25 11:39:46 [debug] 82676#0: *69 post rewrite phase: 4
+2025/01/25 11:39:46 [debug] 82676#0: *69 generic phase: 5
+2025/01/25 11:39:46 [debug] 82676#0: *69 generic phase: 6
+2025/01/25 11:39:46 [debug] 82676#0: *69 generic phase: 7
+2025/01/25 11:39:46 [debug] 82676#0: *69 generic phase: 8
+2025/01/25 11:39:46 [debug] 82676#0: *69 access phase: 9
+2025/01/25 11:39:46 [debug] 82676#0: *69 access phase: 10
+2025/01/25 11:39:46 [debug] 82676#0: *69 access phase: 11
+2025/01/25 11:39:46 [debug] 82676#0: *69 post access phase: 12
+2025/01/25 11:39:46 [debug] 82676#0: *69 generic phase: 13
+2025/01/25 11:39:46 [debug] 82676#0: *69 generic phase: 14
+2025/01/25 11:39:46 [debug] 82676#0: *69 content phase: 15
+2025/01/25 11:39:46 [debug] 82676#0: *69 content phase: 16
+2025/01/25 11:39:46 [debug] 82676#0: *69 internal redirect: "/main.cpp?"
+2025/01/25 11:39:46 [debug] 82676#0: *69 rewrite phase: 1
+2025/01/25 11:39:46 [debug] 82676#0: *69 test location: "/"
+2025/01/25 11:39:46 [debug] 82676#0: *69 test location: "post_handler"
+2025/01/25 11:39:46 [debug] 82676#0: *69 using configuration "/"
+2025/01/25 11:39:46 [debug] 82676#0: *69 http cl:8 max:10737418240
+2025/01/25 11:39:46 [debug] 82676#0: *69 rewrite phase: 3
+2025/01/25 11:39:46 [debug] 82676#0: *69 post rewrite phase: 4
+2025/01/25 11:39:46 [debug] 82676#0: *69 generic phase: 5
+2025/01/25 11:39:46 [debug] 82676#0: *69 generic phase: 6
+2025/01/25 11:39:46 [debug] 82676#0: *69 generic phase: 7
+2025/01/25 11:39:46 [debug] 82676#0: *69 generic phase: 8
+2025/01/25 11:39:46 [debug] 82676#0: *69 access phase: 9
+2025/01/25 11:39:46 [debug] 82676#0: *69 access phase: 10
+2025/01/25 11:39:46 [debug] 82676#0: *69 access phase: 11
+2025/01/25 11:39:46 [debug] 82676#0: *69 post access phase: 12
+2025/01/25 11:39:46 [debug] 82676#0: *69 generic phase: 13
+2025/01/25 11:39:46 [debug] 82676#0: *69 generic phase: 14
+2025/01/25 11:39:46 [debug] 82676#0: *69 content phase: 15
+2025/01/25 11:39:46 [debug] 82676#0: *69 content phase: 16
+2025/01/25 11:39:46 [debug] 82676#0: *69 content phase: 17
+2025/01/25 11:39:46 [debug] 82676#0: *69 content phase: 18
+2025/01/25 11:39:46 [debug] 82676#0: *69 content phase: 19
+2025/01/25 11:39:46 [debug] 82676#0: *69 content phase: 20
+2025/01/25 11:39:46 [debug] 82676#0: *69 http filename: "/Users/meserghi/Desktop/WebServ/main.cpp"
+2025/01/25 11:39:46 [debug] 82676#0: *69 add cleanup: 00007FA1DB009BF0
+2025/01/25 11:39:46 [debug] 82676#0: *69 http static fd: 5
+2025/01/25 11:39:46 [debug] 82676#0: *69 http finalize request: 405, "/main.cpp?" a:1, c:2
+2025/01/25 11:39:46 [debug] 82676#0: *69 http special response: 405, "/main.cpp?"
+2025/01/25 11:39:46 [debug] 82676#0: *69 http set discard body
+2025/01/25 11:39:46 [debug] 82676#0: *69 HTTP/1.1 405 Not Allowed
+Server: nginx/1.27.3
+Date: Sat, 25 Jan 2025 10:39:46 GMT
+Content-Type: text/html
+Content-Length: 157
+Connection: keep-alive
+
+2025/01/25 11:39:46 [debug] 82676#0: *69 write new buf t:1 f:0 00007FA1DB009C70, pos 00007FA1DB009C70, size: 157 file: 0, size: 0
+2025/01/25 11:39:46 [debug] 82676#0: *69 http write filter: l:0 f:0 s:157
+2025/01/25 11:39:46 [debug] 82676#0: *69 http output filter "/main.cpp?"
+2025/01/25 11:39:46 [debug] 82676#0: *69 http copy filter: "/main.cpp?"
+2025/01/25 11:39:46 [debug] 82676#0: *69 http postpone filter "/main.cpp?" 00007FA1DB009DD0
+2025/01/25 11:39:46 [debug] 82676#0: *69 write old buf t:1 f:0 00007FA1DB009C70, pos 00007FA1DB009C70, size: 157 file: 0, size: 0
+2025/01/25 11:39:46 [debug] 82676#0: *69 write new buf t:0 f:0 0000000000000000, pos 0000000104D79B10, size: 104 file: 0, size: 0
+2025/01/25 11:39:46 [debug] 82676#0: *69 write new buf t:0 f:0 0000000000000000, pos 0000000104D79420, size: 53 file: 0, size: 0
+2025/01/25 11:39:46 [debug] 82676#0: *69 http write filter: l:1 f:0 s:314
+2025/01/25 11:39:46 [debug] 82676#0: *69 http write filter limit 2097152
+2025/01/25 11:39:46 [debug] 82676#0: *69 writev: 314 of 314
+2025/01/25 11:39:46 [debug] 82676#0: *69 http write filter 0000000000000000
+2025/01/25 11:39:46 [debug] 82676#0: *69 http copy filter: 0 "/main.cpp?"
+2025/01/25 11:39:46 [debug] 82676#0: *69 http finalize request: 0, "/main.cpp?" a:1, c:2
+2025/01/25 11:39:46 [debug] 82676#0: *69 http request count:2 blk:0
+2025/01/25 11:39:46 [debug] 82676#0: *69 http finalize request: -4, "/main.cpp?" a:1, c:1
+2025/01/25 11:39:46 [debug] 82676#0: *69 set http keepalive handler
+2025/01/25 11:39:46 [debug] 82676#0: *69 http close request
+2025/01/25 11:39:46 [debug] 82676#0: *69 http log handler
+2025/01/25 11:39:46 [debug] 82676#0: *69 run cleanup: 00007FA1DB009BF0
+2025/01/25 11:39:46 [debug] 82676#0: *69 file cleanup: fd:5
+2025/01/25 11:39:46 [debug] 82676#0: *69 free: 00007FA1DB008E00, unused: 0
+2025/01/25 11:39:46 [debug] 82676#0: *69 free: 00007FA1DB009E00, unused: 2679
+2025/01/25 11:39:46 [debug] 82676#0: *69 free: 00007FA1DB008A00
+2025/01/25 11:39:46 [debug] 82676#0: *69 hc free: 0000000000000000
+2025/01/25 11:39:46 [debug] 82676#0: *69 hc busy: 0000000000000000 0
+2025/01/25 11:39:46 [debug] 82676#0: *69 tcp_nodelay
+2025/01/25 11:39:46 [debug] 82676#0: *69 reusable connection: 1
+2025/01/25 11:39:46 [debug] 82676#0: *69 event timer add: 4: 75000:12070508
+2025/01/25 11:39:46 [debug] 82676#0: *69 http keepalive handler
+2025/01/25 11:39:46 [info] 82676#0: *69 kevent() reported that client 127.0.0.1 closed keepalive connection
+2025/01/25 11:39:46 [debug] 82676#0: *69 close http connection: 4
+2025/01/25 11:39:46 [debug] 82676#0: *69 event timer del: 4: 12070508
+2025/01/25 11:39:46 [debug] 82676#0: *69 reusable connection: 0
+2025/01/25 11:39:46 [debug] 82676#0: *69 free: 0000000000000000
+2025/01/25 11:39:46 [debug] 82676#0: *69 free: 00007FA1DB826C90, unused: 136
+2025/01/25 11:40:09 [debug] 82797#0: kevent set event: 6: ft:-1 fl:0005
+2025/01/25 11:40:11 [debug] 82797#0: accept on 0.0.0.0:4444, ready: 1
+2025/01/25 11:40:11 [debug] 82797#0: posix_memalign: 00007FA1D971E030:512 @16
+2025/01/25 11:40:11 [debug] 82797#0: *70 accept: 127.0.0.1:51041 fd:3
+2025/01/25 11:40:11 [debug] 82797#0: *70 event timer add: 3: 60000:12080098
+2025/01/25 11:40:11 [debug] 82797#0: *70 reusable connection: 1
+2025/01/25 11:40:11 [debug] 82797#0: *70 kevent set event: 3: ft:-1 fl:0025
+2025/01/25 11:40:11 [debug] 82797#0: *70 http wait request handler
+2025/01/25 11:40:11 [debug] 82797#0: *70 malloc: 00007FA1DA02C200:1024
+2025/01/25 11:40:11 [debug] 82797#0: *70 recv: eof:0, avail:153, err:0
+2025/01/25 11:40:11 [debug] 82797#0: *70 recv: fd:3 153 of 1024
+2025/01/25 11:40:11 [debug] 82797#0: *70 reusable connection: 0
+2025/01/25 11:40:11 [debug] 82797#0: *70 posix_memalign: 00007FA1DA031000:4096 @16
+2025/01/25 11:40:11 [debug] 82797#0: *70 http process request line
+2025/01/25 11:40:11 [debug] 82797#0: *70 http request line: "POST / HTTP/1.1"
+2025/01/25 11:40:11 [debug] 82797#0: *70 http uri: "/"
+2025/01/25 11:40:11 [debug] 82797#0: *70 http args: ""
+2025/01/25 11:40:11 [debug] 82797#0: *70 http exten: ""
+2025/01/25 11:40:11 [debug] 82797#0: *70 posix_memalign: 00007FA1DA032000:4096 @16
+2025/01/25 11:40:11 [debug] 82797#0: *70 http process request header line
+2025/01/25 11:40:11 [debug] 82797#0: *70 http header: "Host: 0.0.0.0:4444"
+2025/01/25 11:40:11 [debug] 82797#0: *70 http header: "User-Agent: curl/7.64.1"
+2025/01/25 11:40:11 [debug] 82797#0: *70 http header: "Accept: */*"
+2025/01/25 11:40:11 [debug] 82797#0: *70 http header: "Content-Length: 8"
+2025/01/25 11:40:11 [debug] 82797#0: *70 http header: "Content-Type: application/x-www-form-urlencoded"
+2025/01/25 11:40:11 [debug] 82797#0: *70 http header done
+2025/01/25 11:40:11 [debug] 82797#0: *70 event timer del: 3: 12080098
+2025/01/25 11:40:11 [debug] 82797#0: *70 generic phase: 0
+2025/01/25 11:40:11 [debug] 82797#0: *70 rewrite phase: 1
+2025/01/25 11:40:11 [debug] 82797#0: *70 test location: "/"
+2025/01/25 11:40:11 [debug] 82797#0: *70 using configuration "/"
+2025/01/25 11:40:11 [debug] 82797#0: *70 http cl:8 max:1048576
+2025/01/25 11:40:11 [debug] 82797#0: *70 rewrite phase: 3
+2025/01/25 11:40:11 [debug] 82797#0: *70 post rewrite phase: 4
+2025/01/25 11:40:11 [debug] 82797#0: *70 generic phase: 5
+2025/01/25 11:40:11 [debug] 82797#0: *70 generic phase: 6
+2025/01/25 11:40:11 [debug] 82797#0: *70 generic phase: 7
+2025/01/25 11:40:11 [debug] 82797#0: *70 generic phase: 8
+2025/01/25 11:40:11 [debug] 82797#0: *70 access phase: 9
+2025/01/25 11:40:11 [debug] 82797#0: *70 access phase: 10
+2025/01/25 11:40:11 [debug] 82797#0: *70 access phase: 11
+2025/01/25 11:40:11 [debug] 82797#0: *70 post access phase: 12
+2025/01/25 11:40:11 [debug] 82797#0: *70 generic phase: 13
+2025/01/25 11:40:11 [debug] 82797#0: *70 generic phase: 14
+2025/01/25 11:40:11 [debug] 82797#0: *70 content phase: 15
+2025/01/25 11:40:11 [debug] 82797#0: *70 content phase: 16
+2025/01/25 11:40:11 [debug] 82797#0: *70 internal redirect: "/main.cpp?"
+2025/01/25 11:40:11 [debug] 82797#0: *70 rewrite phase: 1
+2025/01/25 11:40:11 [debug] 82797#0: *70 test location: "/"
+2025/01/25 11:40:11 [debug] 82797#0: *70 test location: "post_handler"
+2025/01/25 11:40:11 [debug] 82797#0: *70 using configuration "/"
+2025/01/25 11:40:11 [debug] 82797#0: *70 http cl:8 max:1048576
+2025/01/25 11:40:11 [debug] 82797#0: *70 rewrite phase: 3
+2025/01/25 11:40:11 [debug] 82797#0: *70 post rewrite phase: 4
+2025/01/25 11:40:11 [debug] 82797#0: *70 generic phase: 5
+2025/01/25 11:40:11 [debug] 82797#0: *70 generic phase: 6
+2025/01/25 11:40:11 [debug] 82797#0: *70 generic phase: 7
+2025/01/25 11:40:11 [debug] 82797#0: *70 generic phase: 8
+2025/01/25 11:40:11 [debug] 82797#0: *70 access phase: 9
+2025/01/25 11:40:11 [debug] 82797#0: *70 access phase: 10
+2025/01/25 11:40:11 [debug] 82797#0: *70 access phase: 11
+2025/01/25 11:40:11 [debug] 82797#0: *70 post access phase: 12
+2025/01/25 11:40:11 [debug] 82797#0: *70 generic phase: 13
+2025/01/25 11:40:11 [debug] 82797#0: *70 generic phase: 14
+2025/01/25 11:40:11 [debug] 82797#0: *70 content phase: 15
+2025/01/25 11:40:11 [debug] 82797#0: *70 content phase: 16
+2025/01/25 11:40:11 [debug] 82797#0: *70 content phase: 17
+2025/01/25 11:40:11 [debug] 82797#0: *70 content phase: 18
+2025/01/25 11:40:11 [debug] 82797#0: *70 content phase: 19
+2025/01/25 11:40:11 [debug] 82797#0: *70 content phase: 20
+2025/01/25 11:40:11 [debug] 82797#0: *70 http filename: "/Users/meserghi/Desktop/WebServ/main.cpp"
+2025/01/25 11:40:11 [debug] 82797#0: *70 add cleanup: 00007FA1DA031DF0
+2025/01/25 11:40:11 [debug] 82797#0: *70 http static fd: 8
+2025/01/25 11:40:11 [debug] 82797#0: *70 http finalize request: 405, "/main.cpp?" a:1, c:2
+2025/01/25 11:40:11 [debug] 82797#0: *70 http special response: 405, "/main.cpp?"
+2025/01/25 11:40:11 [debug] 82797#0: *70 http set discard body
+2025/01/25 11:40:11 [debug] 82797#0: *70 HTTP/1.1 405 Not Allowed
+Server: nginx/1.27.3
+Date: Sat, 25 Jan 2025 10:40:11 GMT
+Content-Type: text/html
+Content-Length: 157
+Connection: keep-alive
+
+2025/01/25 11:40:11 [debug] 82797#0: *70 write new buf t:1 f:0 00007FA1DA031E70, pos 00007FA1DA031E70, size: 157 file: 0, size: 0
+2025/01/25 11:40:11 [debug] 82797#0: *70 http write filter: l:0 f:0 s:157
+2025/01/25 11:40:11 [debug] 82797#0: *70 http output filter "/main.cpp?"
+2025/01/25 11:40:11 [debug] 82797#0: *70 http copy filter: "/main.cpp?"
+2025/01/25 11:40:11 [debug] 82797#0: *70 http postpone filter "/main.cpp?" 00007FA1DA031FD0
+2025/01/25 11:40:11 [debug] 82797#0: *70 write old buf t:1 f:0 00007FA1DA031E70, pos 00007FA1DA031E70, size: 157 file: 0, size: 0
+2025/01/25 11:40:11 [debug] 82797#0: *70 write new buf t:0 f:0 0000000000000000, pos 0000000104D79B10, size: 104 file: 0, size: 0
+2025/01/25 11:40:11 [debug] 82797#0: *70 write new buf t:0 f:0 0000000000000000, pos 0000000104D79420, size: 53 file: 0, size: 0
+2025/01/25 11:40:11 [debug] 82797#0: *70 http write filter: l:1 f:0 s:314
+2025/01/25 11:40:11 [debug] 82797#0: *70 http write filter limit 2097152
+2025/01/25 11:40:11 [debug] 82797#0: *70 writev: 314 of 314
+2025/01/25 11:40:11 [debug] 82797#0: *70 http write filter 0000000000000000
+2025/01/25 11:40:11 [debug] 82797#0: *70 http copy filter: 0 "/main.cpp?"
+2025/01/25 11:40:11 [debug] 82797#0: *70 http finalize request: 0, "/main.cpp?" a:1, c:2
+2025/01/25 11:40:11 [debug] 82797#0: *70 http request count:2 blk:0
+2025/01/25 11:40:11 [debug] 82797#0: *70 http finalize request: -4, "/main.cpp?" a:1, c:1
+2025/01/25 11:40:11 [debug] 82797#0: *70 set http keepalive handler
+2025/01/25 11:40:11 [debug] 82797#0: *70 http close request
+2025/01/25 11:40:11 [debug] 82797#0: *70 http log handler
+2025/01/25 11:40:11 [debug] 82797#0: *70 run cleanup: 00007FA1DA031DF0
+2025/01/25 11:40:11 [debug] 82797#0: *70 file cleanup: fd:8
+2025/01/25 11:40:11 [debug] 82797#0: *70 free: 00007FA1DA031000, unused: 0
+2025/01/25 11:40:11 [debug] 82797#0: *70 free: 00007FA1DA032000, unused: 2679
+2025/01/25 11:40:11 [debug] 82797#0: *70 free: 00007FA1DA02C200
+2025/01/25 11:40:11 [debug] 82797#0: *70 hc free: 0000000000000000
+2025/01/25 11:40:11 [debug] 82797#0: *70 hc busy: 0000000000000000 0
+2025/01/25 11:40:11 [debug] 82797#0: *70 tcp_nodelay
+2025/01/25 11:40:11 [debug] 82797#0: *70 reusable connection: 1
+2025/01/25 11:40:11 [debug] 82797#0: *70 event timer add: 3: 75000:12095099
+2025/01/25 11:40:11 [debug] 82797#0: *70 http keepalive handler
+2025/01/25 11:40:11 [info] 82797#0: *70 kevent() reported that client 127.0.0.1 closed keepalive connection
+2025/01/25 11:40:11 [debug] 82797#0: *70 close http connection: 3
+2025/01/25 11:40:11 [debug] 82797#0: *70 event timer del: 3: 12095099
+2025/01/25 11:40:11 [debug] 82797#0: *70 reusable connection: 0
+2025/01/25 11:40:11 [debug] 82797#0: *70 free: 0000000000000000
+2025/01/25 11:40:11 [debug] 82797#0: *70 free: 00007FA1D971E030, unused: 136
