@@ -6,7 +6,7 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 16:54:05 by hidriouc          #+#    #+#             */
-/*   Updated: 2025/01/25 11:56:23 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/01/25 15:30:31 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,16 @@ void	Conserver::addLocation(const std::map<std::string, std::string> loc_attribu
 }
 void Conserver::addPath(std::string path)
 {
+	std::vector <std::string>::iterator it = AllPaths.begin();
+	while (it != AllPaths.end())
+	{
+		if (*it == path)
+		{
+			std::cerr <<" duplicate location \"" << path <<"\""<<std::endl;
+			exit(EXIT_FAILURE);
+		}
+		it++;
+	}
 	AllPaths.push_back(path);
 }
 void Conserver::addlistening(std::pair<std::string, std::string > lsn)

@@ -199,7 +199,7 @@ std::string	checklocationPat(std::string value)
 			 sig = false;
 		}
 	}
-	return value;
+	return NewValue;
 }
 
 void	parseLocation(const std::string& confline, Conserver& server, std::ifstream& infile, int& index_line) {
@@ -271,8 +271,10 @@ void	processServerBlock(std::ifstream& infile, Conserver& server, int& index_lin
 std::vector<Conserver>	parseConfigFile(char *in_file){
 	std::ifstream infile;
 	std::vector<Conserver> servers;
+	std::vector<Conserver> Rservers;
 	std::stack<char> ServStack;
 	int index_line = 0;
+	bool sin = true;
 	std::string confline;
 
 	try{
@@ -292,8 +294,9 @@ std::vector<Conserver>	parseConfigFile(char *in_file){
 		if(ServStack.size()){
 			throw (std::string("Error: Unbalanced brackets '}', line") + Utility::ToStr(index_line));
 		}
-		if (!server.getAttributes("root").empty())
+		if (!server.getAttributes("root").empty()){
 			servers.push_back(server);
+		}
 		else
 			throw((std::string )"Error: server without root line !"+ Utility::ToStr(index_line - 1));
 		if (confline == "}")
@@ -302,12 +305,34 @@ std::vector<Conserver>	parseConfigFile(char *in_file){
 		else{
 			throw (std::string("Error: Unbalanced brackets '}', line") + Utility::ToStr(index_line));
 		}
-	}
+		}
 	}
 	catch(std::string err){
 		std::cerr<<err<<std::endl;
 		exit(1);
 	}
-		return servers;
+	for (size_t i = 1; i < servers.size(); i++){
+		sin = true;
+	std::vector<std::pair<std::string, std::string> > CurVec = servers[i - 1].getlistening();
+	for (std::vector<std::pair<std::string,std::string> >::iterator ct =  CurVec.begin(); ct !=  CurVec.end(); ct++){
+	for (size_t j = i; j < servers.size(); j++){
+	std::vector<std::pair<std::string, std::string> > tmpVec = servers[j].getlistening();
+	for (std::vector<std::pair<std::string,std::string> >::iterator it =  tmpVec.begin(); it !=  tmpVec.end(); it++){
+	if (it->second == ct->second)
+	{
+		std::cerr << "Duplicate port << "<<it->second<<" >> ignored !!"<<std::endl;
+		if (tmpVec.size() <= 1){
+			sin = false; break;
+		}
+		else
+		 it->second = "";
+	}
+	}
+	}
+	if (sin)
+		Rservers.push_back(servers[i]);
+	}
+	}
+		return Rservers;
 }
 
