@@ -113,7 +113,6 @@ void Server::RecivData(int clientSocket)
     (*clientsRequest[clientSocket]).readBuffer(fullData);
     if ((*clientsRequest[clientSocket]).requestIsDone())
     {
-        std::cout << "S =>>" << (*clientsRequest[clientSocket]).statusCodeMessage() << "<<" << std::endl;
         puts("Data Recived");
         EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
         if (kevent(kq, &event, 1, NULL, 0, NULL)) ////loooook
@@ -131,7 +130,6 @@ void Server::SendData(int clientSocket)
         clientsResponse[clientSocket] = new Response(*serversConfigs[serversClients[clientSocket]], 
                                             *clientsRequest[clientSocket]);
     std::string response = clientsResponse[clientSocket]->getResponse();
-    // std::cout <<
     if (response.empty())
     {
         ResponseEnds(clientSocket);
