@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/27 12:55:49 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/27 16:46:51 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -238,8 +238,14 @@ bool RequestParse::parseHeader(std::string &header, std::string &buff)
 		_body.openFileBasedOnContentType();
 	header.clear();
 	if (_enumMethod == eGET)
-		_requestIsDone = true;
+		throw std::runtime_error("200 OK");
+	_body.setClearData(true);
 	return isHeader;
+}
+
+void	RequestParse::setUrl(std::string s)
+{
+	this->_url = s;
 }
 
 std::string	RequestParse::location()

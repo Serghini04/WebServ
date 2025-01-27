@@ -1,6 +1,9 @@
 #pragma once
 #include "Server.hpp"
 #include "RequestParse.hpp"
+#include <dirent.h>
+#include <filesystem>
+#include <sys/stat.h>
 #define BUFFER_SIZE 1024 * 2
 
 
@@ -8,12 +11,7 @@ class Server;
 class RequestParse;
 class Conserver;
 
-enum statusCode
-{
-    None = 0,
-    ErrNotFound = 404,
-    ErrInternalError = 500
-};
+
 class Response
 {
 private:
@@ -27,16 +25,25 @@ private:
     std::string                         filename;
     Conserver&                          conserver;
     static std::string                  errHtml;
-    std::string                        errMsg;
+    std::string                         errMsg;
+    RequestParse                        &request;
+    bool                                hasErrorFile;
+    bool                                isDirectory;
+    std::string                         directoryContent;
 public:
-    Response(Conserver &conserver);
+    Response(Conserver &conserver, RequestParse &request);
     ~Response();
-    std::string FileToString(RequestParse &request);
-    std::string getResponse(RequestParse &request);
-    std::string processResponse(RequestParse &request, int isSuccess);
-    std::string getHeader(RequestParse &request, const std::string &str);
-    void        handelRequestErrors(RequestParse &request);
+    std::string FileToString();
+    std::string getResponse();
+    int         processDirectory(std::string &path);
+    std::string processResponse(int isSuccess);
+    std::string getHeader();
+    void        ProcessUrl();
+    void        handelRequestErrors();
+    void        SendError(enum status code);
     int         getFileSize();
+    int        GetErrorFromStrSize();
+    static bool IsDirectory(const char* path);
 };
 
 

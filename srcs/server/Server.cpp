@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/01/22 16:21:59 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/27 16:31:50 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ void Server::ResponseEnds(int clientSocket)
         SendError(clientSocket);
     (*clientsRequest[clientSocket]).SetRequestIsDone(false);
     clientsResponse.erase(clientSocket);
+    delete clientsRequest[clientSocket];    
     clientsRequest.erase(clientSocket);
     close(clientSocket);
 }
@@ -113,7 +114,6 @@ void Server::RecivData(int clientSocket)
     (*clientsRequest[clientSocket]).readBuffer(fullData);
     if ((*clientsRequest[clientSocket]).requestIsDone())
     {
-        std::cout << "S =>>" << (*clientsRequest[clientSocket]).statusCodeMessage() << "<<" << std::endl;
         puts("Data Recived");
         EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
         if (kevent(kq, &event, 1, NULL, 0, NULL)) ////loooook
@@ -128,8 +128,9 @@ void Server::SendData(int clientSocket)
     size_t responseSize;
 
     if (!clientsResponse.count(clientSocket))
-        clientsResponse[clientSocket] = new Response(*serversConfigs[serversClients[clientSocket]]);
-    std::string response = clientsResponse[clientSocket]->getResponse(*clientsRequest[clientSocket]);
+        clientsResponse[clientSocket] = new Response(*serversConfigs[serversClients[clientSocket]], 
+                                            *clientsRequest[clientSocket]);
+    std::string response = clientsResponse[clientSocket]->getResponse();
     if (response.empty())
     {
         ResponseEnds(clientSocket);
