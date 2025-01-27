@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:36:14 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/25 17:55:31 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/27 15:07:55 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,16 +62,15 @@ class BodyParse
 		BodyType	getTypeOfBody(methods method, long long maxBodySize);
 		
 		bool		parseBody(std::string &buff);
-		bool		clearBuffers(std::string &data, std::string &accumulatedData, std::string &carryOver);
-		void		checkContentTooLarge(size_t length);
+		bool		clearBuffers(std::string &data, std::string &accumulatedData, std::string &carryOver, bool &readingChunk);
+		void		checkContentTooLarge(size_t length, bool &clearData);
 		void		openFileBasedOnContentType();
 		bool		BoundaryParse(std::string &buff);
 		bool		ChunkedParse(std::string &buff);
 		bool		ChunkedBoundaryParse(std::string &buff);
 		bool		ContentLengthParse(std::string &buff);
 		void		openFileOfBoundary(std::string buff);
-		bool		writeChunkToFile(std::string &buff, size_t &length, std::string &carryOver, std::string &accumulatedData);
-		bool		removeChunkedSize(std::string &buff, std::string &data, size_t &processed);
+		bool		writeChunkToFile(std::string &buff, size_t &length, std::string &carryOver, std::string &accumulatedData, bool &clearData);
 		void		setMetaData(std::map<std::string, std::string> &data);
 
 		~BodyParse();

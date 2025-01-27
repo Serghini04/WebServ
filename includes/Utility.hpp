@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 18:36:13 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/25 10:02:27 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/27 11:36:49 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,6 +182,13 @@ public:
 		std::stringstream buffer;
 		buffer << file.rdbuf();
 		return buffer.str();
+	}
+	static std::string toLowerCase(const std::string& input) {
+		std::string result = input;
+		for (std::size_t i = 0; i < result.size(); ++i) {
+			result[i] = std::tolower(static_cast<unsigned char>(result[i]));
+		}
+		return result;
 	}
 	static std::string ToStr(long long nb)
 	{

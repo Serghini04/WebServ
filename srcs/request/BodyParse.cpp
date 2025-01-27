@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:38:49 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/25 17:57:04 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/27 15:42:19 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ bool	BodyParse::parseBody(std::string &buff)
 		case eContentLength :
 			return ContentLengthParse(buff);
 		case eNone :
-			break;
+			throw std::runtime_error("501 Not Implemented");
 	}
 	return false;
 }
@@ -49,29 +49,29 @@ BodyType	BodyParse::getTypeOfBody(methods method, long long maxBodySize)
 {
 	char	*trash = NULL;
 
-	if (_metaData["Content-Length"] != "")
+	if (_metaData["content-length"] != "")
 	{
-		_bodySize = strtoll(_metaData["Content-Length"].c_str(), &trash, 10);
-		if (trash == _metaData["Content-Length"].c_str() || *trash != '\0' || errno == ERANGE || _bodySize < 0)
+		_bodySize = strtoll(_metaData["content-length"].c_str(), &trash, 10);
+		if (trash == _metaData["content-length"].c_str() || *trash != '\0' || errno == ERANGE || _bodySize < 0)
 			throw std::runtime_error("400 Bad Request 1");
 		std::cout << "_bodySize =>>" << _bodySize << "<<" <<std::endl;
 		std::cout << "_Max =>>" << maxBodySize << "<<" <<std::endl;
 		if (maxBodySize >= 0 && _bodySize > maxBodySize)
 			throw std::runtime_error("413 Content Too Large");
 	}
-    if (_metaData["Transfer-Encoding"] == "chunked" && _metaData["Content-Type"].find("multipart/form-data; boundary=") != std::string::npos)
+    if (_metaData["transfer-encoding"] == "chunked" && _metaData["content-type"].find("multipart/form-data; boundary=") != std::string::npos)
 		return eChunkedBoundary;
-	else if (_metaData["Transfer-Encoding"] == "chunked")
+	else if (_metaData["transfer-encoding"] == "chunked")
 	{
-		if (method == ePOST && _metaData["Content-Type"] == "")
+		if (method == ePOST && _metaData["content-type"] == "")
 			throw std::runtime_error("400 Bad Request");
 		return eChunked;
 	}
-	else if (_metaData["Content-Type"].find("multipart/form-data; boundary=") != std::string::npos)
+	else if (_metaData["content-type"].find("multipart/form-data; boundary=") != std::string::npos)
 		return eBoundary;
-	else if (_metaData["Content-Length"] != "")
+	else if (_metaData["content-length"] != "")
 	{
-		if (method == ePOST && _metaData["Content-Type"] == "")
+		if (method == ePOST && _metaData["content-type"] == "")
 			throw std::runtime_error("400 Bad Request");
 		return eContentLength;
 	}
@@ -102,7 +102,7 @@ void BodyParse::openFileBasedOnContentType()
 		_fileOutput.close();
 	oss << "/Users/meserghi/goinfre/www/Output" << _indexFile;
 	std::string namefile = oss.str();
-	namefile += Utility::getExtensions(_metaData["Content-Type"], "");
+	namefile += Utility::getExtensions(_metaData["content-type"], "");
 	_fileOutput.open(namefile.c_str(), std::ios::binary);
 	if (_fileOutput.fail())
 		throw std::runtime_error("open failed !");
@@ -110,7 +110,7 @@ void BodyParse::openFileBasedOnContentType()
 	_indexFile++;
 }
 
-bool	BodyParse::writeChunkToFile(std::string &buff, size_t &length, std::string &carryOver, std::string &accumulatedData)
+bool	BodyParse::writeChunkToFile(std::string &buff, size_t &length, std::string &carryOver, std::string &accumulatedData, bool &clearData)
 {
 	size_t bytesToRead = std::min(length, buff.size());
 	std::string chunkData = buff.substr(0, bytesToRead);
@@ -133,6 +133,7 @@ bool	BodyParse::writeChunkToFile(std::string &buff, size_t &length, std::string 
 	    if (searchData.length() > potentialSplitSize)
 		{
 	        size_t safeLength = searchData.length() - potentialSplitSize;
+			checkContentTooLarge(safeLength, clearData);
 	        _fileOutput.write(searchData.c_str(), safeLength);
 	        carryOver = searchData.substr(safeLength);
 	    }
@@ -144,12 +145,14 @@ bool	BodyParse::writeChunkToFile(std::string &buff, size_t &length, std::string 
 	return false;
 }
 
-bool	BodyParse::clearBuffers(std::string &data, std::string &accumulatedData, std::string &carryOver)
+bool	BodyParse::clearBuffers(std::string &data, std::string &accumulatedData, std::string &carryOver, bool &readingChunk)
 {
 	data.clear();
 	accumulatedData.clear();
 	carryOver.clear();
 	_fileOutput.flush();
+	readingChunk = false;
+	// throw std::runtime_error("201 Created");
 	return true;
 }
 
@@ -160,7 +163,10 @@ bool BodyParse::ChunkedBoundaryParse(std::string& buff)
 	static bool readingChunk = false;
 	static std::string accumulatedData;
 	static std::string carryOver;
+	static bool clearData = true;
 
+	if (clearData)
+		clearBuffers(data, accumulatedData, carryOver, readingChunk), clearData = false;
 	if (!data.empty())
 	{
 		buff = data + buff;
@@ -177,27 +183,30 @@ bool BodyParse::ChunkedBoundaryParse(std::string& buff)
 			buff.erase(0, pos + 2);
 			if (lengthStr.empty())
 				continue;
-			char* trash = NULL;
+			char *trash = NULL;
 			length = std::strtol(lengthStr.c_str(), &trash, 16);
-			if (*trash || length == SIZE_MAX)
+			if (*trash)
 			{
+				std::cout <<  lengthStr << "\n";
 				std::cerr << "Invalid chunk size format!" << std::endl;
 				return false;
 			}
 			if (length == 0)
 			{
-			    if (!accumulatedData.empty())
+				if (!accumulatedData.empty())
 				{
 					std::string tempBuff = accumulatedData;
 					accumulatedData.clear();
-					return BoundaryParse(tempBuff);
+					if (BoundaryParse(tempBuff))
+						return clearBuffers(data, accumulatedData, carryOver, readingChunk);
+					return false;
 			    }
-			    return length = 0, readingChunk = false, clearBuffers(data, accumulatedData, carryOver);
+			    return length = 0, clearBuffers(data, accumulatedData, carryOver, readingChunk);
 			}
 			readingChunk = true;
 		}
-		if (writeChunkToFile(buff, length, carryOver, accumulatedData))
-			return length = 0, readingChunk = false, clearBuffers(data, accumulatedData, carryOver);
+		if (writeChunkToFile(buff, length, carryOver, accumulatedData, clearData))
+			return length = 0, clearBuffers(data, accumulatedData, carryOver, readingChunk);
 		if (length == 0)
 		{
 			if (buff.size() >= 2)
@@ -248,7 +257,7 @@ void	BodyParse::openFileOfBoundary(std::string buff)
 		if (end == std::string::npos)
 			throw std::runtime_error("Invalid Exec to open file");
 		filename =  Utility::trimSpace(buff.substr(start, end - start));
-		_metaData["Content-Type"] = filename;
+		_metaData["content-type"] = filename;
 		openFileBasedOnContentType();
 		return ;
 	}
@@ -265,8 +274,14 @@ void	BodyParse::openFileOfBoundary(std::string buff)
 bool BodyParse::BoundaryParse(std::string& buff)
 {
 	static std::string data;
+	static bool	clearData = true;
 	size_t processed = 0;
 
+	if (clearData)
+	{
+		data.clear();
+		clearData = false;	
+	}
 	if (!data.empty())
 	{
 		buff = data + buff;
@@ -277,9 +292,12 @@ bool BodyParse::BoundaryParse(std::string& buff)
 		size_t boundaryPos = buff.find(_boundary, processed);
 		if (boundaryPos != std::string::npos)
 		{
-			// IF "DATA BOUNDARY..."
+			// IF "DATA...BOUNDARY..."
 			if (boundaryPos > processed)
+			{
+				checkContentTooLarge(boundaryPos - processed - 2, clearData);
 				_fileOutput.write(buff.data() + processed, boundaryPos - processed - 2);
+			}
 			size_t headerEndPos = buff.find("\r\n\r\n", boundaryPos);
 			if (headerEndPos == std::string::npos)
 				return data = buff.substr(boundaryPos), false;
@@ -292,13 +310,14 @@ bool BodyParse::BoundaryParse(std::string& buff)
 		{
 			if (boundaryEndPos >= 2)
 				boundaryEndPos -= 2;
+			checkContentTooLarge(boundaryEndPos - processed, clearData);
 			_fileOutput.write(buff.data() + processed, boundaryEndPos - processed);
-			_fileOutput.flush();
+			_fileOutput.close();
 			buff.erase(0, boundaryEndPos + _boundaryEnd.size() + 2);
-			return true;
 		}
 		if (processed < buff.size() && _boundaryEnd.find(buff.back()) == std::string::npos)
 		{
+			checkContentTooLarge(buff.size() - processed, clearData),
 			_fileOutput.write(buff.data() + processed, buff.size() - processed);
 			return buff.clear(), false;
 		}
@@ -308,20 +327,27 @@ bool BodyParse::BoundaryParse(std::string& buff)
     return false;
 }
 
-void	BodyParse::checkContentTooLarge(size_t length)
+void	BodyParse::checkContentTooLarge(size_t length, bool &clearData)
 {
-	if (_metaData["Content-Length"] != "")
+	if (_metaData["content-length"] != "")
 	{
 		_bodySize -= length;
-		std::cout << "=================> " << _bodySize << "<====================" <<std::endl;
 		if (_maxBodySize >= 0 && _bodySize < 0)
+		{
+			clearData = true;
 			throw std::runtime_error("413 Content Too Large1");
+		}
 	}
 	else
 	{
 		_bodySize += length;
+		std::cout << "Body size = " << _bodySize << std::endl;
+		std::cout << "Max body size = " << _maxBodySize << std::endl;
 		if (_maxBodySize >= 0 && _bodySize > _maxBodySize)
+		{
+			clearData = true;
 			throw std::runtime_error("413 Content Too Large2");
+		}
 	}	
 }
 
@@ -330,7 +356,15 @@ bool BodyParse::ChunkedParse(std::string &buff)
 	static std::string data;
 	static size_t length = 0;
 	static bool readingChunk = false;
+	static bool	clearData = true;
 
+	if (clearData)
+	{
+		data.clear();
+		length = 0;
+		readingChunk = false;
+		clearData = false;
+	}
 	if (!data.empty())
 	{
 		buff = data + buff;
@@ -354,7 +388,7 @@ bool BodyParse::ChunkedParse(std::string &buff)
 				data.clear();
 				throw std::runtime_error("404 Bad Request");
 			}
-			checkContentTooLarge(length);
+			checkContentTooLarge(length, clearData);
 			if (length == 0)
 			{
 				_fileOutput.close();
@@ -383,7 +417,7 @@ bool BodyParse::ContentLengthParse(std::string &buff)
 	size_t bytesToProcess = buff.size();
 	_fileOutput.write(buff.data(), bytesToProcess);
 	_bodySize -= bytesToProcess;
-	if (_bodySize == 0)
+	if (_bodySize <= 0)
 	{
 		_fileOutput.flush();
 		return true;

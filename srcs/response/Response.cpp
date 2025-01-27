@@ -46,10 +46,10 @@ std::string Response::getHeader(RequestParse &request, const std::string &status
     _headerMap["Date"] = Utility::GetCurrentTime();
     std::string ser = conserver.getAttributes("server_name");
     ser.erase(ser.end() - 1);
-    _headerMap["Server"] = ser;
-    _headerMap["Content-Type"] = contentType;
-    _headerMap["Content-Length"] = bodySize.str();
-    _headerMap["Connection"] = request.getMetaData().count("Connection") == 0 ? "keep-alive" : request.getMetaData()["Connection"];
+    _headerMap["server"] = ser;
+    _headerMap["content-yype"] = contentType;
+    _headerMap["content-length"] = bodySize.str();
+    _headerMap["connection"] = request.getMetaData().count("Connection") == 0 ? "keep-alive" : request.getMetaData()["Connection"];
     response << statusLine;
     for (std::map<std::string, std::string>::const_iterator
              it = _headerMap.begin();
