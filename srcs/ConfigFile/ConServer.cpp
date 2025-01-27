@@ -6,11 +6,12 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 16:54:05 by hidriouc          #+#    #+#             */
-/*   Updated: 2025/01/25 10:05:40 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/25 18:42:19 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <Server.hpp>
+#include <chrono>
 #include <cstddef>
 #include <cstdlib>
 #include <string>
@@ -32,6 +33,16 @@ void Conserver::addPath(std::string path)
 }
 void Conserver::addlistening(std::pair<std::string, std::string > lsn)
 {
+	std::vector<std::pair<std::string, std::string> >::iterator it = listening.begin();
+	while (it != listening.end())
+	{
+		if (it->second == lsn.second)
+		{
+			std::cerr << "duplicate port << "<<lsn.second<< " >>!"<<std::endl;
+			exit(EXIT_FAILURE);
+		}
+		it++;
+	}
 	listening.push_back(lsn);
 }
 long long	Conserver::getBodySize()

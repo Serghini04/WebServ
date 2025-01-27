@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/25 18:39:21 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/27 12:55:49 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,10 @@ RequestParse::RequestParse(Conserver &conserver) : _body(conserver.getBodySize()
 		puts("open failed");
 		exit(1);
 	}
-	std::cout << ">>" << conserver.getBodySize() << "<<" <<std::endl;
 	_isHeader = true;
 	_requestIsDone = false;
 	_statusCode = eOK;
 	_statusCodeMessage = "200 OK";
-	std::cout << ">>" << _configServer.getBodySize() << "<<" << std::endl;
 	_maxBodySize = _configServer.getBodySize();
 }
 
@@ -147,7 +145,7 @@ void	RequestParse::parseMetaData(std::string header)
 			continue;
 		else if (i != 0 && header[i] == ':')
 		{
-			_metaData[header.substr(0, i)] = Utility::trimSpace(header.substr(i + 1));
+			_metaData[Utility::toLowerCase(header.substr(0, i))] = Utility::trimSpace(header.substr(i + 1));
 			return ;
 		}
 		else
@@ -232,7 +230,7 @@ bool RequestParse::parseHeader(std::string &header, std::string &buff)
 	checkAllowedMethod();
 	if (_body.bodyType() == eBoundary || _body.bodyType() == eChunkedBoundary)
 	{
-		std::string	boundary = _metaData["Content-Type"].substr(_metaData["Content-Type"].find("boundary=") + 9);
+		std::string	boundary = _metaData["content-type"].substr(_metaData["content-type"].find("boundary=") + 9);
 		_body.setBoundary("--" + boundary + "\r\n");
 		_body.setBoundaryEnd("--" + boundary + "--\r\n");
 	}
@@ -255,13 +253,13 @@ void    RequestParse::readBuffer(std::string buff)
 	_fd << "\n===========" << _body.bodyType() << "===========\n";
 	_fd << buff; 
 	_fd << "\n======================\n";
-	_fd.flush();
 	try
 	{
 		if (_requestIsDone)
 			return ;
 		if (isHeader())
 			setIsHeader(parseHeader(header, buff));
+		_fd.flush();
 		_requestIsDone = _body.parseBody(buff);
 	}
 	catch (std::exception &e)
