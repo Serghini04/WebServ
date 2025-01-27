@@ -18,7 +18,7 @@
 #include <RequestParse.hpp>
 #define MAX_BUFFER 8096
 #define MAX_CLIENTS 128
-#define PORT 3938
+#define PORT 3928
 class Response;
 class RequestParse;
 class Server
