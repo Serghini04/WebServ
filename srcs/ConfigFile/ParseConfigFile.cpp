@@ -146,40 +146,62 @@ bool	parseKeyValue(const std::string& line_content, int &index_line, std::string
 		return true;
 }
 
-void saveAttribute(const std::string& confline, Conserver& server, int index_line) {
+void saveAttribute(const std::string& confline, Conserver& server, int index_line, std::map<std::string, std::string>& listenings) {
 	std::string trimmed_line = trim(confline);
 	static bool sin = false;
-	static std::string	host;
-	if (trimmed_line.empty() || trimmed_line == "}")
-		return;
+	static std::string host;
 	std::string key, value;
+	
+
+	if (trimmed_line.empty() || trimmed_line == "}") {
+	return;
+	}
 	parseKeyValue(trimmed_line, index_line, key, value);
-	if (key == "host" && !value.empty()){
-		if (host.empty())
-			host = value;
-		else{
+	if (key == "host" && !value.empty()) {
+		if (!host.empty() && !listenings[ host+"8080"].empty()) {
+		std::cerr << "[Warning]:Duplicate port << " << host << ":8080 >> ignored!" << std::endl;
+		} else if (!host.empty()) {
 		server.addlistening(std::pair<std::string, std::string>(host, "8080"));
-		host = value;
+		listenings[host+"8080"] = Utility::ToStr(index_line);
 		}
+		host = value;
 		sin = true;
 		return;
 	}
-	else if (key == "port" && !value.empty()){
-		if (sin)
-			server.addlistening(std::pair<std::string, std::string>(host, value));
-		else
-			server.addlistening(std::pair<std::string, std::string>("0.0.0.0", value));
+	if (key == "port" && !value.empty()) {
+		const std::string& current_host = sin ? host : "0.0.0.0";
+			if (!listenings[current_host + value].empty()) {
+			std::cerr << "[Warning]: Duplicate port << " 
+				<< current_host << ":" << value << " >> ignored!**" << std::endl;
+			sin = false;
+			 host.clear();
+			return;
+		}
+		server.addlistening(std::make_pair(current_host, value));
+		listenings[current_host+value] = Utility::ToStr(index_line);
 		sin = false;
-		host = "";
-		return ;
+		host.clear();
+		return;
 	}
-	if (key == "client_max_body_size" && !value.empty())
+	if (sin && key != "port" && key != "host") {
+		if (!listenings[host+"8080"].empty()) {
+		std::cerr << "[Warning]:Duplicate port << " << host << ":8080 >> ignored !!" << std::endl;
+		} else {
+		server.addlistening(std::pair<std::string, std::string>(host, "8080"));
+		listenings[host+"8080"] = Utility::ToStr(index_line);
+		}
+		sin = false;
+		host.clear();
+		return;
+		}
+	if (key == "client_max_body_size" && !value.empty()) {
 		server.addBodySize(value);
-	if (is_validAttServer(key, value, index_line))
+	}
+	if (is_validAttServer(key, value, index_line)) {
 		server.addAttribute(key, value);
-	else{
-		std::cerr << "Invalid strecture in line :"<<index_line <<"!!"<<std::endl;
-		exit (EXIT_FAILURE);
+	} else {
+		std::cerr << "Invalid structure in line: " << index_line << "!!" << std::endl;
+		exit(EXIT_FAILURE);
 	}
 }
 
@@ -245,7 +267,7 @@ void	parseLocation(const std::string& confline, Conserver& server, std::ifstream
 	server.addLocation(location_map);
 }
 
-void	processServerBlock(std::ifstream& infile, Conserver& server, int& index_line, std::stack<char>& ServStack) {
+void	processServerBlock(std::ifstream& infile, Conserver& server, int& index_line, std::stack<char>& ServStack, std::map<std::string, std::string>& listenings) {
 	std::string confline;
 
 	while (std::getline(infile, confline) && (confline = trim(confline)) != "}") {
@@ -258,7 +280,7 @@ void	processServerBlock(std::ifstream& infile, Conserver& server, int& index_lin
 	if (confline.find("location") == 0 && confline[confline.length() -1 ] == '{') {
 	parseLocation(confline, server, infile, index_line);
 	} else {
-	saveAttribute(confline, server, index_line);
+	saveAttribute(confline, server, index_line, listenings);
 	}
 	}
 	if (confline == "}")
@@ -269,13 +291,14 @@ void	processServerBlock(std::ifstream& infile, Conserver& server, int& index_lin
 }
 
 std::vector<Conserver>	parseConfigFile(char *in_file){
-	std::ifstream infile;
-	std::vector<Conserver> servers;
+	std::ifstream			infile;
+	std::vector<Conserver>	servers;
+	std::stack<char>		ServStack;
+	int 					index_line = 0;
+	std::string 			confline;
+	std::map<std::string, std::string> listenings;
 	std::vector<Conserver> Rservers;
-	std::stack<char> ServStack;
-	int index_line = 0;
-	bool sin = true;
-	std::string confline;
+	// bool sin = true;
 
 	try{
 		if (!in_file)
@@ -290,7 +313,7 @@ std::vector<Conserver>	parseConfigFile(char *in_file){
 		confline = trim(confline);
 		if (confline.empty() || confline[0] == '#') continue;
 		if (Check_Line(confline, ServStack)){
-			processServerBlock(infile, server, index_line, ServStack);
+			processServerBlock(infile, server, index_line, ServStack, listenings);
 		if(ServStack.size()){
 			throw (std::string("Error: Unbalanced brackets '}', line") + Utility::ToStr(index_line));
 		}
@@ -311,28 +334,11 @@ std::vector<Conserver>	parseConfigFile(char *in_file){
 		std::cerr<<err<<std::endl;
 		exit(1);
 	}
-	for (size_t i = 1; i < servers.size(); i++){
-		sin = true;
-	std::vector<std::pair<std::string, std::string> > CurVec = servers[i - 1].getlistening();
-	for (std::vector<std::pair<std::string,std::string> >::iterator ct =  CurVec.begin(); ct !=  CurVec.end(); ct++){
-	for (size_t j = i; j < servers.size(); j++){
-	std::vector<std::pair<std::string, std::string> > tmpVec = servers[j].getlistening();
-	for (std::vector<std::pair<std::string,std::string> >::iterator it =  tmpVec.begin(); it !=  tmpVec.end(); it++){
-	if (it->second == ct->second)
-	{
-		std::cerr << "Duplicate port << "<<it->second<<" >> ignored !!"<<std::endl;
-		if (tmpVec.size() <= 1){
-			sin = false; break;
-		}
-		else
-		 it->second = "";
-	}
-	}
-	}
-	if (sin)
+	for (size_t i = 0; i < servers.size(); i++){
+	std::vector<std::pair<std::string, std::string> > CurVec = servers[i].getlistening();
+	if (!CurVec.empty())
 		Rservers.push_back(servers[i]);
 	}
-	}
-		return Rservers;
+	return Rservers;
 }
 
