@@ -14,7 +14,6 @@
 
 Server::Server()
 {
-
 }
 
 Server::~Server()
@@ -29,7 +28,8 @@ Server::~Server()
 
 void errorMsg(std::string str, int fd)
 {
-    std::cout << str << std::endl;
+    std::cout << str << strerror(errno) << std::endl;
+
     close(fd);
 }
 
@@ -102,10 +102,10 @@ void Server::RecivData(int clientSocket)
     {
         if (errno == EAGAIN || errno == EWOULDBLOCK)
             return;
-        if(errno == ECONNRESET)
+        if (errno == ECONNRESET)
         {
             ResponseEnds(clientSocket);
-            return ;
+            return;
         }
         return;
     }
@@ -127,8 +127,8 @@ void Server::SendData(int clientSocket)
     size_t responseSize;
 
     if (!clientsResponse.count(clientSocket))
-        clientsResponse[clientSocket] = new Response(*serversConfigs[serversClients[clientSocket]], 
-                                            *clientsRequest[clientSocket]);
+        clientsResponse[clientSocket] = new Response(*serversConfigs[serversClients[clientSocket]],
+                                                     *clientsRequest[clientSocket]);
     std::string response = clientsResponse[clientSocket]->getResponse();
     if (response.empty())
     {
@@ -146,24 +146,23 @@ void Server::SendData(int clientSocket)
         {
             if (errno == EAGAIN || errno == EWOULDBLOCK)
                 return;
-            if(errno == EPIPE)
+            if (errno == EPIPE)
             {
                 ResponseEnds(clientSocket);
-                return ;
+                return;
             }
             SendError(clientSocket);
             return;
         }
         totalSent += bytesSent;
     }
-
 }
 
 void Server::ConnectWithClient(int kq, uintptr_t server)
 {
     sockaddr_in clientAddress;
-    socklen_t   clientAddrLen;
-    int         clientSocket;
+    socklen_t clientAddrLen;
+    int clientSocket;
 
     puts("new connection");
     clientAddrLen = sizeof(clientAddress);
@@ -179,7 +178,6 @@ void Server::ConnectWithClient(int kq, uintptr_t server)
         if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
             SendError(clientSocket);
     }
-
 }
 
 void Server::HandelEvents(int n, struct kevent events[])
@@ -188,7 +186,7 @@ void Server::HandelEvents(int n, struct kevent events[])
 
     for (int i = 0; i < n; i++)
     {
-        if(std::find(servers.begin(), servers.end(),(intptr_t)events[i].ident ) != servers.end())
+        if (std::find(servers.begin(), servers.end(), (intptr_t)events[i].ident) != servers.end())
             ConnectWithClient(kq, events[i].ident);
         else if (events[i].filter == EVFILT_READ)
         {
@@ -212,7 +210,7 @@ int Server::CreateServer(std::vector<Conserver> &config)
     kq = kqueue();
     if (kq == -1)
         errorMsg("kqueue creation failed", serverSocket);
-    for(size_t i = 0; i < config.size(); i++)
+    for (size_t i = 0; i < config.size(); i++)
     {
         serverSocket = ConfigTheSocket(config[i]);
         if (serverSocket == -1)
