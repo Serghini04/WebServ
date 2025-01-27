@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/27 15:54:19 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/27 18:00:34 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ class   RequestParse
 		std::string 	_method;
 		std::string		_httpVersion;
 		std::string 	_url;
+		std::string		_uri;
 		BodyParse		_body;
 		bool			_requestIsDone;
 		std::ofstream	_fd;
@@ -72,15 +73,16 @@ class   RequestParse
 		bool		isHeader();
 		std::string	URL();
 		methods		method();
-		void		setUrl(std::string s);
-		bool		isConnectionClosed();
+
 		// set :
+		void		setUrl(std::string s);
 		void		setIsHeader(bool isHeader);
 		void		SetStatusCode(status s);
 		void		SetStatusCodeMsg(std::string message);
 		void		SetRequestIsDone(bool s);
 
 		void		checkURL();
+		void 		deleteMethod();
 		std::string matchingURL();
 		void		checkAllowedMethod();
 		bool		parseHeader(std::string &header, std::string &buff);
@@ -88,6 +90,6 @@ class   RequestParse
 		bool		parseHeader(std::string &header);
 		void		parseFirstLine(std::string  header);
 		void		parseMetaData(std::string header);
-
+		void		deleteURI();
 		~RequestParse();
 };

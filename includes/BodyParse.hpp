@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:36:14 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/27 16:44:51 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/27 17:18:36 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ class BodyParse
 		BodyType	bodyType();
 		long long	sizeRead();
 		BodyType	getTypeOfBody(methods method, long long maxBodySize);
-		
 		bool		parseBody(std::string &buff);
 		bool		clearBuffers(std::string &data, std::string &accumulatedData, std::string &carryOver, bool &readingChunk);
 		void		checkContentTooLarge(size_t length);

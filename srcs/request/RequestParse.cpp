@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/27 16:46:51 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/27 18:25:54 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,6 +215,48 @@ void	RequestParse::checkAllowedMethod()
 		throw std::runtime_error("405 Method Not Allowed");
 }
 
+void	RequestParse::deleteURI()
+{
+    if (!Utility::isReadableFile(_uri))
+		throw std::runtime_error("403 Forbidden1");
+    if (!Utility::isDirectory(_uri))
+        std::remove(_uri.c_str());
+    else
+    {
+        DIR* currentDir = opendir(_uri.c_str());
+        dirent* dp;
+        std::string targetFile;
+        if (!currentDir)
+            throw std::runtime_error("500 Internal Server Error");
+        while ((dp = readdir(currentDir)))
+        {
+            if (dp->d_name == std::string(".") || dp->d_name == std::string(".."))
+                continue;
+            targetFile = _uri + "/" + dp->d_name;
+            if (!Utility::isDirectory(targetFile))
+                std::remove(targetFile.c_str());
+            else
+                Utility::deleteFolderContent(targetFile);
+        }
+        closedir(currentDir);
+    }
+}
+
+void RequestParse::deleteMethod()
+{
+	_uri = _configServer.getAttributes("root") + "/" + _url;
+	if (!Utility::checkIfPathExists(_uri))
+		throw std::runtime_error("404 Not Found1");
+	if (!Utility::isDirectory(_uri))
+	{
+		if (_configServer.getLocation(_location)["index"] == "")
+			throw std::runtime_error("403 Forbidden");
+		_uri += _configServer.getLocation(_location)["index"];
+	}
+	deleteURI();
+	throw std::runtime_error("204 No Content");
+}
+
 bool RequestParse::parseHeader(std::string &header, std::string &buff)
 {
 	bool	isHeader = true;
@@ -234,11 +276,13 @@ bool RequestParse::parseHeader(std::string &header, std::string &buff)
 		_body.setBoundary("--" + boundary + "\r\n");
 		_body.setBoundaryEnd("--" + boundary + "--\r\n");
 	}
-	if (_body.bodyType() == eChunked || _body.bodyType() == eContentLength)
+	if (_enumMethod == ePOST && (_body.bodyType() == eChunked || _body.bodyType() == eContentLength))
 		_body.openFileBasedOnContentType();
 	header.clear();
 	if (_enumMethod == eGET)
 		throw std::runtime_error("200 OK");
+	else if (_enumMethod == eDELETE)
+		deleteMethod();
 	_body.setClearData(true);
 	return isHeader;
 }

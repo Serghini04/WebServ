@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 18:36:13 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/27 11:36:49 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/27 18:24:46 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 
 # include <vector>
 # include <map>
+# include <sys/stat.h>
+# include <sys/stat.h>
+# include <dirent.h>
 
 class Utility
 {
@@ -195,5 +198,60 @@ public:
 		std::stringstream ss;
 		ss << nb;
 		return ss.str();
+	}
+	static bool	checkIfPathExists(const std::string& path)
+	{
+		struct stat statBuff;
+		if (stat(path.c_str(), &statBuff) < 0)
+		{
+			if (errno == EACCES)
+				throw std::runtime_error("404 Not Found");
+			return false;
+		}
+		return true;
+	}
+	static bool	isDirectory(const std::string& path)
+	{
+		struct stat statBuff;
+		if (!stat(path.c_str(), &statBuff) && S_ISDIR(statBuff.st_mode))
+			return true;
+		return false;
+	}
+	static bool	isReadableFile(const std::string& path)
+	{
+		struct stat statBuff;
+		if (!stat(path.c_str(), &statBuff) && (statBuff.st_mode & S_IRUSR))
+			return true;
+		return false;
+	}
+	static void	deleteFolderContent(const std::string& path)
+	{
+		DIR* currentDir = opendir(path.c_str());
+		dirent* dp;
+		std::string targetFile;
+		if (!isReadableFile(path))
+		{
+			std::cerr << path ;
+			throw std::runtime_error("403 Forbidden 2");
+		}
+		if (!currentDir)
+			return;
+		while ((dp = readdir(currentDir)))
+		{
+			targetFile = path + "/" + dp->d_name;
+			if (stringEndsWith(targetFile, ".") || stringEndsWith(targetFile, ".."))
+				continue;
+			if (!isDirectory(targetFile))
+				std::remove(targetFile.c_str());
+			else
+				deleteFolderContent(targetFile);
+		}
+		closedir(currentDir);
+	}
+	static bool stringEndsWith(const std::string& str, const std::string& suffix)
+	{
+		if (suffix.size() > str.size())
+			return false;
+		return !str.compare(str.size() - suffix.size(), suffix.size(), suffix);
 	}
 };
