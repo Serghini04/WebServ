@@ -6,7 +6,7 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 16:54:05 by hidriouc          #+#    #+#             */
-/*   Updated: 2025/01/25 15:30:31 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/01/27 15:37:36 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,9 @@ void Conserver::addlistening(std::pair<std::string, std::string > lsn)
 	std::vector<std::pair<std::string, std::string> >::iterator it = listening.begin();
 	while (it != listening.end())
 	{
-		if (it->second == lsn.second)
+		if (it->second == lsn.second && it->first == lsn.first)
 		{
+		std::cout << it->first <<":"<< it->second<<std::endl;
 			std::cerr << "duplicate port << "<<lsn.second<< " >>!"<<std::endl;
 			exit(EXIT_FAILURE);
 		}

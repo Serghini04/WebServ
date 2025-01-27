@@ -22,10 +22,14 @@ int main(int ac, char **av)
 	std::signal(SIGPIPE, SIG_IGN);
 	std::vector<Conserver>	servers = parseConfigFile(av[1]);
 	std::cout << servers.size() << std::endl;
-	std::vector<std::string> gg = servers[0].getphats();
-	for (std::vector<std::string>::iterator it= gg.begin(); it != gg.end(); it++)
+	for (size_t i = 0; i < servers.size(); i++)
 	{
-		std::cout << *it << std::endl; 
+		std::vector<std::pair<std::string, std::string> > listening = servers[i].getlistening();
+		std::cout <<i + 1<<"----------------------------------------------------------"<<std::endl;
+		for (size_t j = 0; j < listening.size(); j++){
+			std::cout << listening[j].first<<":"<<listening[j].second <<std::endl;
+		}
+
 	}
 
 	// if (servers.size()){
