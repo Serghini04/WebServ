@@ -16,11 +16,12 @@
 #include <map>
 #include <Response.hpp>
 #include <RequestParse.hpp>
-#define MAX_BUFFER 8096
-#define MAX_CLIENTS 128
+#define MAX_BUFFER 16384
+#define MAX_CLIENTS 10240
 #define PORT 3928
 class Response;
 class RequestParse;
+
 class Server
 {
 private:
@@ -39,6 +40,7 @@ private:
     void            RecivData(int clientSocket);
     void            ResponseEnds(int clientSocket);
     void            SendError(int fd);
+    void            ConnectionClosed(int clientSocket);
 public:
     Server();
     ~Server();

@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/28 14:27:05 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/28 15:47:03 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ class   RequestParse
 		void		SetStatusCode(status s);
 		void		SetStatusCodeMsg(std::string message);
 		void		SetRequestIsDone(bool s);
+		bool		isConnectionClosed();
 
 		// Methods :
 		void		checkURL();
