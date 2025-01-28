@@ -3,34 +3,57 @@
 /*                                                        :::      ::::::::   */
 /*   RequestParse.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mal-mora <mal-mora@student.42.fr>          +#+  +:+       +#+        */
+/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/07 10:55:49 by mal-mora         ###   ########.fr       */
+/*   Updated: 2025/01/24 10:44:34 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <RequestParse.hpp>
 
-// RequestParse::RequestParse(const RequestParse& rqs)
-// {
-// 	*this = rqs;
-// }
-// RequestParse& RequestParse::operator=(const RequestParse& other) {
-//     if (this != &other) {
+RequestParse::RequestParse(Conserver &conserver) : _configServer(conserver)
+{
+	// std::cout << "\n============>> Request Start Here <<==============\n" << std::flush;
+	// _fd.open("/Users/mal-mora/goinfre/www/Output.trash", std::ios::binary | std::ios::app);
+	// if (_fd.fail())
+	// {
+	// 	puts("open failed1");
+	// 	exit(1);
+	// }
+	_isHeader = true;
+	_requestIsDone = false;
+	_statusCode = eOK;
+	_statusCodeMessage = "200 OK";
+	_maxBodySize = atoll(_configServer.getAttributes("client_max_body_size").c_str());
+	// std::cout <<">>" << _maxBodySize << "<<\n" << std::flush;
+}
 
-//         // Free existing resources
-//         // Copy members from 'other'
-//     }
-//     return *this;
-// }
+void	RequestParse::checkURL()
+{
+	const std::string invalidChars = "\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0A\x0B\x0C\x0D\x0E\x0F"
+									"\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C\x1D\x1E\x1F"
+									"\x7F\"<>\\^`{|}";
+
+	if (_url.length() > 4096)
+		throw std::runtime_error("414 URI Too Long");
+	if (_url[0] != '/')
+		throw std::runtime_error("400 Bad Request");
+	if (_url.find_first_of(invalidChars) != std::string::npos)
+		throw std::runtime_error("400 Bad Request");
+}
+
+std::string	RequestParse::statusCodeMessage()
+{
+	return _statusCodeMessage;
+}
 
 void	RequestParse::parseFirstLine(std::string  header)
 {
 	std::stringstream    ss(header);
 
 	if (!std::isalpha(header[0]))
-		throw std::runtime_error("400 Bad Request");
+		throw std::runtime_error("400 Bad Request1");
 	ss >> _method >> _url >> _httpVersion;
 	if (_method != "GET" && _method != "POST" && _method != "DELETE")
 		throw std::runtime_error("400 Bad Request");
@@ -38,7 +61,7 @@ void	RequestParse::parseFirstLine(std::string  header)
 		throw std::runtime_error("400 Bad Request"); 
 	if (_httpVersion != "HTTP/1.1")
 		throw std::runtime_error("400 Bad Request");
-	// std::cout <<"ff :" << _url << "\n";
+	checkURL();
 	if (_method == "GET")
 		_enumMethod = eGET;
 	else if (_method == "POST")
@@ -47,9 +70,18 @@ void	RequestParse::parseFirstLine(std::string  header)
 		_enumMethod = eDELETE;
 }
 
+void	RequestParse::setUrl(std::string s)
+{
+	this->_url = s;
+}
 std::map<std::string, std::string>	&RequestParse::getMetaData()
 {
 	return (_metaData);
+}
+
+void	RequestParse::SetStatusCodeMsg(std::string message)
+{
+	_statusCodeMessage = message;
 }
 
 bool RequestParse::requestIsDone()
@@ -72,23 +104,19 @@ void	RequestParse::SetRequestIsDone(bool s)
 	_requestIsDone = s;
 }
 
-bool	isNotSpace(int ch)
+void	RequestParse::SetisHeader(bool isHeader)
 {
-	return !std::isspace(ch);
-}
-int		RequestParse::method()
-{
-	return this->_enumMethod;
-}
-std::string	RequestParse::trimSpace(std::string line)
-{
-	std::string::iterator first = std::find_if(line.begin(), line.end(), isNotSpace);
-	if (first == line.end())
-		return "";
-	std::string::iterator last = std::find_if(line.rbegin(), line.rend(), isNotSpace).base();
-	return std::string(first, last);
+	_isHeader = isHeader;
 }
 
+bool	RequestParse::isHeader()
+{
+	return _isHeader;
+}
+bool		RequestParse::isConnectionClosed()
+{
+	return (getMetaData()["Connection"].find("close"));
+}
 void	RequestParse::parseMetaData(std::string header)
 {
 	
@@ -98,7 +126,7 @@ void	RequestParse::parseMetaData(std::string header)
 			continue;
 		else if (i != 0 && header[i] == ':')
 		{
-			_metaData[header.substr(0, i)] = trimSpace(header.substr(i + 1));
+			_metaData[header.substr(0, i)] = Utility::trimSpace(header.substr(i + 1));
 			return ;
 		}
 		else
@@ -107,14 +135,13 @@ void	RequestParse::parseMetaData(std::string header)
 	throw std::runtime_error("400 Bad Request");
 }
 
-int RequestParse::parseHeader(std::string &header)
+bool	RequestParse::parseHeader(std::string &header)
 {
 	int firstLine = 1;
 	size_t start = 0;
 
 	if (header.empty())
 		throw std::runtime_error("400 Bad Request");
-
 	for (size_t i = 1; i < header.size(); i++)
 	{
 		if (header[i - 1] == '\r' && header[i] == '\n')
@@ -127,57 +154,130 @@ int RequestParse::parseHeader(std::string &header)
 			else
 			    parseMetaData(header.substr(start, i - start - 1));
 			if (i + 2 < header.size() && header[i + 1] == '\r' && header[i + 2] == '\n')
-				return 0;
+				break ;
 			start = i + 1; 
 		}
 	}
-	return 1;
-}
-RequestParse::RequestParse()
-{
-	_fd.open("output.txt", std::ios::binary | std::ios::app);
-	_requestIsDone = false;
-	_statusCode = eOK;
+	return false;
 }
 
-void    RequestParse::readBuffer(std::string buff, int &isHeader)
+methods	RequestParse::method()
+{
+	return _enumMethod;
+}
+
+std::string	RequestParse::URL()
+{
+	return (_url);
+}
+
+std::string	RequestParse::matchingURL()
+{
+	std::vector<std::string> locations = _configServer.getphats();
+
+	std::sort(locations.begin(), locations.end(), Utility::compareByLength);
+	for (size_t	i = 0; i < locations.size(); i++)
+	{
+		if (locations[i] == _url)
+			return locations[i];
+		else if (locations[i] < _url && locations[i] == _url.substr(0, locations[i].length()))
+			return locations[i];
+	}
+	return "/";
+}
+
+void	RequestParse::checkAllowedMethod()
+{
+	std::string	location = matchingURL();
+
+	_location = location; 
+	// std::cout << "based on this location =>" << location << "<" << std::endl;
+		// std::cerr << ">>" <<_configServer.getLocation(location)["allowed_methods"] << "<<>>" << Utility::toUpperCase(_method) << "<<" << std::endl;
+	if (_configServer.getLocation(location)["allowed_methods"].find(Utility::toUpperCase(_method)) == std::string::npos)
+		throw std::runtime_error("405 Method Not Allowed");
+}
+
+bool RequestParse::readHeader(std::string &header, std::string &buff)
+{
+	bool	isHeader = true;
+
+	header.append(buff);
+	size_t pos = header.find("\r\n\r\n");
+	if (pos == std::string::npos)
+		return isHeader;
+	isHeader = parseHeader(header);
+	_body.setMetaData(_metaData);
+	buff = header.substr(pos + 4);
+	_body.setbodyType(_body.getTypeOfBody(_enumMethod, _maxBodySize));
+	checkAllowedMethod();
+	if (_body.bodyType() == eBoundary || _body.bodyType() == eChunkedBoundary)
+	{
+		std::string	boundary = _metaData["Content-Type"].substr(_metaData["Content-Type"].find("boundary=") + 9);
+		_body.setBoundary("--" + boundary + "\r\n");
+		_body.setBoundaryEnd("--" + boundary + "--\r\n");
+	}
+	if (_body.bodyType() == eChunked || _body.bodyType() == eContentLength)
+		_body.openFileBasedOnContentType();
+	header.clear();
+	if (_enumMethod == eGET)
+		_requestIsDone = true;
+	return isHeader;
+}
+
+std::string	RequestParse::location()
+{
+	return _location;
+}
+
+void    RequestParse::readBuffer(std::string buff)
 {
 	static std::string	header;
-	static	BodyType type = eNone;
-
-	if (_requestIsDone)
-		return ;
-	if (isHeader)
-	{
-		header.append(buff);
-		if (buff.find("\r\n\r\n") == std::string::npos)
-			return ;
-		isHeader = parseHeader(header);
-		_body.setMetaData(_metaData);
-		buff = header.substr(header.find("\r\n\r\n") + 4);
-		type = _body.getTypeOfBody();
-		_body.openFileBasedOnContentType();
-		header.clear();
-	}
-	_fd << "\n======================\n";
+	_fd << "\n===========" << _body.bodyType() << "===========\n";
 	_fd << buff; 
 	_fd << "\n======================\n";
-	switch (type)
+	_fd.flush();
+	try
 	{
-		case eBoundary :
-			_body.BoundaryParse(buff);
-			break;
-		case eChunked :
-			_requestIsDone = _body.ChunkedParse(buff);
-			break;
-		case eChunkedBoundary :
-			_body.ChunkedBoundaryParse(buff);
-			break;
-		case eContentLength :
-			_body.ContentLengthParse(buff);
-			break;
-		case eNone :
-			break;
+		if (_requestIsDone)
+			return ;
+		if (isHeader())
+			SetisHeader(readHeader(header, buff));
+		switch (_body.bodyType())
+		{
+			case eBoundary :
+				_requestIsDone = _body.BoundaryParse(buff);
+				break;
+			case eChunked :
+				_requestIsDone = _body.ChunkedParse(buff);
+				break;
+			case eChunkedBoundary :
+				_requestIsDone = _body.ChunkedBoundaryParse(buff);
+				break;
+			case eContentLength :
+				_requestIsDone = _body.ContentLengthParse(buff);
+				break;
+			case eNone :
+				break;
+		}
 	}
-	// isHeaderDone = !_requestIsDone;
+	catch (std::exception &e)
+	{
+		header.clear();
+		_statusCode = (status)atoi(e.what());
+		_statusCodeMessage = e.what();
+		_requestIsDone = 1;
+	}
+	catch (...)
+	{
+		header.clear();
+		_statusCodeMessage = "400 Bad Request";
+		_statusCode = eBadRequest;
+		_requestIsDone = 1;
+	}
+}
+
+RequestParse::~RequestParse()
+{
+	_fd.close();
+	// std::cout << "\n============>> Request Done Here <<==============\n" << std::flush;
 }
