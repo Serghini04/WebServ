@@ -6,13 +6,17 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 18:36:13 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/22 16:12:30 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/28 10:52:32 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <vector>
+# include <vector>
+# include <map>
+# include <sys/stat.h>
+# include <sys/stat.h>
+# include <dirent.h>
 
 class Utility
 {
@@ -126,6 +130,35 @@ public:
 		}
 		return ".txt";
 	}
+	static std::string percentEncoding(std::string key)
+	{
+		std::map<std::string, std::string> encoding;
+
+		encoding["%3A"] = ":";
+		encoding["%2F"] = "/";
+		encoding["%3F"] = "?";
+		encoding["%23"] = "#";
+		encoding["%5B"] = "[";
+		encoding["%5D"] = "]";
+		encoding["%40"] = "@";
+		encoding["%21"] = "!";
+		encoding["%24"] = "$";
+		encoding["%26"] = "&";
+		encoding["%27"] = "'";
+		encoding["%28"] = "(";
+		encoding["%29"] = ")";
+		encoding["%2A"] = "*";
+		encoding["%2B"] = "+";
+		encoding["%2C"] = ",";
+		encoding["%3B"] = ";";
+		encoding["%3D"] = "=";
+		encoding["%25"] = "%";
+		encoding["%20"] = " ";
+		encoding["+"]   = " ";
+		if (encoding[key] == "")
+			throw std::runtime_error("400 Bad Request");
+		return encoding[key];
+    }
 	static std::string trimSpace(std::string line)
 	{
 		std::string::iterator first = std::find_if(line.begin(), line.end(), isNotSpace);
@@ -152,5 +185,73 @@ public:
 		std::stringstream buffer;
 		buffer << file.rdbuf();
 		return buffer.str();
+	}
+	static std::string toLowerCase(const std::string& input) {
+		std::string result = input;
+		for (std::size_t i = 0; i < result.size(); ++i) {
+			result[i] = std::tolower(static_cast<unsigned char>(result[i]));
+		}
+		return result;
+	}
+	static std::string ToStr(long long nb)
+	{
+		std::stringstream ss;
+		ss << nb;
+		return ss.str();
+	}
+	static bool	checkIfPathExists(const std::string& path)
+	{
+		struct stat statBuff;
+		if (stat(path.c_str(), &statBuff) < 0)
+		{
+			if (errno == EACCES)
+				throw std::runtime_error("404 Not Found");
+			return false;
+		}
+		return true;
+	}
+	static bool	isDirectory(const std::string& path)
+	{
+		struct stat statBuff;
+		if (!stat(path.c_str(), &statBuff) && S_ISDIR(statBuff.st_mode))
+			return true;
+		return false;
+	}
+	static bool	isReadableFile(const std::string& path)
+	{
+		struct stat statBuff;
+		if (!stat(path.c_str(), &statBuff) && (statBuff.st_mode & S_IRUSR))
+			return true;
+		return false;
+	}
+	static void	deleteFolderContent(const std::string& path)
+	{
+		DIR* currentDir = opendir(path.c_str());
+		dirent* dp;
+		std::string targetFile;
+		if (!isReadableFile(path))
+		{
+			std::cerr << path ;
+			throw std::runtime_error("403 Forbidden 2");
+		}
+		if (!currentDir)
+			return;
+		while ((dp = readdir(currentDir)))
+		{
+			targetFile = path + "/" + dp->d_name;
+			if (stringEndsWith(targetFile, ".") || stringEndsWith(targetFile, ".."))
+				continue;
+			if (!isDirectory(targetFile))
+				std::remove(targetFile.c_str());
+			else
+				deleteFolderContent(targetFile);
+		}
+		closedir(currentDir);
+	}
+	static bool stringEndsWith(const std::string& str, const std::string& suffix)
+	{
+		if (suffix.size() > str.size())
+			return false;
+		return !str.compare(str.size() - suffix.size(), suffix.size(), suffix);
 	}
 };

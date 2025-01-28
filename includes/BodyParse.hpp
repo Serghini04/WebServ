@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:36:14 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/23 13:46:47 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/28 14:27:40 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <unistd.h>
 # include <sstream>
 # include <Utility.hpp>
+# include <ConServer.hpp>
 
 class RequestParse;
 
@@ -41,26 +42,35 @@ class BodyParse
 	private:
 		BodyType							_type;
 		long long							_bodySize;
+		long long							_maxBodySize;
 		std::ofstream						_fileOutput;
+		std::string							_fileName;
 		std::string							_boundary;
 		std::string							_boundaryEnd;
 		static size_t 						_indexFile;
 		std::map<std::string, std::string>	_metaData;
+		bool 								_clearData;
+		
 	public:
-		BodyParse();
+		BodyParse(long long maxBodySize);
 
-
-		// Set
+		// Set :
 		void	setBoundary(std::string boundary);
 		void	setBoundaryEnd(std::string boundary);
 		void	setbodyType(BodyType type);	
+		void	setClearData(bool s);
+		void	setFileName(std::string fileName);
 
-		// Get
+		// Get :
 		BodyType	bodyType();
 		long long	sizeRead();
 		BodyType	getTypeOfBody(methods method, long long maxBodySize);
-
-		bool		clearBuffers(std::string &data, std::string &accumulatedData, std::string &carryOver);
+		
+		// Methods :
+		void		clearChunkedAttributes(std::string &data, size_t &length, bool &readingChunk, std::string &buff);
+		bool		parseBody(std::string &buff);
+		bool		clearBuffers(std::string &data, std::string &accumulatedData, std::string &carryOver, bool &readingChunk);
+		void		checkContentTooLarge(size_t length);
 		void		openFileBasedOnContentType();
 		bool		BoundaryParse(std::string &buff);
 		bool		ChunkedParse(std::string &buff);
@@ -68,7 +78,6 @@ class BodyParse
 		bool		ContentLengthParse(std::string &buff);
 		void		openFileOfBoundary(std::string buff);
 		bool		writeChunkToFile(std::string &buff, size_t &length, std::string &carryOver, std::string &accumulatedData);
-		bool		removeChunkedSize(std::string &buff, std::string &data, size_t &processed);
 		void		setMetaData(std::map<std::string, std::string> &data);
 
 		~BodyParse();

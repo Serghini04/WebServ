@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/24 10:25:56 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/28 15:47:03 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 # include <string>
 # include <BodyParse.hpp>
 # include <map>
-# include <ConServer.hpp>
 
 enum status
 {
@@ -36,7 +35,6 @@ enum status
 	eMethodNotAllowed = 405,
 	eRequestURITooLong = 414,
 	eContentTooLarge = 413,
-	// if fail system call or not find file to open
     eInternalServerError = 500,
 	eHTTPVersionNotSupported = 505,
     eRequestedRangeNotSatisfiable = 416
@@ -51,6 +49,7 @@ class   RequestParse
 		std::string 	_method;
 		std::string		_httpVersion;
 		std::string 	_url;
+		std::string		_uri;
 		BodyParse		_body;
 		bool			_requestIsDone;
 		std::ofstream	_fd;
@@ -72,22 +71,26 @@ class   RequestParse
 		bool		isHeader();
 		std::string	URL();
 		methods		method();
-		void		setUrl(std::string s);
-		bool		isConnectionClosed();
+
 		// set :
-		void		SetisHeader(bool isHeader);
+		void		setUrl(std::string s);
+		void		setIsHeader(bool isHeader);
 		void		SetStatusCode(status s);
 		void		SetStatusCodeMsg(std::string message);
 		void		SetRequestIsDone(bool s);
+		bool		isConnectionClosed();
 
+		// Methods :
 		void		checkURL();
+		void 		deleteMethod();
 		std::string matchingURL();
 		void		checkAllowedMethod();
-		bool		readHeader(std::string &header, std::string &buff);
+		bool		parseHeader(std::string &header, std::string &buff);
 		void		readBuffer(std::string buff);
 		bool		parseHeader(std::string &header);
 		void		parseFirstLine(std::string  header);
 		void		parseMetaData(std::string header);
-
+		void		deleteURI();
+		
 		~RequestParse();
 };
