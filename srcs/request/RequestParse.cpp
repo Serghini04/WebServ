@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/27 18:25:54 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/28 11:39:23 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,7 @@ RequestParse::RequestParse(Conserver &conserver) : _body(conserver.getBodySize()
 	std::cout << "\n============>> Request Start Here <<==============\n" << std::flush;
 	_fd.open("/Users/meserghi/goinfre/www/Output.trash", std::ios::binary | std::ios::app);
 	if (_fd.fail())
-	{
-		puts("open failed");
-		exit(1);
-	}
+		throw std::runtime_error("500 Internal Server Error");
 	_isHeader = true;
 	_requestIsDone = false;
 	_statusCode = eOK;
@@ -177,6 +174,7 @@ bool	RequestParse::parseHeader(std::string &header)
 			start = i + 1; 
 		}
 	}
+	_body.setMetaData(_metaData);
 	return false;
 }
 
@@ -244,7 +242,11 @@ void	RequestParse::deleteURI()
 
 void RequestParse::deleteMethod()
 {
-	_uri = _configServer.getAttributes("root") + "/" + _url;
+	if (_configServer.getLocation(_location)["root"] != "")
+		_uri = _configServer.getAttributes("root") + "/" + _configServer.getLocation(_location)["root"];
+	else
+		_uri = _configServer.getAttributes("root");
+	_uri +=  "/" + _url;
 	if (!Utility::checkIfPathExists(_uri))
 		throw std::runtime_error("404 Not Found1");
 	if (!Utility::isDirectory(_uri))
@@ -253,6 +255,7 @@ void RequestParse::deleteMethod()
 			throw std::runtime_error("403 Forbidden");
 		_uri += _configServer.getLocation(_location)["index"];
 	}
+	// you need to check if cgi not delete;
 	deleteURI();
 	throw std::runtime_error("204 No Content");
 }
@@ -266,7 +269,6 @@ bool RequestParse::parseHeader(std::string &header, std::string &buff)
 	if (pos == std::string::npos)
 		return isHeader;
 	isHeader = parseHeader(header);
-	_body.setMetaData(_metaData);
 	buff = header.substr(pos + 4);
 	_body.setbodyType(_body.getTypeOfBody(_enumMethod, _maxBodySize));
 	checkAllowedMethod();
@@ -300,16 +302,16 @@ std::string	RequestParse::location()
 void    RequestParse::readBuffer(std::string buff)
 {
 	static std::string	header;
-	_fd << "\n===========" << _body.bodyType() << "===========\n";
-	_fd << buff; 
-	_fd << "\n======================\n";
+	// _fd << "\n===========" << _body.bodyType() << "===========\n";
+	// _fd << buff; 
+	// _fd << "\n======================\n";
+	// _fd.flush();
 	try
 	{
 		if (_requestIsDone)
 			return ;
 		if (isHeader())
 			setIsHeader(parseHeader(header, buff));
-		_fd.flush();
 		_requestIsDone = _body.parseBody(buff);
 	}
 	catch (std::exception &e)
@@ -322,8 +324,8 @@ void    RequestParse::readBuffer(std::string buff)
 	catch (...)
 	{
 		header.clear();
-		_statusCodeMessage = "400 Bad Request";
-		_statusCode = eBadRequest;
+		_statusCodeMessage = "500 Internal Server Error";
+		_statusCode = eInternalServerError;
 		_requestIsDone = 1;
 	}
 }
