@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/28 15:39:01 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/28 15:48:11 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,10 @@ bool	RequestParse::isHeader()
 {
 	return _isHeader;
 }
-
+bool		RequestParse::isConnectionClosed()
+{
+	return (getMetaData()["Connection"].find("close"));
+}
 void	RequestParse::parseMetaData(std::string header)
 {
 	
@@ -343,5 +346,5 @@ void    RequestParse::readBuffer(std::string buff)
 RequestParse::~RequestParse()
 {
 	_fd.close();
-	std::cout << "\n============>> Request Done Here <<==============\n" << std::flush;
+	// std::cout << "\n============>> Request Done Here <<==============\n" << std::flush;
 }

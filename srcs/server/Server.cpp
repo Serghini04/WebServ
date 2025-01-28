@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/01/27 16:31:50 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/28 15:59:16 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,13 @@
 
 Server::Server()
 {
-
 }
 
 Server::~Server()
 {
-    for (std::map<int, RequestParse *>::const_iterator
-             it = clientsRequest.begin();
-         it != clientsRequest.end(); it++)
+    for (std::map<int, Conserver *>::const_iterator
+             it = serversConfigs.begin();
+         it != serversConfigs.end(); it++)
     {
         delete it->second;
     }
@@ -29,7 +28,8 @@ Server::~Server()
 
 void errorMsg(std::string str, int fd)
 {
-    std::cout << str << std::endl;
+    std::cout << str << strerror(errno) << std::endl;
+
     close(fd);
 }
 
@@ -49,34 +49,51 @@ int make_socket_nonblocking(int sockfd)
     }
     return 0;
 }
-void Server::ResponseEnds(int clientSocket)
+void Server::ConnectionClosed(int clientSocket)
 {
-    EV_SET(&event, clientSocket, EVFILT_WRITE, EV_CLEAR, 0, 0, NULL);
+    EV_SET(&event, clientSocket, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
     if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
         SendError(clientSocket);
-    EV_SET(&event, clientSocket, EVFILT_READ, EV_CLEAR, 0, 0, NULL);
+    EV_SET(&event, clientSocket, EVFILT_READ, EV_DELETE, 0, 0, NULL);
     if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
         SendError(clientSocket);
-    (*clientsRequest[clientSocket]).SetRequestIsDone(false);
-    clientsResponse.erase(clientSocket);
-    delete clientsRequest[clientSocket];    
+
+    // Cleanup and close
+    delete clientsRequest[clientSocket];
+    delete clientsResponse[clientSocket];
+    clientsResponse.erase(clientSocket);   
     clientsRequest.erase(clientSocket);
     close(clientSocket);
+}
+void Server::ResponseEnds(int clientSocket)
+{
+    // Check if connection should be kept alive
+    // (*clientsRequest[clientSocket]).SetRequestIsDone(false);
+    if (clientsRequest[clientSocket]->isConnectionClosed())
+        ConnectionClosed(clientSocket);
+    else
+    {
+        EV_SET(&event, clientSocket, EVFILT_WRITE, EV_CLEAR, 0, 0, NULL);
+        if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
+            SendError(clientSocket);
+
+        // Re-enable read event for next request
+        EV_SET(&event, clientSocket, EVFILT_READ, EV_ADD, 0, 0, NULL);
+        if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
+            SendError(clientSocket);
+
+        delete clientsResponse[clientSocket];
+        clientsResponse.erase(clientSocket);
+    }
 }
 int Server::ConfigTheSocket(Conserver &config)
 {
     sockaddr_in addressSocket;
-    int opt = 1;
     int serverSocket;
 
     serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (serverSocket == -1)
         return -1;
-    if (setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == -1)
-    {
-        perror("setsockopt");
-        return -1;
-    }
     addressSocket.sin_addr.s_addr = INADDR_ANY;
     addressSocket.sin_family = AF_INET;
     // addressSocket.sin_port = htons(Utility::StrToInt(config.getAttributes("port")));
@@ -85,7 +102,7 @@ int Server::ConfigTheSocket(Conserver &config)
         return -1;
     if (bind(serverSocket, (const sockaddr *)&addressSocket, sizeof(addressSocket)) == -1)
         return -1;
-    if (listen(serverSocket, 5) == -1)
+    if (listen(serverSocket, 1024) == -1)
         return -1;
     this->serversConfigs[serverSocket] = &config;
     return serverSocket;
@@ -103,10 +120,11 @@ void Server::RecivData(int clientSocket)
     {
         if (errno == EAGAIN || errno == EWOULDBLOCK)
             return;
-        if(errno == ECONNRESET)
+        if (errno == ECONNRESET)
         {
-            ResponseEnds(clientSocket);
-            return ;
+            // (*clientsRequest[clientSocket]).SetRequestIsDone(false);
+            ConnectionClosed(clientSocket);
+            return;
         }
         return;
     }
@@ -128,8 +146,8 @@ void Server::SendData(int clientSocket)
     size_t responseSize;
 
     if (!clientsResponse.count(clientSocket))
-        clientsResponse[clientSocket] = new Response(*serversConfigs[serversClients[clientSocket]], 
-                                            *clientsRequest[clientSocket]);
+        clientsResponse[clientSocket] = new Response(*serversConfigs[serversClients[clientSocket]],
+                                                     *clientsRequest[clientSocket]);
     std::string response = clientsResponse[clientSocket]->getResponse();
     if (response.empty())
     {
@@ -147,24 +165,23 @@ void Server::SendData(int clientSocket)
         {
             if (errno == EAGAIN || errno == EWOULDBLOCK)
                 return;
-            if(errno == EPIPE)
+            if (errno == EPIPE)
             {
-                ResponseEnds(clientSocket);
-                return ;
+                ConnectionClosed(clientSocket);
+                return;
             }
             SendError(clientSocket);
             return;
         }
         totalSent += bytesSent;
     }
-
 }
 
 void Server::ConnectWithClient(int kq, uintptr_t server)
 {
     sockaddr_in clientAddress;
-    socklen_t   clientAddrLen;
-    int         clientSocket;
+    socklen_t clientAddrLen;
+    int clientSocket;
 
     puts("new connection");
     clientAddrLen = sizeof(clientAddress);
@@ -180,7 +197,6 @@ void Server::ConnectWithClient(int kq, uintptr_t server)
         if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
             SendError(clientSocket);
     }
-
 }
 
 void Server::HandelEvents(int n, struct kevent events[])
@@ -189,7 +205,7 @@ void Server::HandelEvents(int n, struct kevent events[])
 
     for (int i = 0; i < n; i++)
     {
-        if(std::find(servers.begin(), servers.end(),(intptr_t)events[i].ident ) != servers.end())
+        if (std::find(servers.begin(), servers.end(), (intptr_t)events[i].ident) != servers.end())
             ConnectWithClient(kq, events[i].ident);
         else if (events[i].filter == EVFILT_READ)
         {
@@ -213,7 +229,7 @@ int Server::CreateServer(std::vector<Conserver> &config)
     kq = kqueue();
     if (kq == -1)
         errorMsg("kqueue creation failed", serverSocket);
-    for(size_t i = 0; i < config.size(); i++)
+    for (size_t i = 0; i < config.size(); i++)
     {
         serverSocket = ConfigTheSocket(config[i]);
         if (serverSocket == -1)

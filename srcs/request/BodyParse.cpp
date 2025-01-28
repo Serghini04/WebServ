@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   BodyParse.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mal-mora <mal-mora@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:38:49 by meserghi          #+#    #+#             */
 /*   Updated: 2025/01/28 15:28:36 by meserghi         ###   ########.fr       */

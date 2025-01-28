@@ -101,9 +101,9 @@ void Response::handelRequestErrors()
 void Response::SendError(enum status code)
 {
     request.SetStatusCode(code);
-    if(code == eNotFound)
+    if (code == eNotFound)
         request.SetStatusCodeMsg("404 Not Found");
-    else if(code == eFORBIDDEN)
+    else if (code == eFORBIDDEN)
         request.SetStatusCodeMsg("403 forbidden");
     handelRequestErrors();
 }
@@ -113,24 +113,22 @@ void Response::ProcessUrl()
     std::string newUrl = conserver.getAttributes("root");
     std::map<std::string, std::string> location = conserver.getLocation(request.location());
     std::string index = "";
+    std::ostringstream oss;
+    
     if (!location["root"].empty())
-    {
-        std::ostringstream oss;
         location["root"].erase(location["root"].end() - 1);
-        if(!location["index"].empty() && request.URL() == "/")
-        {
-            index = location["index"];
-            index.erase(index.end() - 1);
-        }
-        else if(location["index"].empty() && 
-        (location["autoindex"].empty() || location["autoindex"] == "off"))
-            SendError(eFORBIDDEN);
-        oss << newUrl << location["root"] << request.URL() << index;
-        newUrl = oss.str();
+    if (!location["index"].empty() && request.URL() == "/")
+    {
+        index = location["index"];
+        index.erase(index.end() - 1);
     }
+    else if (location["index"].empty() &&
+             (location["auto_index"].empty() || location["auto_index"].find("off") != std::string::npos))
+        SendError(eFORBIDDEN);
+    oss << newUrl << location["root"] << request.URL() << index;
+    newUrl = oss.str();
     request.setUrl(newUrl);
 }
-
 
 std::string getFileTime(struct stat &fileInfo, const std::string &file)
 {
@@ -153,7 +151,7 @@ int Response::processDirectory(std::string &path)
          << "</title></head><body>\n";
     html << "<h1>Index of " << path << "</h1>\n";
     html << "<pre>\n";
-    html << "<a href=\"../\">../</a>\n"; 
+    html << "<a href=\"../\">../</a>\n";
     DIR *dir = opendir(path.c_str());
     if (dir == nullptr)
     {
@@ -161,10 +159,10 @@ int Response::processDirectory(std::string &path)
         return -1;
     }
     while ((entry = readdir(dir)) != nullptr)
-    { 
+    {
         std::string filename = entry->d_name;
         std::string lasmodifies = getFileTime(fileInfo, filename);
-        std::string storage = (entry->d_type == DT_DIR) ? "-" : std::to_string(fileInfo.st_size); 
+        std::string storage = (entry->d_type == DT_DIR) ? "-" : std::to_string(fileInfo.st_size);
         if (entry->d_type == DT_DIR)
             filename += "/";
 
