@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:38:49 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/28 11:42:19 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/28 15:28:36 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,18 @@
 
 size_t	BodyParse::_indexFile = 1;
 
+void	BodyParse::setFileName(std::string fileName)
+{
+	_fileName = fileName;
+}
+
 BodyParse::BodyParse(long long maxBodySize)
 {
 	_maxBodySize = maxBodySize;
     _type = eNone;
 	_bodySize = 0;
 	_boundary = "";
+	_boundaryEnd = "";
 	_clearData = true;
 }
 
@@ -55,6 +61,7 @@ BodyType	BodyParse::getTypeOfBody(methods method, long long maxBodySize)
 		_bodySize = strtoll(_metaData["content-length"].c_str(), &trash, 10);
 		if (trash == _metaData["content-length"].c_str() || *trash != '\0' || errno == ERANGE || _bodySize < 0)
 			throw std::runtime_error("400 Bad Request");
+		// std::cerr << _bodySize << "|" << maxBodySize << std::endl;
 		if (maxBodySize >= 0 && _bodySize > maxBodySize)
 			throw std::runtime_error("413 Content Too Large");
 	}
@@ -99,7 +106,7 @@ void BodyParse::openFileBasedOnContentType()
 	std::ostringstream oss;
 	if (_fileOutput.is_open())
 		_fileOutput.close();
-	oss << "/Users/meserghi/goinfre/www/Output" << _indexFile;
+	oss << _fileName << _indexFile;
 	std::string namefile = oss.str();
 	namefile += Utility::getExtensions(_metaData["content-type"], "");
 	_fileOutput.open(namefile.c_str(), std::ios::binary);
@@ -246,9 +253,9 @@ void	BodyParse::openFileOfBoundary(std::string buff)
 		filename = buff.substr(start, end - start);
 		start = filename.rfind(".");
 		if (start != std::string::npos)
-			oss << "/Users/meserghi/goinfre/www/Output" << _indexFile << filename.substr(start);
+			oss << _fileName << _indexFile << filename.substr(start);
 		else
-			oss << "/Users/meserghi/goinfre/www/Output" << _indexFile << ".txt";
+			oss << _fileName << _indexFile << ".txt";
 	}
 	else if (buff.find("Content-Type: ") != std::string::npos)
 	{
@@ -263,7 +270,7 @@ void	BodyParse::openFileOfBoundary(std::string buff)
 		return ;
 	}
 	else
-		oss << "/Users/meserghi/goinfre/www/Output" << _indexFile << ".txt";
+		oss << _fileName << _indexFile << ".txt";
 	std::cout <<"Create File :>>" << oss.str() << "<<\n";
 	_fileOutput.open(oss.str(), std::ios::binary);
 	if (_fileOutput.fail())
@@ -313,8 +320,8 @@ bool BodyParse::BoundaryParse(std::string& buff)
 				boundaryEndPos -= 2;
 			checkContentTooLarge(boundaryEndPos - processed);
 			_fileOutput.write(buff.data() + processed, boundaryEndPos - processed);
-			_fileOutput.close();
 			buff.erase(0, boundaryEndPos + _boundaryEnd.size() + 2);
+			return _fileOutput.close(), true;
 		}
 		if (processed < buff.size() && _boundaryEnd.find(buff.back()) == std::string::npos)
 		{

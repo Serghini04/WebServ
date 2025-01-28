@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/28 11:39:23 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/28 15:39:01 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	RequestParse::checkURL()
 	if (_url.find_first_of(invalidChars) != std::string::npos)
 		throw std::runtime_error("400 Bad Request");
 	_url.erase(std::unique(_url.begin(), _url.end(), isDuplicate), _url.end());
-	std::cout << "After : {" << _url << "}" << std::endl;
+	// std::cout << "After : {" << _url << "}" << std::endl;
 	for (size_t i = 0; i < _url.length(); i++)
 	{
 		if (_url[i] == '%' && i + 2 < _url.length())
@@ -57,7 +57,7 @@ void	RequestParse::checkURL()
 		else if (_url[i] == '%')
 			throw std::runtime_error("400 Bad Request");
 	}
-	std::cout << "Before : {" << _url << "}" << std::endl;
+	// std::cout << "Before : {" << _url << "}" << std::endl;
 
 	// I need to add handel Query string
 	// Fragment Handing : * Validate fragment format * Ensure no sensitive data in fragments
@@ -211,6 +211,8 @@ void	RequestParse::checkAllowedMethod()
 	std::cout << "based on this location =>" << location << "<" << std::endl;
 	if (_configServer.getLocation(location)["allowed_methods"].find(Utility::toUpperCase(_method)) == std::string::npos)
 		throw std::runtime_error("405 Method Not Allowed");
+	if (_enumMethod == ePOST)
+		_body.setFileName(_configServer.getLocation(location)["upload_store"] + "/Output");
 }
 
 void	RequestParse::deleteURI()
@@ -247,8 +249,9 @@ void RequestParse::deleteMethod()
 	else
 		_uri = _configServer.getAttributes("root");
 	_uri +=  "/" + _url;
+	std::cerr << ">>" << _uri << "<<\n";
 	if (!Utility::checkIfPathExists(_uri))
-		throw std::runtime_error("404 Not Found1");
+		throw std::runtime_error("404 Not Found");
 	if (!Utility::isDirectory(_uri))
 	{
 		if (_configServer.getLocation(_location)["index"] == "")
@@ -302,10 +305,10 @@ std::string	RequestParse::location()
 void    RequestParse::readBuffer(std::string buff)
 {
 	static std::string	header;
-	// _fd << "\n===========" << _body.bodyType() << "===========\n";
-	// _fd << buff; 
-	// _fd << "\n======================\n";
-	// _fd.flush();
+	_fd << "\n===========" << _body.bodyType() << "===========\n";
+	_fd << buff; 
+	_fd << "\n======================\n";
+	_fd.flush();
 	try
 	{
 		if (_requestIsDone)
@@ -318,7 +321,14 @@ void    RequestParse::readBuffer(std::string buff)
 	{
 		header.clear();
 		_statusCode = (status)atoi(e.what());
-		_statusCodeMessage = e.what();
+		if (_statusCode < 200)
+		{
+			_statusCodeMessage = "500 Internal Server Error";
+			_statusCode = eInternalServerError;
+		}
+		else
+			_statusCodeMessage = e.what();
+		std::cerr << _statusCodeMessage << std::endl;
 		_requestIsDone = 1;
 	}
 	catch (...)

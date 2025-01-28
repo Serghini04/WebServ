@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:36:14 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/28 11:15:50 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/28 14:27:40 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <unistd.h>
 # include <sstream>
 # include <Utility.hpp>
+# include <ConServer.hpp>
 
 class RequestParse;
 
@@ -43,11 +44,13 @@ class BodyParse
 		long long							_bodySize;
 		long long							_maxBodySize;
 		std::ofstream						_fileOutput;
+		std::string							_fileName;
 		std::string							_boundary;
 		std::string							_boundaryEnd;
 		static size_t 						_indexFile;
 		std::map<std::string, std::string>	_metaData;
 		bool 								_clearData;
+		
 	public:
 		BodyParse(long long maxBodySize);
 
@@ -56,6 +59,7 @@ class BodyParse
 		void	setBoundaryEnd(std::string boundary);
 		void	setbodyType(BodyType type);	
 		void	setClearData(bool s);
+		void	setFileName(std::string fileName);
 
 		// Get :
 		BodyType	bodyType();
