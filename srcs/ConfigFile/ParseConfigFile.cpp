@@ -159,22 +159,23 @@ void saveAttribute(const std::string& confline, Conserver& server, int index_lin
 	parseKeyValue(trimmed_line, index_line, key, value);
 	if (key == "host" && !value.empty()) {
 		if (!host.empty() && !listenings[ host+"8080"].empty()) {
-		std::cerr << "[Warning]:Duplicate port << " << host << ":8080 >> ignored!" << std::endl;
+		std::cerr << "[Warning]:Duplicate listening<< " << host << ":8080 >> ignored!" << std::endl;
 		} else if (!host.empty()) {
 		server.addlistening(std::pair<std::string, std::string>(host, "8080"));
 		listenings[host+"8080"] = Utility::ToStr(index_line);
 		}
 		host = value;
 		sin = true;
+		listenings[host] = "1337";
 		return;
 	}
 	if (key == "port" && !value.empty()) {
 		const std::string& current_host = sin ? host : "0.0.0.0";
 			if (!listenings[current_host + value].empty()) {
-			std::cerr << "[Warning]: Duplicate port << " 
-				<< current_host << ":" << value << " >> ignored!**" << std::endl;
+			std::cerr << "[Warning]: Duplicate listening" 
+				<< current_host << ":" << value << " >> ignored!" << std::endl;
 			sin = false;
-			 host.clear();
+			host.clear();
 			return;
 		}
 		server.addlistening(std::make_pair(current_host, value));
@@ -185,14 +186,13 @@ void saveAttribute(const std::string& confline, Conserver& server, int index_lin
 	}
 	if (sin && key != "port" && key != "host") {
 		if (!listenings[host+"8080"].empty()) {
-		std::cerr << "[Warning]:Duplicate port << " << host << ":8080 >> ignored !!" << std::endl;
+		std::cerr << "[Warning]:Duplicate listening<< " << host << ":8080 >> ignored !!" << std::endl;
 		} else {
 		server.addlistening(std::pair<std::string, std::string>(host, "8080"));
 		listenings[host+"8080"] = Utility::ToStr(index_line);
 		}
 		sin = false;
 		host.clear();
-		return;
 		}
 	if (key == "client_max_body_size" && !value.empty()) {
 		server.addBodySize(value);
@@ -277,11 +277,14 @@ void	processServerBlock(std::ifstream& infile, Conserver& server, int& index_lin
 			ServStack.push('{');
 		continue;
 	}
-	if (confline.find("location") == 0 && confline[confline.length() -1 ] == '{') {
-	parseLocation(confline, server, infile, index_line);
+	if (confline.find("location")!= std::string::npos && confline[confline.length() -1 ] == '{') {
+		parseLocation(confline, server, infile, index_line);
 	} else {
 	saveAttribute(confline, server, index_line, listenings);
 	}
+	}
+	if ( listenings.size() == 1 && listenings.begin()->second == "1337"){
+		server.addlistening(std::pair<std::string, std::string>(listenings.begin()->first, "8080"));
 	}
 	if (confline == "}")
 		ServStack.pop();
@@ -329,6 +332,7 @@ std::vector<Conserver>	parseConfigFile(char *in_file){
 			throw (std::string("Error: Unbalanced brackets '}', line") + Utility::ToStr(index_line));
 		}
 		}
+		// std::cerr << ">>>>>"<<confline <<std::endl;
 	}
 	catch(std::string err){
 		std::cerr<<err<<std::endl;
@@ -339,6 +343,6 @@ std::vector<Conserver>	parseConfigFile(char *in_file){
 	if (!CurVec.empty())
 		Rservers.push_back(servers[i]);
 	}
-	return Rservers;
+	return servers;
 }
 
