@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:38:49 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/27 16:49:10 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/28 11:42:19 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ bool	BodyParse::parseBody(std::string &buff)
 		case eContentLength :
 			return ContentLengthParse(buff);
 		case eNone :
-			break;
+			throw std::runtime_error("501 Not Implemented");
 	}
 	return false;
 }
@@ -54,9 +54,7 @@ BodyType	BodyParse::getTypeOfBody(methods method, long long maxBodySize)
 	{
 		_bodySize = strtoll(_metaData["content-length"].c_str(), &trash, 10);
 		if (trash == _metaData["content-length"].c_str() || *trash != '\0' || errno == ERANGE || _bodySize < 0)
-			throw std::runtime_error("400 Bad Request 1");
-		std::cout << "_bodySize =>>" << _bodySize << "<<" <<std::endl;
-		std::cout << "_Max =>>" << maxBodySize << "<<" <<std::endl;
+			throw std::runtime_error("400 Bad Request");
 		if (maxBodySize >= 0 && _bodySize > maxBodySize)
 			throw std::runtime_error("413 Content Too Large");
 	}
@@ -106,7 +104,7 @@ void BodyParse::openFileBasedOnContentType()
 	namefile += Utility::getExtensions(_metaData["content-type"], "");
 	_fileOutput.open(namefile.c_str(), std::ios::binary);
 	if (_fileOutput.fail())
-		throw std::runtime_error("open failed !");
+		throw std::runtime_error("500 Internal Server Error");
 	std::cout <<"Create File :>>" << namefile << "<<\n";
 	_indexFile++;
 }
@@ -244,7 +242,7 @@ void	BodyParse::openFileOfBoundary(std::string buff)
 		start = buff.find(target) + target.length();
 		end = buff.find('\"', start);
 		if (end == std::string::npos)
-			throw std::runtime_error("Invalid Exec to open file");
+			throw std::runtime_error("404 Bad Request");
 		filename = buff.substr(start, end - start);
 		start = filename.rfind(".");
 		if (start != std::string::npos)
@@ -258,7 +256,7 @@ void	BodyParse::openFileOfBoundary(std::string buff)
 		start = buff.find(target) + target.length();
 		end = buff.find("\r\n", start);
 		if (end == std::string::npos)
-			throw std::runtime_error("Invalid Exec to open file");
+			throw std::runtime_error("404 Bad Request");
 		filename =  Utility::trimSpace(buff.substr(start, end - start));
 		_metaData["content-type"] = filename;
 		openFileBasedOnContentType();
@@ -269,7 +267,7 @@ void	BodyParse::openFileOfBoundary(std::string buff)
 	std::cout <<"Create File :>>" << oss.str() << "<<\n";
 	_fileOutput.open(oss.str(), std::ios::binary);
 	if (_fileOutput.fail())
-		throw std::runtime_error("open failed !");
+		throw std::runtime_error("500 Internal Server Error");
 	_indexFile++;
 }
 
@@ -348,26 +346,30 @@ void	BodyParse::checkContentTooLarge(size_t length)
 	}	
 }
 
-bool BodyParse::ChunkedParse(std::string &buff)
+void	BodyParse::clearChunkedAttributes(std::string &data, size_t &length, bool &readingChunk, std::string &buff)
 {
-	static std::string data;
-	static size_t length = 0;
-	static bool readingChunk = false;
-	static bool	clearData = true;
-
-	if (clearData)
+	if (_clearData)
 	{
 		data.clear();
 		length = 0;
 		readingChunk = false;
-		clearData = false;
+		_clearData = false;
 	}
 	if (!data.empty())
 	{
 		buff = data + buff;
 		data.clear();
 	}
-    while (!buff.empty())
+}
+
+bool BodyParse::ChunkedParse(std::string &buff)
+{
+	static std::string data;
+	static size_t length = 0;
+	static bool readingChunk = false;
+
+	clearChunkedAttributes(data, length, readingChunk, buff);
+	while (!buff.empty())
 	{
 		if (!readingChunk)
 		{
@@ -381,16 +383,10 @@ bool BodyParse::ChunkedParse(std::string &buff)
 			char *trash = NULL;
 			length = std::strtol(lengthStr.c_str(), &trash, 16);
 			if (*trash)
-			{
-				data.clear();
 				throw std::runtime_error("404 Bad Request");
-			}
 			checkContentTooLarge(length);
 			if (length == 0)
-			{
-				_fileOutput.close();
-				throw std::runtime_error("201 Created");
-			}
+				_fileOutput.close(), throw std::runtime_error("201 Created");
 			readingChunk = true;
 		}
 		size_t bytesToRead = std::min(length, buff.size());

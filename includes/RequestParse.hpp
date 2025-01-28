@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/27 18:00:34 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/28 11:01:28 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ enum status
 	eMethodNotAllowed = 405,
 	eRequestURITooLong = 414,
 	eContentTooLarge = 413,
-	// if fail system call or not find file to open
     eInternalServerError = 500,
 	eHTTPVersionNotSupported = 505,
     eRequestedRangeNotSatisfiable = 416
@@ -81,6 +80,7 @@ class   RequestParse
 		void		SetStatusCodeMsg(std::string message);
 		void		SetRequestIsDone(bool s);
 
+		// Methods :
 		void		checkURL();
 		void 		deleteMethod();
 		std::string matchingURL();
@@ -91,5 +91,6 @@ class   RequestParse
 		void		parseFirstLine(std::string  header);
 		void		parseMetaData(std::string header);
 		void		deleteURI();
+		
 		~RequestParse();
 };

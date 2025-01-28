@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:36:14 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/27 17:18:36 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/28 11:15:50 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,17 +51,19 @@ class BodyParse
 	public:
 		BodyParse(long long maxBodySize);
 
-
-		// Set
+		// Set :
 		void	setBoundary(std::string boundary);
 		void	setBoundaryEnd(std::string boundary);
 		void	setbodyType(BodyType type);	
 		void	setClearData(bool s);
 
-		// Get
+		// Get :
 		BodyType	bodyType();
 		long long	sizeRead();
 		BodyType	getTypeOfBody(methods method, long long maxBodySize);
+		
+		// Methods :
+		void		clearChunkedAttributes(std::string &data, size_t &length, bool &readingChunk, std::string &buff);
 		bool		parseBody(std::string &buff);
 		bool		clearBuffers(std::string &data, std::string &accumulatedData, std::string &carryOver, bool &readingChunk);
 		void		checkContentTooLarge(size_t length);
