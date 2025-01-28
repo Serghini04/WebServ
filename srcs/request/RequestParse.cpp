@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/28 15:48:11 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/28 17:56:41 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,7 +221,10 @@ void	RequestParse::checkAllowedMethod()
 void	RequestParse::deleteURI()
 {
     if (!Utility::isReadableFile(_uri))
+	{
+		std::cerr << ">>" <<_uri << "<<\n"; 
 		throw std::runtime_error("403 Forbidden1");
+	}
     if (!Utility::isDirectory(_uri))
         std::remove(_uri.c_str());
     else
@@ -255,7 +258,7 @@ void RequestParse::deleteMethod()
 	std::cerr << ">>" << _uri << "<<\n";
 	if (!Utility::checkIfPathExists(_uri))
 		throw std::runtime_error("404 Not Found");
-	if (!Utility::isDirectory(_uri))
+	if (Utility::isDirectory(_uri))
 	{
 		if (_configServer.getLocation(_location)["index"] == "")
 			throw std::runtime_error("403 Forbidden");
