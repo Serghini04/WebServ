@@ -166,7 +166,7 @@ void saveAttribute(const std::string& confline, Conserver& server, int index_lin
 		}
 		host = value;
 		sin = true;
-		listenings[host] = "1337";
+		listenings["Default"] = host;
 		return;
 	}
 	if (key == "port" && !value.empty()) {
@@ -176,24 +176,16 @@ void saveAttribute(const std::string& confline, Conserver& server, int index_lin
 				<< current_host << ":" << value << " >> ignored!" << std::endl;
 			sin = false;
 			host.clear();
+			listenings["Default"].clear();
 			return;
 		}
 		server.addlistening(std::make_pair(current_host, value));
 		listenings[current_host+value] = Utility::ToStr(index_line);
 		sin = false;
+		listenings["Default"].clear();
 		host.clear();
 		return;
 	}
-	if (sin && key != "port" && key != "host") {
-		if (!listenings[host+"8080"].empty()) {
-		std::cerr << "[Warning]:Duplicate listening<< " << host << ":8080 >> ignored !!" << std::endl;
-		} else {
-		server.addlistening(std::pair<std::string, std::string>(host, "8080"));
-		listenings[host+"8080"] = Utility::ToStr(index_line);
-		}
-		sin = false;
-		host.clear();
-		}
 	if (key == "client_max_body_size" && !value.empty()) {
 		server.addBodySize(value);
 	}
@@ -205,7 +197,7 @@ void saveAttribute(const std::string& confline, Conserver& server, int index_lin
 	}
 }
 
-std::string	checklocationPat(std::string value)
+std::string	checklocationPath(std::string value)
 {
 	std::string NewValue;
 	bool sig = true;
@@ -233,7 +225,7 @@ void	parseLocation(const std::string& confline, Conserver& server, std::ifstream
 	parseKeyValue(confline, index_line, Key, Value);
 	if (Value.empty())
 		throw ((std::string)"Empty location Path in thr lin " + Utility::ToStr(index_line) + "!");
-	location_map["PATH"] = checklocationPat(trim(Value));
+	location_map["PATH"] = checklocationPath(trim(Value));
 	server.addPath(location_map["PATH"]);
 	LocationStack.push('{');
 	while (std::getline(infile, line_content) && (line_content = trim(line_content) )!= "}") {
@@ -283,14 +275,15 @@ void	processServerBlock(std::ifstream& infile, Conserver& server, int& index_lin
 	saveAttribute(confline, server, index_line, listenings);
 	}
 	}
-	if ( listenings.size() == 1 && listenings.begin()->second == "1337"){
-		server.addlistening(std::pair<std::string, std::string>(listenings.begin()->first, "8080"));
-	}
 	if (confline == "}")
 		ServStack.pop();
 	index_line++;
 	if (server.getAttributes("client_max_body_size").empty())
 		server.addBodySize("");
+	if (!listenings["Default"].empty()){
+		server.addlistening(std::pair<std::string, std::string>(listenings["Default"], "8080"));
+		listenings[listenings["Default"]+"8080"] = Utility::ToStr(index_line);
+	}
 }
 
 std::vector<Conserver>	parseConfigFile(char *in_file){
@@ -301,8 +294,6 @@ std::vector<Conserver>	parseConfigFile(char *in_file){
 	std::string 			confline;
 	std::map<std::string, std::string> listenings;
 	std::vector<Conserver> Rservers;
-	// bool sin = true;
-
 	try{
 		if (!in_file)
 		infile.open("ConfigFiles/Configfile.conf");
