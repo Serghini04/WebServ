@@ -14,7 +14,7 @@
 // std::string loadHtmlFile(const std::string &filePath) {
 // 	std::ifstream file(filePath);
 // 	if (!file) {
-// 	throw std::runtime_error("Failed to open HTML file: " + filePath);
+// 	throw std::string("Failed to open HTML file: " + filePath);
 // 	}
 // 	std::stringstream buffer;
 // 	buffer << file.rdbuf();

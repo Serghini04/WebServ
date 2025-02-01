@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/01 10:28:31 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/01 16:40:05 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,8 @@
 
 RequestParse::RequestParse(Conserver &conserver) : _body(conserver.getBodySize()), _configServer(conserver)
 {
-	std::cout << "\n============>> Request Start Here <<==============\n" << std::flush;
-	_fd.open("/Users/meserghi/goinfre/www/Output.trash", std::ios::binary | std::ios::app);
-	// if (_fd.fail())
-	// 	throw std::runtime_error("500 Internal Server Error");
 	_isHeader = true;
+	_body.setIsCGI(false);
 	_requestIsDone = false;
 	_statusCode = eOK;
 	_statusCodeMessage = "200 OK";
@@ -37,13 +34,12 @@ void	RequestParse::checkURL()
 									"\x7F\"<>\\^`{|}";
 
 	if (_url.length() > 4096)
-		throw std::runtime_error("414 URI Too Long");
+		throw std::string("414 URI Too Long");
 	if (_url[0] != '/')
-		throw std::runtime_error("400 Bad Request");
+		throw std::string("400 Bad Request");
 	if (_url.find_first_of(invalidChars) != std::string::npos)
-		throw std::runtime_error("400 Bad Request");
+		throw std::string("400 Bad Request");
 	_url.erase(std::unique(_url.begin(), _url.end(), isDuplicate), _url.end());
-	// std::cout << "After : {" << _url << "}" << std::endl;
 	for (size_t i = 0; i < _url.length(); i++)
 	{
 		if (_url[i] == '%' && i + 2 < _url.length())
@@ -51,19 +47,26 @@ void	RequestParse::checkURL()
 			if (std::isxdigit(_url[i + 1]) && std::isxdigit(_url[i + 2]))
 				_url.replace(i, 3, Utility::percentEncoding(_url.substr(i, 3)));
 			else
-				throw std::runtime_error("400 Bad Request");
+				throw std::string("400 Bad Request");
 			i++;
 		}
 		else if (_url[i] == '%')
-			throw std::runtime_error("400 Bad Request");
+			throw std::string("400 Bad Request");
 	}
-	// std::cout << "Before : {" << _url << "}" << std::endl;
-
-	// I need to add handel Query string
-	// Fragment Handing : * Validate fragment format * Ensure no sensitive data in fragments
-
+	size_t queryPos = _url.find('?');
+	if (queryPos != std::string::npos)
+	{
+		_queryString = _url.substr(queryPos + 1);
+		_url.erase(queryPos);
+	}
+	size_t fragmentPos = _url.find('#');
+	if (fragmentPos != std::string::npos)
+	{
+		_fragment = _url.substr(fragmentPos + 1);
+		_url.erase(fragmentPos);
+	}
 	if (_url.find("/../") != std::string::npos || _url == "/.." || _url.rfind("/..") == _url.length() - 3)
-		throw std::runtime_error("400 Bad Request");
+		throw std::string("400 Bad Request");
 }
 
 std::string	RequestParse::statusCodeMessage()
@@ -76,15 +79,17 @@ void	RequestParse::parseFirstLine(std::string  header)
 	std::stringstream    ss(header);
 
 	if (!std::isalpha(header[0]))
-		throw std::runtime_error("400 Bad Request1");
+		throw std::string("400 Bad Request");
 	ss >> _method >> _url >> _httpVersion;
 	if (_method != "GET" && _method != "POST" && _method != "DELETE")
-		throw std::runtime_error("400 Bad Request");
+		throw std::string("400 Bad Request");
 	if (_url.empty() || _httpVersion.empty())
-		throw std::runtime_error("400 Bad Request"); 
+		throw std::string("400 Bad Request"); 
 	if (_httpVersion != "HTTP/1.1")
-		throw std::runtime_error("400 Bad Request");
+		throw std::string("400 Bad Request");
 	checkURL();
+	if (Utility::stringEndsWith(_url, ".py") || Utility::stringEndsWith(_url, ".php"))
+		_body.setIsCGI(true);
 	if (_method == "GET")
 		_enumMethod = eGET;
 	else if (_method == "POST")
@@ -151,7 +156,7 @@ void	RequestParse::parseMetaData(std::string header)
 		else
 			break ;
 	}
-	throw std::runtime_error("400 Bad Request");
+	throw std::string("400 Bad Request");
 }
 
 bool	RequestParse::parseHeader(std::string &header)
@@ -160,7 +165,7 @@ bool	RequestParse::parseHeader(std::string &header)
 	size_t start = 0;
 
 	if (header.empty())
-		throw std::runtime_error("400 Bad Request");
+		throw std::string("400 Bad Request");
 	for (size_t i = 1; i < header.size(); i++)
 	{
 		if (header[i - 1] == '\r' && header[i] == '\n')
@@ -213,17 +218,17 @@ void	RequestParse::checkAllowedMethod()
 	_location = location; 
 	std::cout << "based on this location =>" << location << "<" << std::endl;
 	if (_configServer.getLocation(location)["allowed_methods"].find(Utility::toUpperCase(_method)) == std::string::npos)
-		throw std::runtime_error("405 Method Not Allowed");
+		throw std::string("405 Method Not Allowed");
 	if (_enumMethod == ePOST)
 		_body.setFileName(_configServer.getLocation(location)["upload_store"] + "/Output");
 }
 
 void	RequestParse::deleteURI()
 {
-    if (!Utility::isReadableFile(_uri))
+    if (!Utility::isReadableFile(_uri) || _body.isCGI())
 	{
 		std::cerr << ">>" <<_uri << "<<\n"; 
-		throw std::runtime_error("403 Forbidden1");
+		throw std::string("403 Forbidden");
 	}
     if (!Utility::isDirectory(_uri))
         std::remove(_uri.c_str());
@@ -233,7 +238,7 @@ void	RequestParse::deleteURI()
         dirent* dp;
         std::string targetFile;
         if (!currentDir)
-            throw std::runtime_error("500 Internal Server Error");
+            throw std::string("500 Internal Server Error");
         while ((dp = readdir(currentDir)))
         {
             if (dp->d_name == std::string(".") || dp->d_name == std::string(".."))
@@ -257,16 +262,16 @@ void RequestParse::deleteMethod()
 	_uri +=  "/" + _url;
 	std::cerr << ">>" << _uri << "<<\n";
 	if (!Utility::checkIfPathExists(_uri))
-		throw std::runtime_error("404 Not Found");
+		throw std::string("404 Not Found");
 	if (Utility::isDirectory(_uri))
 	{
 		if (_configServer.getLocation(_location)["index"] == "")
-			throw std::runtime_error("403 Forbidden");
+			throw std::string("403 Forbidden");
 		_uri += _configServer.getLocation(_location)["index"];
 	}
 	// you need to check if cgi not delete;
 	deleteURI();
-	throw std::runtime_error("204 No Content");
+	throw std::string("204 No Content");
 }
 
 bool RequestParse::parseHeader(std::string &header, std::string &buff)
@@ -291,7 +296,7 @@ bool RequestParse::parseHeader(std::string &header, std::string &buff)
 		_body.openFileBasedOnContentType();
 	header.clear();
 	if (_enumMethod == eGET)
-		throw std::runtime_error("200 OK");
+		throw std::string("200 OK");
 	else if (_enumMethod == eDELETE)
 		deleteMethod();
 	_body.setClearData(true);
@@ -311,10 +316,6 @@ std::string	RequestParse::location()
 void    RequestParse::readBuffer(std::string buff)
 {
 	static std::string	header;
-	_fd << "\n===========" << _body.bodyType() << "===========\n";
-	_fd << buff; 
-	_fd << "\n======================\n";
-	_fd.flush();
 	try
 	{
 		if (_requestIsDone)
@@ -323,18 +324,11 @@ void    RequestParse::readBuffer(std::string buff)
 			setIsHeader(parseHeader(header, buff));
 		_requestIsDone = _body.parseBody(buff);
 	}
-	catch (std::exception &e)
+	catch (std::string &e)
 	{
-		std::cerr << ">>" << _url << "<<\n";
 		header.clear();
-		_statusCode = (status)atoi(e.what());
-		if (_statusCode < 200)
-		{
-			_statusCodeMessage = "500 Internal Server Error";
-			_statusCode = eInternalServerError;
-		}
-		else
-			_statusCodeMessage = e.what();
+		_statusCode = (status)atoi(e.c_str());
+		_statusCodeMessage = e;
 		std::cerr << _statusCodeMessage << std::endl;
 		_requestIsDone = 1;
 	}
@@ -349,6 +343,5 @@ void    RequestParse::readBuffer(std::string buff)
 
 RequestParse::~RequestParse()
 {
-	_fd.close();
-	// std::cout << "\n============>> Request Done Here <<==============\n" << std::flush;
+
 }
