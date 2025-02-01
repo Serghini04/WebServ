@@ -323,7 +323,6 @@ std::vector<Conserver>	parseConfigFile(char *in_file){
 			throw (std::string("Error: Unbalanced brackets '}', line") + Utility::ToStr(index_line));
 		}
 		}
-		// std::cerr << ">>>>>"<<confline <<std::endl;
 	}
 	catch(std::string err){
 		std::cerr<<err<<std::endl;

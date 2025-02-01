@@ -1,9 +1,17 @@
 #pragma once
-#include "../includes/Server.hpp"
-#include "../includes/RequestParse.hpp"
+#include "Server.hpp"
+#include "RequestParse.hpp"
+#include <dirent.h>
+#include <filesystem>
+#include <sys/stat.h>
+#define BUFFER_SIZE 16384
+
+
 class Server;
 class RequestParse;
 class Conserver;
+
+
 class Response
 {
 private:
@@ -13,15 +21,32 @@ private:
     int                                 firstCall;
     int                                 size;
     std::ifstream                       file;
+    std::string                         statusLine;
+    std::string                         filename;
     Conserver&                          conserver;
+    static std::string                  errHtml;
+    std::string                         errMsg;
+    RequestParse                        &request;
+    bool                                hasErrorFile;
+    bool                                isDirectory;
+    std::string                         directoryContent;
 public:
-    Response(Conserver &conserver);
+    Response(Conserver &conserver, RequestParse &request);
     ~Response();
     std::string FileToString();
-    std::string getResponse(RequestParse &request, int errorFromServer);
-    std::string processResponse(RequestParse &request, int isSuccess);
-    std::string getHeader(RequestParse &request, const std::string &str);
-    void        setContentType(RequestParse &request);
+    std::string getResponse();
+    int         processDirectory(std::string &path);
+    std::string processResponse(int isSuccess);
+    std::string getHeader();
+    void        ProcessUrl();
+    void        handelRequestErrors();
+    void        SendError(enum status code);
     int         getFileSize();
+    int        GetErrorFromStrSize();
+    static bool IsDirectory(const char* path);
 };
 
+
+//Utils
+std::string getFileHtml();
+std::string replacePlaceholders(const std::string input, const std::string &placeholder, const std::string &replacement);

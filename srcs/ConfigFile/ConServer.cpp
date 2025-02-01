@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   ConServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 16:54:05 by hidriouc          #+#    #+#             */
 /*   Updated: 2025/01/27 15:37:36 by hidriouc         ###   ########.fr       */
@@ -56,7 +56,7 @@ void Conserver::addlistening(std::pair<std::string, std::string > lsn)
 	}
 	listening.push_back(lsn);
 }
-long long	Conserver::GetBodySize()
+long long	Conserver::getBodySize()
 {
 	return client_max_body_size;
 }

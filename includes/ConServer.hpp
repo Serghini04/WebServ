@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   ConServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 16:02:15 by hidriouc          #+#    #+#             */
 /*   Updated: 2025/01/25 15:21:27 by hidriouc         ###   ########.fr       */
@@ -22,6 +22,7 @@
 #include <vector>
 #include <sstream>
 #include <ostream>
+
 class Conserver {
 	private:
 		std::map<std::string, std::string> serv_attributes;
@@ -41,7 +42,7 @@ class Conserver {
 		std::string getAttributes(std::string att);
 		std::string getErrorPage(int ERRNumber);
 		void	addBodySize(std::string value);
-		long long	GetBodySize();
+		long long	getBodySize();
 		std::map<std::string, std::string> getLocation(std::string locaPath);
 };
 
