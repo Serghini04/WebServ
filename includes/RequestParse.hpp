@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/28 15:47:03 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/01 10:40:01 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,11 +44,11 @@ class   RequestParse
 {
 	private :
 		std::map<std::string, std::string>  _metaData;
-		methods			_enumMethod;
-		status			_statusCode;
 		std::string 	_method;
 		std::string		_httpVersion;
 		std::string 	_url;
+		methods			_enumMethod;
+		status			_statusCode;
 		std::string		_uri;
 		BodyParse		_body;
 		bool			_requestIsDone;
@@ -91,6 +91,6 @@ class   RequestParse
 		void		parseFirstLine(std::string  header);
 		void		parseMetaData(std::string header);
 		void		deleteURI();
-		
+
 		~RequestParse();
 };

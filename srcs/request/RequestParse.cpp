@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/28 17:56:41 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/01 10:28:31 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ RequestParse::RequestParse(Conserver &conserver) : _body(conserver.getBodySize()
 {
 	std::cout << "\n============>> Request Start Here <<==============\n" << std::flush;
 	_fd.open("/Users/meserghi/goinfre/www/Output.trash", std::ios::binary | std::ios::app);
-	if (_fd.fail())
-		throw std::runtime_error("500 Internal Server Error");
+	// if (_fd.fail())
+	// 	throw std::runtime_error("500 Internal Server Error");
 	_isHeader = true;
 	_requestIsDone = false;
 	_statusCode = eOK;
@@ -325,6 +325,7 @@ void    RequestParse::readBuffer(std::string buff)
 	}
 	catch (std::exception &e)
 	{
+		std::cerr << ">>" << _url << "<<\n";
 		header.clear();
 		_statusCode = (status)atoi(e.what());
 		if (_statusCode < 200)

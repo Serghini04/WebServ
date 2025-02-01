@@ -18,7 +18,7 @@
 #include <RequestParse.hpp>
 #define MAX_BUFFER 16384
 #define MAX_CLIENTS 10240
-#define PORT 3928
+#define PORT 1111
 class Response;
 class RequestParse;
 
@@ -41,6 +41,7 @@ private:
     void            ResponseEnds(int clientSocket);
     void            SendError(int fd);
     void            ConnectionClosed(int clientSocket);
+    void            CleanUpAllocation(int clientSocket);
 public:
     Server();
     ~Server();

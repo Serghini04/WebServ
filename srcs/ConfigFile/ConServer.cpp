@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 16:54:05 by hidriouc          #+#    #+#             */
-/*   Updated: 2025/01/25 18:42:19 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/28 18:23:12 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,3 +123,4 @@ std::map<std::string, std::string> Conserver::getLocation(std::string valueToFin
 	// Return an empty map if the value is not found
 	return std::map<std::string, std::string>();
 }
+

@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/01/28 15:59:16 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/29 11:32:17 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ Server::~Server()
 void errorMsg(std::string str, int fd)
 {
     std::cout << str << strerror(errno) << std::endl;
-
     close(fd);
 }
 
@@ -49,7 +48,7 @@ int make_socket_nonblocking(int sockfd)
     }
     return 0;
 }
-void Server::ConnectionClosed(int clientSocket)
+void Server::CleanUpAllocation(int clientSocket)
 {
     EV_SET(&event, clientSocket, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
     if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
@@ -57,43 +56,42 @@ void Server::ConnectionClosed(int clientSocket)
     EV_SET(&event, clientSocket, EVFILT_READ, EV_DELETE, 0, 0, NULL);
     if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
         SendError(clientSocket);
-
-    // Cleanup and close
     delete clientsRequest[clientSocket];
     delete clientsResponse[clientSocket];
-    clientsResponse.erase(clientSocket);   
+    clientsResponse.erase(clientSocket);
     clientsRequest.erase(clientSocket);
+}
+
+void Server::ConnectionClosed(int clientSocket)
+{
+    CleanUpAllocation(clientSocket);
     close(clientSocket);
 }
 void Server::ResponseEnds(int clientSocket)
 {
-    // Check if connection should be kept alive
-    // (*clientsRequest[clientSocket]).SetRequestIsDone(false);
     if (clientsRequest[clientSocket]->isConnectionClosed())
         ConnectionClosed(clientSocket);
     else
-    {
-        EV_SET(&event, clientSocket, EVFILT_WRITE, EV_CLEAR, 0, 0, NULL);
-        if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
-            SendError(clientSocket);
-
-        // Re-enable read event for next request
-        EV_SET(&event, clientSocket, EVFILT_READ, EV_ADD, 0, 0, NULL);
-        if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
-            SendError(clientSocket);
-
-        delete clientsResponse[clientSocket];
-        clientsResponse.erase(clientSocket);
-    }
+        CleanUpAllocation(clientSocket);
 }
 int Server::ConfigTheSocket(Conserver &config)
 {
     sockaddr_in addressSocket;
     int serverSocket;
-
+    int opt = 1;
     serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (serverSocket == -1)
         return -1;
+    if (setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == -1)
+    {
+        perror("setsockopt SO_REUSEADDR failed");
+        return -1;
+    }
+    if (setsockopt(serverSocket, SOL_SOCKET, SO_REUSEPORT, &opt, sizeof(opt)) == -1)
+    {
+        perror("setsockopt SO_REUSEPORT failed");
+        return -1;
+    }
     addressSocket.sin_addr.s_addr = INADDR_ANY;
     addressSocket.sin_family = AF_INET;
     // addressSocket.sin_port = htons(Utility::StrToInt(config.getAttributes("port")));
@@ -122,7 +120,6 @@ void Server::RecivData(int clientSocket)
             return;
         if (errno == ECONNRESET)
         {
-            // (*clientsRequest[clientSocket]).SetRequestIsDone(false);
             ConnectionClosed(clientSocket);
             return;
         }
@@ -134,7 +131,7 @@ void Server::RecivData(int clientSocket)
     {
         puts("Data Recived");
         EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
-        if (kevent(kq, &event, 1, NULL, 0, NULL)) ////loooook
+        if (kevent(kq, &event, 1, NULL, 0, NULL))
             SendError(clientSocket);
         return;
     }
