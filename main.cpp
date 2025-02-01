@@ -32,8 +32,8 @@ int main(int ac, char **av)
 
 	}
 
-	// if (servers.size()){
-	// Server ser;
-	// ser.CreateServer(servers);}
+	if (servers.size()){
+	Server ser;
+	ser.CreateServer(servers);}
 	return 0;
 }
