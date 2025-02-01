@@ -61,6 +61,7 @@ class   RequestParse
 		bool			_requestIsDone;
 		std::ofstream	_fd;
 		bool			_isHeader;
+		
 	public :
 		RequestParse();
 
@@ -82,4 +83,8 @@ class   RequestParse
 		bool	parseHeader(std::string &header);
 		void	parseFirstLine(std::string  header);
 		void	parseMetaData(std::string header);
+
+		// execution of CGI script 
+		void	ExecCGI ();
+
 };
