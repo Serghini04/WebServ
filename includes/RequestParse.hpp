@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RequestParse.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/23 15:15:48 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/02/01 10:40:01 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,8 @@
 # include <string>
 # include <BodyParse.hpp>
 # include <map>
-
-enum	methods
-{
-	ePOST,
-	eGET,
-	eDELETE
-};
+#include <fcntl.h>
+#include <unistd.h> 
 
 enum status
 {
@@ -41,8 +36,7 @@ enum status
 	eMovedPermanently = 301,
 	eMethodNotAllowed = 405,
 	eRequestURITooLong = 414,
-	eRequestEntityTooLarge = 413,
-	// if fail system call or not find file to open
+	eContentTooLarge = 413,
     eInternalServerError = 500,
 	eHTTPVersionNotSupported = 505,
     eRequestedRangeNotSatisfiable = 416
@@ -52,39 +46,57 @@ class   RequestParse
 {
 	private :
 		std::map<std::string, std::string>  _metaData;
-		methods			_enumMethod;
-		status			_statusCode;
 		std::string 	_method;
 		std::string		_httpVersion;
 		std::string 	_url;
+		methods			_enumMethod;
+		status			_statusCode;
+		std::string		_uri;
 		BodyParse		_body;
 		bool			_requestIsDone;
 		std::ofstream	_fd;
 		bool			_isHeader;
-		
-	public :
-		RequestParse();
+		Conserver		&_configServer;
+		long long		_maxBodySize;
+		std::string		_statusCodeMessage;
+		std::string		_location;
 
+	public :
+		RequestParse(Conserver &conserver);
+	
 		// Get :
+		std::string	location();
 		std::map<std::string, std::string>	&getMetaData();
 		status		statusCode();
+		std::string	statusCodeMessage();
 		bool		requestIsDone();
 		bool		isHeader();
 		std::string	URL();
 		methods		method();
 
 		// set :
-		void	SetisHeader(bool isHeader);
-		void	SetStatusCode(status s);
-		void	SetRequestIsDone(bool s);
+		void		setUrl(std::string s);
+		void		setIsHeader(bool isHeader);
+		void		SetStatusCode(status s);
+		void		SetStatusCodeMsg(std::string message);
+		void		SetRequestIsDone(bool s);
+		bool		isConnectionClosed();
 
-		bool	readHeader(std::string &buff);
-		void	readBuffer(std::string buff);
-		bool	parseHeader(std::string &header);
-		void	parseFirstLine(std::string  header);
-		void	parseMetaData(std::string header);
+		// Methods :
+		void		checkURL();
+		void 		deleteMethod();
+		std::string matchingURL();
+		void		checkAllowedMethod();
+		bool		parseHeader(std::string &header, std::string &buff);
+		void		readBuffer(std::string buff);
+		bool		parseHeader(std::string &header);
+		void		parseFirstLine(std::string  header);
+		void		parseMetaData(std::string header);
+		void		deleteURI();
 
-		// execution of CGI script 
-		void	ExecCGI ();
+		// Execution of CGI by hidriouc
+		void		runcgiscripte();
+		std::vector<std::string>	getenv();
 
+		~RequestParse();
 };

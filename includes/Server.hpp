@@ -16,12 +16,12 @@
 #include <map>
 #include <Response.hpp>
 #include <RequestParse.hpp>
-#include "ConServer.hpp"
-#define MAX_BUFFER 1024
-#define MAX_CLIENTS 128
-#define PORT 3938
+#define MAX_BUFFER 16384
+#define MAX_CLIENTS 10240
+#define PORT 1111
 class Response;
 class RequestParse;
+
 class Server
 {
 private:
@@ -39,11 +39,11 @@ private:
     void            SendData(int clientSocket);
     void            RecivData(int clientSocket);
     void            ResponseEnds(int clientSocket);
-    void            SendError(int fd, std::string msg);
-    bool            isInterError;
+    void            SendError(int fd);
+    void            ConnectionClosed(int clientSocket);
+    void            CleanUpAllocation(int clientSocket);
 public:
     Server();
     ~Server();
     int CreateServer(std::vector<Conserver> &config);
 };
-
