@@ -73,11 +73,11 @@ std::string Response::getHeader()
     _headerMap["Date"] = Utility::GetCurrentTime();
     std::string ser = conserver.getAttributes("server_name");
     ser.erase(ser.end() - 1);
-    _headerMap["server"] = ser;
-    _headerMap["content-yype"] = contentType;
-    _headerMap["content-length"] = bodySize.str();
-    _headerMap["connection"] = request.getMetaData().count("Connection") == 0 ? "keep-alive" : request.getMetaData()["Connection"];
-    _headerMap["keep-alive"] = "timeout=5, max = 100";
+    _headerMap["Server"] = ser;
+    _headerMap["Content-Type"] = contentType;
+    _headerMap["Content-Length"] = bodySize.str();
+    _headerMap["Connection"] = request.getMetaData().count("Connection") == 0 ? "keep-alive" : request.getMetaData()["Connection"];
+    _headerMap["Keep-Alive"] = "timeout=5, max = 100";
     response << statusLine;
     for (std::map<std::string, std::string>::const_iterator
              it = _headerMap.begin();
@@ -115,12 +115,12 @@ void Response::ProcessUrl()
     std::string index = "";
     std::ostringstream oss;
     
-    if (!location["root"].empty())
-        location["root"].erase(location["root"].end() - 1);
+    // if (!location["root"].empty())
+    //     location["root"].erase(location["root"].end() - 1);
     if (!location["index"].empty() && request.URL() == "/")
     {
         index = location["index"];
-        index.erase(index.end() - 1);
+        // index.erase(index.end() - 1);
     }
     else if (location["index"].empty() &&
              (location["auto_index"].empty() || location["auto_index"].find("off") != std::string::npos))
@@ -196,12 +196,16 @@ std::string Response::processResponse(int state)
                     firstCall = 0;
                     return getHeader();
                 }
+                std::cerr << ">>" << str << "<<\n";
                 file.open(str, std::ios::binary | std::ios::in);
                 size_t pos = str.find(".");
                 if (pos != std::string::npos)
                     this->contentType = Utility::getExtensions("", str.substr(pos));
                 if (!file.is_open())
+                {
+                    puts("ff");
                     SendError(eNotFound);
+                }
             }
             else if (request.statusCode() == eOK)
             {
