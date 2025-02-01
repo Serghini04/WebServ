@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 18:36:13 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/28 18:43:04 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/01 15:48:39 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,6 @@ private:
 	}
 
 public:
-	Utility()
-	{
-	}
 	static void ShowErrorExit(std::string const &errorMsg)
 	{
 		std::cout << errorMsg << std::endl;
@@ -156,7 +153,7 @@ public:
 		encoding["%20"] = " ";
 		encoding["+"]   = " ";
 		if (encoding[key] == "")
-			throw std::runtime_error("400 Bad Request");
+			throw std::string("400 Bad Request");
 		return encoding[key];
     }
 	static std::string trimSpace(std::string line)
@@ -205,7 +202,7 @@ public:
 		if (stat(path.c_str(), &statBuff) < 0)
 		{
 			if (errno == EACCES)
-				throw std::runtime_error("404 Not Found");
+				throw std::string("404 Not Found");
 			return false;
 		}
 		return true;
@@ -232,7 +229,7 @@ public:
 		if (!isReadableFile(path))
 		{
 			std::cerr << path ;
-			throw std::runtime_error("403 Forbidden 2");
+			throw std::string("403 Forbidden");
 		}
 		if (!currentDir)
 			return;
@@ -240,7 +237,7 @@ public:
 		{
 			targetFile = path + "/" + dp->d_name;
 			if (stringEndsWith(targetFile, ".") || stringEndsWith(targetFile, ".."))
-				continue;
+				continue ;
 			if (!isDirectory(targetFile))
 				std::remove(targetFile.c_str());
 			else
