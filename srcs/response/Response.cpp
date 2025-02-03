@@ -196,16 +196,12 @@ std::string Response::processResponse(int state)
                     firstCall = 0;
                     return getHeader();
                 }
-                std::cerr << ">>" << str << "<<\n";
                 file.open(str, std::ios::binary | std::ios::in);
                 size_t pos = str.find(".");
                 if (pos != std::string::npos)
                     this->contentType = Utility::getExtensions("", str.substr(pos));
                 if (!file.is_open())
-                {
-                    puts("ff");
                     SendError(eNotFound);
-                }
             }
             else if (request.statusCode() == eOK)
             {

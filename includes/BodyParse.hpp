@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:36:14 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/28 14:27:40 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/01 16:34:01 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,10 @@ enum	BodyType
 	eNone
 };
 
+// _bodyFile.open(_body., std::ios::binary | std::ios::app);
+// if (_bodyFile.fail())
+// 	throw std::string("500 Internal Server Error");
+
 class BodyParse
 {
 	private:
@@ -48,13 +52,18 @@ class BodyParse
 		std::string							_boundary;
 		std::string							_boundaryEnd;
 		static size_t 						_indexFile;
-		std::map<std::string, std::string>	_metaData;
 		bool 								_clearData;
+		bool								_isCGI;
+		std::ofstream						_fileTrash;
+		std::string							_bodyFileName;				
+		std::map<std::string, std::string>	_metaData;
 		
 	public:
 		BodyParse(long long maxBodySize);
 
 		// Set :
+		void	setBodyFileName(std::string name);
+		void	setIsCGI(bool s);
 		void	setBoundary(std::string boundary);
 		void	setBoundaryEnd(std::string boundary);
 		void	setbodyType(BodyType type);	
@@ -62,11 +71,14 @@ class BodyParse
 		void	setFileName(std::string fileName);
 
 		// Get :
+		bool		isCGI();
 		BodyType	bodyType();
 		long long	sizeRead();
+		std::string	BodyFileName();
 		BodyType	getTypeOfBody(methods method, long long maxBodySize);
 		
 		// Methods :
+		void		handleCGI(std::string &buff);
 		void		clearChunkedAttributes(std::string &data, size_t &length, bool &readingChunk, std::string &buff);
 		bool		parseBody(std::string &buff);
 		bool		clearBuffers(std::string &data, std::string &accumulatedData, std::string &carryOver, bool &readingChunk);
