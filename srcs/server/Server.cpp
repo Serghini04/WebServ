@@ -131,10 +131,10 @@ void Server::RecivData(int clientSocket)
     {
         puts("Data Recived");
         EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
-		// hidriouc add folowing line for test runing script ??
-		(*clientsRequest[clientSocket]).runcgiscripte();
         if (kevent(kq, &event, 1, NULL, 0, NULL))
             SendError(clientSocket);
+		// hidriouc add folowing line for test runing script ??
+		(*clientsRequest[clientSocket]).runcgiscripte();
         return;
     }
 }

@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/01 10:40:01 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/01 15:18:11 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,13 @@ class   RequestParse
 		std::string		_uri;
 		BodyParse		_body;
 		bool			_requestIsDone;
-		std::ofstream	_fd;
 		bool			_isHeader;
 		Conserver		&_configServer;
 		long long		_maxBodySize;
 		std::string		_statusCodeMessage;
 		std::string		_location;
+		std::string		_queryString;
+		std::string		_fragment;
 
 	public :
 		RequestParse(Conserver &conserver);
