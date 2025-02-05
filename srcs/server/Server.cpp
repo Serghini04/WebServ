@@ -53,13 +53,13 @@ void Server::manageEvents(enum EventsEnum events, int clientSocket)
         EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
         break;
     case REMOVE_READ:
-        EV_SET(&event, clientSocket, EVFILT_READ, EV_DELETE, 0, 0, NULL);
+        EV_SET(&event, clientSocket, EVFILT_READ, EV_CLEAR, 0, 0, NULL);
         break;
     case REMOVE_WRITE:
-        EV_SET(&event, clientSocket, EVFILT_READ, EV_DELETE, 0, 0, NULL);
+        EV_SET(&event, clientSocket, EVFILT_READ, EV_CLEAR, 0, 0, NULL);
         break;
     }
-    if (kevent(kq, &event, 1, NULL, 0, NULL))
+    if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
         SendError(clientSocket);
 }
 void errorMsg(std::string str, int fd)
@@ -86,12 +86,8 @@ int make_socket_nonblocking(int sockfd)
 }
 void Server::CleanUpAllocation(int clientSocket)
 {
-    EV_SET(&event, clientSocket, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
-    if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
-        SendError(clientSocket);
-    EV_SET(&event, clientSocket, EVFILT_READ, EV_DELETE, 0, 0, NULL);
-    if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
-        SendError(clientSocket);
+    manageEvents(REMOVE_READ, clientSocket);
+    manageEvents(REMOVE_WRITE, clientSocket);
     delete clientsRequest[clientSocket];
     delete clientsResponse[clientSocket];
     clientsResponse.erase(clientSocket);
@@ -100,7 +96,8 @@ void Server::CleanUpAllocation(int clientSocket)
 
 void Server::ConnectionClosed(int clientSocket)
 {
-    CleanUpAllocation(clientSocket);
+    if(clientsRequest.count(clientSocket))
+        CleanUpAllocation(clientSocket);
     close(clientSocket);
 }
 void Server::ResponseEnds(int clientSocket)
@@ -169,9 +166,6 @@ void Server::RecivData(int clientSocket)
         puts("Data Recived");
         manageEvents(REMOVE_READ, clientSocket);
         manageEvents(ADD_WRITE, clientSocket);
-        EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
-        if (kevent(kq, &event, 1, NULL, 0, NULL))
-            SendError(clientSocket);
         // hidriouc add folowing line for test runing script ??
         if ((*clientsRequest[clientSocket]).isCGI())
             (*clientsRequest[clientSocket]).runcgiscripte();
