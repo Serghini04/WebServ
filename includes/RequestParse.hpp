@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/01 15:18:11 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/05 12:12:01 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,9 +73,11 @@ class   RequestParse
 		bool		requestIsDone();
 		bool		isHeader();
 		std::string	URL();
+		bool		isCGI();
 		methods		method();
 
 		// set :
+		void		setIsCGI(bool s);
 		void		setUrl(std::string s);
 		void		setIsHeader(bool isHeader);
 		void		SetStatusCode(status s);
@@ -95,8 +97,8 @@ class   RequestParse
 		void		parseMetaData(std::string header);
 		void		deleteURI();
 
-		// Execution of CGI by hidriouc
-		void		runcgiscripte();
+		// Execution of CGI
+		void						runcgiscripte();
 		std::vector<std::string>	getenv();
 
 		~RequestParse();

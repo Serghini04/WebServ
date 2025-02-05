@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:36:14 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/01 16:34:01 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/05 12:09:09 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,6 @@ enum	BodyType
 	eContentLength,
 	eNone
 };
-
-// _bodyFile.open(_body., std::ios::binary | std::ios::app);
-// if (_bodyFile.fail())
-// 	throw std::string("500 Internal Server Error");
 
 class BodyParse
 {
