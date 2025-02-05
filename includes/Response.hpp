@@ -43,6 +43,7 @@ public:
     void        SendError(enum status code);
     int         getFileSize();
     int        GetErrorFromStrSize();
+    bool    IsDirectory(const char *path);
 };
 
 

@@ -299,7 +299,7 @@ void	BodyParse::openFileOfBoundary(std::string buff)
 	std::cout <<"Create File :>>" << oss.str() << "<<\n";
 	_fileOutput.open(oss.str(), std::ios::binary);
 	if (_fileOutput.fail())
-		throw std::string("500 Internal Server Error 3");
+		throw std::string("500 Internal Server Error");
 	_indexFile++;
 }
 
