@@ -15,17 +15,53 @@
 Server::Server()
 {
 }
+void Server::setupConnectionTimer(int clientSocket)
+{
+    // Set up a timer event for this connection
+    EV_SET(&timerEvent,
+           clientSocket,        // Use client socket as identifier
+           EVFILT_TIMER,        // Timer filter
+           EV_ADD | EV_ONESHOT, // One-shot timer
+           NOTE_SECONDS,        // Use seconds resolution
+           TIMEOUT_SECONDS,     // 5 second timeout
+           NULL);               // No user data
 
+    if (kevent(kq, &timerEvent, 1, NULL, 0, NULL) == -1)
+    {
+        SendError(clientSocket);
+        return;
+    }
+}
 Server::~Server()
 {
     for (std::map<int, Conserver *>::const_iterator
              it = serversConfigs.begin();
          it != serversConfigs.end(); it++)
     {
-        // delete it->second;
+        delete it->second;
     }
 }
 
+void Server::manageEvents(enum EventsEnum events, int clientSocket)
+{
+    switch (events)
+    {
+    case ADD_READ:
+        EV_SET(&event, clientSocket, EVFILT_READ, EV_ADD, 0, 0, NULL);
+        break;
+    case ADD_WRITE:
+        EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
+        break;
+    case REMOVE_READ:
+        EV_SET(&event, clientSocket, EVFILT_READ, EV_DELETE, 0, 0, NULL);
+        break;
+    case REMOVE_WRITE:
+        EV_SET(&event, clientSocket, EVFILT_READ, EV_DELETE, 0, 0, NULL);
+        break;
+    }
+    if (kevent(kq, &event, 1, NULL, 0, NULL))
+        SendError(clientSocket);
+}
 void errorMsg(std::string str, int fd)
 {
     std::cout << str << strerror(errno) << std::endl;
@@ -79,6 +115,7 @@ int Server::ConfigTheSocket(Conserver &config)
     sockaddr_in addressSocket;
     int serverSocket;
     int opt = 1;
+
     serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (serverSocket == -1)
         return -1;
@@ -100,7 +137,7 @@ int Server::ConfigTheSocket(Conserver &config)
         return -1;
     if (bind(serverSocket, (const sockaddr *)&addressSocket, sizeof(addressSocket)) == -1)
         return -1;
-    if (listen(serverSocket, 1024) == -1)
+    if (listen(serverSocket, 128) == -1)
         return -1;
     this->serversConfigs[serverSocket] = &config;
     return serverSocket;
@@ -130,9 +167,8 @@ void Server::RecivData(int clientSocket)
     if ((*clientsRequest[clientSocket]).requestIsDone())
     {
         puts("Data Recived");
-        EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
-        if (kevent(kq, &event, 1, NULL, 0, NULL))
-            SendError(clientSocket);
+        manageEvents(REMOVE_READ, clientSocket);
+        manageEvents(ADD_WRITE, clientSocket);
         return;
     }
 }
@@ -189,10 +225,9 @@ void Server::ConnectWithClient(int kq, uintptr_t server)
         SendError(clientSocket);
     else
     {
-        serversClients[clientSocket] = server;
-        EV_SET(&event, clientSocket, EVFILT_READ, EV_ADD, 0, 0, NULL);
-        if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
-            SendError(clientSocket);
+        serversClients[clientSocket] = (int)server;
+        setupConnectionTimer(clientSocket);
+        manageEvents(ADD_READ, clientSocket);
     }
 }
 
@@ -216,8 +251,14 @@ void Server::HandelEvents(int n, struct kevent events[])
             clientSocket = events[i].ident;
             SendData(clientSocket);
         }
+        else if (events[i].filter == EVFILT_TIMER)
+        {
+            clientSocket = events[i].ident;
+            ConnectionClosed(clientSocket);
+        }
     }
 }
+
 int Server::CreateServer(std::vector<Conserver> &config)
 {
     int serverSocket = 0;
