@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/01 16:40:05 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/05 12:11:46 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,16 @@ RequestParse::RequestParse(Conserver &conserver) : _body(conserver.getBodySize()
 bool	isDuplicate(char a, char b)
 {
 	return a == '/' && b == '/';
+}
+
+bool	RequestParse::isCGI()
+{
+	return _body.isCGI();
+}
+
+void	RequestParse::setIsCGI(bool s)
+{
+	_body.setIsCGI(s);
 }
 
 void	RequestParse::checkURL()
@@ -385,7 +395,7 @@ void RequestParse::runcgiscripte() {
 	}
 	env[i] = NULL;
 	if(_method == "POST"){
-	
+		// std::cerr << "this what i open :" << _body.BodyFileName().c_str() << std::endl;
 		bodyfd = open(_body.BodyFileName().c_str(), O_RDONLY);
 		if (bodyfd == -1) {
 		perror("Failed to open body file");
