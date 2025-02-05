@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:38:49 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/01 16:34:01 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/05 12:40:37 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ std::string	BodyParse::BodyFileName()
 BodyParse::BodyParse(long long maxBodySize)
 {
 	_maxBodySize = maxBodySize;
-	_bodyFileName = "/tmp/Output.trash";
+	_bodyFileName = "/Users/meserghi/Desktop/WebServ/Output.trash";
 	_isCGI = false;
     _type = eNone;
 	_bodySize = 0;
@@ -83,7 +83,6 @@ BodyType	BodyParse::getTypeOfBody(methods method, long long maxBodySize)
 		_bodySize = strtoll(_metaData["content-length"].c_str(), &trash, 10);
 		if (trash == _metaData["content-length"].c_str() || *trash != '\0' || errno == ERANGE || _bodySize < 0)
 			throw std::string("400 Bad Request");
-		// std::cerr << _bodySize << "|" << maxBodySize << std::endl;
 		if (maxBodySize >= 0 && _bodySize > maxBodySize)
 			throw std::string("413 Content Too Large");
 	}
@@ -314,6 +313,7 @@ void	BodyParse::handleCGI(std::string &buff)
 	}
 	checkContentTooLarge(buff.size());
 	_fileTrash << buff;
+	_fileTrash.flush();
 }
 
 bool BodyParse::BoundaryParse(std::string& buff)
@@ -452,15 +452,15 @@ bool BodyParse::ContentLengthParse(std::string &buff)
 	_bodySize -= bytesToProcess;
 	if (_bodySize <= 0)
 	{
-		_fileOutput.flush();
-		return true;
+		_fileOutput.close();
+		throw std::string("201 Created");
 	}
 	return false;
 }
 
 BodyParse::~BodyParse()
 {
-	std::cout << ">>" << _bodyFileName << "<<" << std::endl;
+	_fileTrash.flush();
 	_fileOutput.close();
 	_fileTrash.close();
 }
