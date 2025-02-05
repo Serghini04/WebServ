@@ -24,6 +24,12 @@ class RequestParse;
 class Server
 {
 private:
+    enum EventsEnum {
+        ADD_READ,
+        ADD_WRITE,
+        REMOVE_READ,
+        REMOVE_WRITE,
+    };
     int serverSocket;
     int kq;
     struct kevent event;
@@ -32,6 +38,8 @@ private:
     std::map<int, Conserver* > serversConfigs;
     std::map<int, int > serversClients;
     std::vector<int> servers;
+    struct kevent timerEvent;
+    static const int TIMEOUT_SECONDS = 5;
     void            ConnectWithClient(int kq, uintptr_t server);
     void            HandelEvents(int n, struct kevent events[]);
     int             ConfigTheSocket(Conserver &config);
@@ -41,6 +49,8 @@ private:
     void            SendError(int fd);
     void            ConnectionClosed(int clientSocket);
     void            CleanUpAllocation(int clientSocket);
+    void            setupConnectionTimer(int clientSocket);
+    void            manageEvents(enum EventsEnum events,int clientSocket);
 public:
     Server();
     ~Server();
