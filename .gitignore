@@ -1,3 +1,4 @@
 *.o
 Tasks&Notes.txt
-WebServ
+webServ
+Nginx.sh

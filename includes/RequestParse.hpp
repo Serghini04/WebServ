@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/28 15:47:03 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/05 12:12:01 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 # include <string>
 # include <BodyParse.hpp>
 # include <map>
+#include <fcntl.h>
+#include <unistd.h> 
 
 enum status
 {
@@ -44,20 +46,21 @@ class   RequestParse
 {
 	private :
 		std::map<std::string, std::string>  _metaData;
-		methods			_enumMethod;
-		status			_statusCode;
 		std::string 	_method;
 		std::string		_httpVersion;
 		std::string 	_url;
+		methods			_enumMethod;
+		status			_statusCode;
 		std::string		_uri;
 		BodyParse		_body;
 		bool			_requestIsDone;
-		std::ofstream	_fd;
 		bool			_isHeader;
 		Conserver		&_configServer;
 		long long		_maxBodySize;
 		std::string		_statusCodeMessage;
 		std::string		_location;
+		std::string		_queryString;
+		std::string		_fragment;
 
 	public :
 		RequestParse(Conserver &conserver);
@@ -70,9 +73,11 @@ class   RequestParse
 		bool		requestIsDone();
 		bool		isHeader();
 		std::string	URL();
+		bool		isCGI();
 		methods		method();
 
 		// set :
+		void		setIsCGI(bool s);
 		void		setUrl(std::string s);
 		void		setIsHeader(bool isHeader);
 		void		SetStatusCode(status s);
@@ -91,6 +96,10 @@ class   RequestParse
 		void		parseFirstLine(std::string  header);
 		void		parseMetaData(std::string header);
 		void		deleteURI();
-		
+
+		// Execution of CGI
+		void						runcgiscripte();
+		std::vector<std::string>	getenv();
+
 		~RequestParse();
 };
