@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:38:49 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/05 15:55:29 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/05 16:01:08 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -299,7 +299,7 @@ void	BodyParse::openFileOfBoundary(std::string buff)
 	std::cout <<"Create File :>>" << oss.str() << "<<\n";
 	_fileOutput.open(oss.str(), std::ios::binary);
 	if (_fileOutput.fail())
-		throw std::string("500 Internal Server Error 3");
+		throw std::string("500 Internal Server Error");
 	_indexFile++;
 }
 

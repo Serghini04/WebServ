@@ -23,15 +23,7 @@ int Response::GetErrorFromStrSize()
     }
     return -1;
 }
-bool Response::IsDirectory(const char *path)
-{
-    struct stat path_stat;
-    if (stat(path, &path_stat) == 0)
-    {
-        return S_ISDIR(path_stat.st_mode); // Check if it's a directory
-    }
-    return false; // If stat() fails, it's not a directory
-}
+
 std::string Response::FileToString()
 {
     if (!hasErrorFile)
@@ -115,14 +107,9 @@ void Response::ProcessUrl()
     std::string index = "";
     std::ostringstream oss;
     
-    // if (!location["root"].empty())
-    //     location["root"].erase(location["root"].end() - 1);
     if (!location["index"].empty() && request.URL() == "/")
-    {
         index = location["index"];
-        // index.erase(index.end() - 1);
-    }
-    else if (location["index"].empty() &&
+    else if (location["index"].empty() && Utility::isDirectory(request.URL()) &&
              (location["auto_index"].empty() || location["auto_index"].find("off") != std::string::npos))
         SendError(eFORBIDDEN);
     oss << newUrl << location["root"] << request.URL() << index;
@@ -188,8 +175,12 @@ std::string Response::processResponse(int state)
             ProcessUrl();
             if (request.statusCode() == eOK && request.method() != ePOST)
             {
-                std::string str = request.URL();
-                if (IsDirectory(str.c_str()))
+                std::string str;
+                if (request.isCGI())
+                    str = "/tmp/outCGI.html";
+                else
+                    str = request.URL();
+                if (Utility::isDirectory(str.c_str()))
                 {
                     isDirectory = true;
                     size = processDirectory(str);
@@ -203,9 +194,9 @@ std::string Response::processResponse(int state)
                 if (!file.is_open())
                     SendError(eNotFound);
             }
-            else if (request.statusCode() == eOK)
+            else if (request.method() == ePOST)
             {
-                file.open("post.json");
+                file.open("www/error_pages/post.json");
                 this->contentType = Utility::getExtensions("", ".json");
             }
         }
@@ -221,7 +212,8 @@ std::string Response::getResponse()
 {
     std::string str;
 
-    if (request.statusCode() != eOK)
+    if (request.statusCode() != eOK 
+            && request.statusCode() != eCreated)
         str = processResponse(0);
     else
         str = processResponse(1);
