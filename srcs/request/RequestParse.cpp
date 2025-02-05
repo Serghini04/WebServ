@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/05 15:14:38 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/05 21:03:52 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -309,7 +309,18 @@ bool RequestParse::parseHeader(std::string &header, std::string &buff)
 		_body.openFileBasedOnContentType();
 	header.clear();
 	if (_enumMethod == eGET)
+	{
+		if (Utility::isDirectory(_configServer.getAttributes("root") + _url))
+		{
+			std::string	index = _configServer.getLocation(_location)["index"];
+			if (index != "" && (Utility::stringEndsWith(index, ".py") || Utility::stringEndsWith(index, ".php")))
+			{
+				setIsCGI(true);
+				_url += index;
+			}
+		}
 		throw std::string("200 OK");
+	}
 	else if (_enumMethod == eDELETE)
 		deleteMethod();
 	_body.setClearData(true);
@@ -343,6 +354,13 @@ void    RequestParse::readBuffer(std::string buff)
 		_statusCode = (status)atoi(e.c_str());
 		_statusCodeMessage = e;
 		std::cerr << _statusCodeMessage << std::endl;
+		std::cerr << ">>" << _url << "<<\n"; 
+		if (isCGI())
+		{
+			puts("Is CGI");
+			
+			runCgiScripte();
+		}
 		_requestIsDone = 1;
 	}
 	catch (...)
@@ -425,6 +443,8 @@ void RequestParse::runCgiScripte() {
 		std::string scriptepath = _configServer.getAttributes("root");
 		std::string scriptename = scriptepath + _url;
 		char *args[] = { (char *)scriptename.c_str(), NULL };
+		// std::cerr << ">>" << _url << std::endl;
+		// std::cerr << ">>" << scriptename.c_str() << std::endl;
 		execve(scriptename.c_str(), args, env);
 		perror("execve failed");
 		if(_method == "POST")

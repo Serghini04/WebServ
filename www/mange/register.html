@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/css/accstyle.css">
+    <title>Register Form</title>
+</head>
+<body>
+
+    <main class="register-container">
+        <h1 class="register-title">Register Form</h1>
+        <form action="../acc.py" method="get">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" placeholder="Enter Username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" placeholder="Enter Password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="firstname">First Name:</label>
+                <input type="text" id="firstname" placeholder="Enter First Name" name="firstname" required>
+            </div>
+            <button type="submit" class="register-button">Register</button>
+            <p class="login-link">Already have an account? <a href="../acc.py">Login</a></p>
+        </form>
+    </main>
+
+</body>
+</html>
