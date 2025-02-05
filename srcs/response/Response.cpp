@@ -94,7 +94,7 @@ void Response::SendError(enum status code)
 {
     request.SetStatusCode(code);
     if (code == eNotFound)
-        request.SetStatusCodeMsg("404 Not Found1");
+        request.SetStatusCodeMsg("404 Not Found");
     else if (code == eFORBIDDEN)
         request.SetStatusCodeMsg("403 forbidden");
     handelRequestErrors();
@@ -106,14 +106,21 @@ void Response::ProcessUrl()
     std::map<std::string, std::string> location = conserver.getLocation(request.location());
     std::string index = "";
     std::ostringstream oss;
-    
-    if (!location["index"].empty() && request.URL() == "/")
-        index = location["index"];
-    else if (location["index"].empty() && Utility::isDirectory(request.URL()) &&
-             (location["auto_index"].empty() || location["auto_index"].find("off") != std::string::npos))
-        SendError(eFORBIDDEN);
-    oss << newUrl << location["root"] << request.URL() << index;
+
+    if (Utility::isDirectory(newUrl + request.URL()))
+    {
+        if (!location["index"].empty())
+            oss << newUrl << location["root"] << request.URL() << "/" << location["index"];
+        else if (location["index"].empty() &&
+                 (location["auto_index"].empty() || location["auto_index"].find("off") != std::string::npos))
+            SendError(eFORBIDDEN);
+        else
+            oss << newUrl << location["root"] + request.URL();
+    }
+    else
+        oss << newUrl << location["root"] + request.URL();
     newUrl = oss.str();
+    std::cout << newUrl << std::endl;
     request.setUrl(newUrl);
 }
 
@@ -208,8 +215,7 @@ std::string Response::getResponse()
 {
     std::string str;
 
-    if (request.statusCode() != eOK 
-            && request.statusCode() != eCreated)
+    if (request.statusCode() != eOK && request.statusCode() != eCreated)
         str = processResponse(0);
     else
         str = processResponse(1);
