@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/05 12:12:01 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/05 15:07:15 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ class   RequestParse
 		void		deleteURI();
 
 		// Execution of CGI
-		void						runcgiscripte();
+		void						runCgiScripte();
 		std::vector<std::string>	getenv();
 
 		~RequestParse();
