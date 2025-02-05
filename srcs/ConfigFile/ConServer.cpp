@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 16:54:05 by hidriouc          #+#    #+#             */
-/*   Updated: 2025/01/25 18:42:19 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/01/27 15:37:36 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,16 @@ void	Conserver::addLocation(const std::map<std::string, std::string> loc_attribu
 }
 void Conserver::addPath(std::string path)
 {
+	std::vector <std::string>::iterator it = AllPaths.begin();
+	while (it != AllPaths.end())
+	{
+		if (*it == path)
+		{
+			std::cerr <<" duplicate location \"" << path <<"\""<<std::endl;
+			exit(EXIT_FAILURE);
+		}
+		it++;
+	}
 	AllPaths.push_back(path);
 }
 void Conserver::addlistening(std::pair<std::string, std::string > lsn)
@@ -36,8 +46,9 @@ void Conserver::addlistening(std::pair<std::string, std::string > lsn)
 	std::vector<std::pair<std::string, std::string> >::iterator it = listening.begin();
 	while (it != listening.end())
 	{
-		if (it->second == lsn.second)
+		if (it->second == lsn.second && it->first == lsn.first)
 		{
+		std::cout << it->first <<":"<< it->second<<std::endl;
 			std::cerr << "duplicate port << "<<lsn.second<< " >>!"<<std::endl;
 			exit(EXIT_FAILURE);
 		}
@@ -123,3 +134,4 @@ std::map<std::string, std::string> Conserver::getLocation(std::string valueToFin
 	// Return an empty map if the value is not found
 	return std::map<std::string, std::string>();
 }
+

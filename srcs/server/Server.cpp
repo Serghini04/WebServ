@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/01/22 16:21:59 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/05 13:48:08 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,6 +169,12 @@ void Server::RecivData(int clientSocket)
         puts("Data Recived");
         manageEvents(REMOVE_READ, clientSocket);
         manageEvents(ADD_WRITE, clientSocket);
+        EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
+        if (kevent(kq, &event, 1, NULL, 0, NULL))
+            SendError(clientSocket);
+        // hidriouc add folowing line for test runing script ??
+        if ((*clientsRequest[clientSocket]).isCGI())
+            (*clientsRequest[clientSocket]).runcgiscripte();
         return;
     }
 }
@@ -210,7 +216,7 @@ void Server::SendData(int clientSocket)
     }
 }
 
-void Server::ConnectWithClient(int kq, uintptr_t server)
+void Server::ConnectWithClient(uintptr_t server)
 {
     sockaddr_in clientAddress;
     socklen_t clientAddrLen;
@@ -238,7 +244,7 @@ void Server::HandelEvents(int n, struct kevent events[])
     for (int i = 0; i < n; i++)
     {
         if (std::find(servers.begin(), servers.end(), (intptr_t)events[i].ident) != servers.end())
-            ConnectWithClient(kq, events[i].ident);
+            ConnectWithClient(events[i].ident);
         else if (events[i].filter == EVFILT_READ)
         {
             clientSocket = events[i].ident;

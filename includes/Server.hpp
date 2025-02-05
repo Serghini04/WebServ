@@ -21,6 +21,7 @@
 #define PORT 1111
 class Response;
 class RequestParse;
+
 class Server
 {
 private:
@@ -40,7 +41,7 @@ private:
     std::vector<int> servers;
     struct kevent timerEvent;
     static const int TIMEOUT_SECONDS = 5;
-    void            ConnectWithClient(int kq, uintptr_t server);
+    void            ConnectWithClient(uintptr_t server);
     void            HandelEvents(int n, struct kevent events[]);
     int             ConfigTheSocket(Conserver &config);
     void            SendData(int clientSocket);
