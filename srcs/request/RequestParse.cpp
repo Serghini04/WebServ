@@ -393,7 +393,7 @@ void RequestParse::runcgiscripte() {
 			free(env[i]);
 		exit(EXIT_FAILURE);
 	}}
-	int outfd = open("/tmp/outCGI.html", O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	int outfd = open("/tmp/outCGI.text", O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (outfd == -1) {
 		perror("Failed to open output file");
 		close(bodyfd);

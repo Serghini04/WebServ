@@ -26,24 +26,23 @@
 class Conserver {
 	private:
 		std::map<std::string, std::string> serv_attributes;
-		std::list<std::map<std::string, std::string> > location_list;
 		std::vector<std::pair<std::string, std::string> > listening;
+		std::list<std::map<std::string, std::string> > location_list;
 		std::vector <std::string> AllPaths;
 		long long client_max_body_size;
-		
 	public:
-		void addAttribute(const std::string& key, const std::string& value);
-		void addPath(std::string path);
-		std::vector<std::string> getphats();
-		void addLocation(const std::map<std::string, std::string> loc_attribute);
-		void addlistening(std::pair<std::string, std::string> listen);
-		std::vector<std::pair<std::string, std::string> >  getlistening();
-		std::list<std::map<std::string, std::string> >	getlist();
-		std::string getAttributes(std::string att);
-		std::string getErrorPage(int ERRNumber);
+		void	addAttribute(const std::string& key, const std::string& value);
+		void	addPath(std::string path);
 		void	addBodySize(std::string value);
+		void	addLocation(const std::map<std::string, std::string> loc_attribute);
+		void	addlistening(std::pair<std::string, std::string> listen);
 		long long	getBodySize();
-		std::map<std::string, std::string> getLocation(std::string locaPath);
+		std::string	getAttributes(std::string att);
+		std::string	getErrorPage(int ERRNumber);
+		std::vector<std::string>	getphats();
+		std::map<std::string, std::string>	getLocation(std::string locaPath);
+		std::vector<std::pair<std::string, std::string> >	getlistening();
+		std::list<std::map<std::string, std::string> >		getlist();
 };
 
 std::vector<Conserver> parseConfigFile(char* );
