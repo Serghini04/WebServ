@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BodyParse.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mal-mora <mal-mora@student.42.fr>          +#+  +:+       +#+        */
+/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:38:49 by meserghi          #+#    #+#             */
-/*   Updated: 2025/01/28 15:28:36 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/05 12:40:37 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,31 @@ void	BodyParse::setFileName(std::string fileName)
 	_fileName = fileName;
 }
 
+void	BodyParse::setIsCGI(bool s)
+{
+	_isCGI = s;
+}
+
+void	BodyParse::setBodyFileName(std::string name)
+{
+	_bodyFileName = name;
+}
+
+bool	BodyParse::isCGI()
+{
+	return _isCGI;
+}
+
+std::string	BodyParse::BodyFileName()
+{
+	return _bodyFileName;
+}
+
 BodyParse::BodyParse(long long maxBodySize)
 {
 	_maxBodySize = maxBodySize;
+	_bodyFileName = "/Users/meserghi/Desktop/WebServ/Output.trash";
+	_isCGI = false;
     _type = eNone;
 	_bodySize = 0;
 	_boundary = "";
@@ -47,7 +69,7 @@ bool	BodyParse::parseBody(std::string &buff)
 		case eContentLength :
 			return ContentLengthParse(buff);
 		case eNone :
-			throw std::runtime_error("501 Not Implemented");
+			throw std::string("501 Not Implemented");
 	}
 	return false;
 }
@@ -60,17 +82,16 @@ BodyType	BodyParse::getTypeOfBody(methods method, long long maxBodySize)
 	{
 		_bodySize = strtoll(_metaData["content-length"].c_str(), &trash, 10);
 		if (trash == _metaData["content-length"].c_str() || *trash != '\0' || errno == ERANGE || _bodySize < 0)
-			throw std::runtime_error("400 Bad Request");
-		// std::cerr << _bodySize << "|" << maxBodySize << std::endl;
+			throw std::string("400 Bad Request");
 		if (maxBodySize >= 0 && _bodySize > maxBodySize)
-			throw std::runtime_error("413 Content Too Large");
+			throw std::string("413 Content Too Large");
 	}
     if (_metaData["transfer-encoding"] == "chunked" && _metaData["content-type"].find("multipart/form-data; boundary=") != std::string::npos)
 		return eChunkedBoundary;
 	else if (_metaData["transfer-encoding"] == "chunked")
 	{
 		if (method == ePOST && _metaData["content-type"] == "")
-			throw std::runtime_error("400 Bad Request");
+			throw std::string("400 Bad Request");
 		return eChunked;
 	}
 	else if (_metaData["content-type"].find("multipart/form-data; boundary=") != std::string::npos)
@@ -78,7 +99,7 @@ BodyType	BodyParse::getTypeOfBody(methods method, long long maxBodySize)
 	else if (_metaData["content-length"] != "")
 	{
 		if (method == ePOST && _metaData["content-type"] == "")
-			throw std::runtime_error("400 Bad Request");
+			throw std::string("400 Bad Request");
 		return eContentLength;
 	}
 	if (method == ePOST)
@@ -111,8 +132,11 @@ void BodyParse::openFileBasedOnContentType()
 	namefile += Utility::getExtensions(_metaData["content-type"], "");
 	_fileOutput.open(namefile.c_str(), std::ios::binary);
 	if (_fileOutput.fail())
-		throw std::runtime_error("500 Internal Server Error");
-	std::cout <<"Create File :>>" << namefile << "<<\n";
+		throw std::string("500 Internal Server Error2");
+	if (_isCGI)
+		_bodyFileName = namefile;
+	else
+		std::cout <<"Create File :>>" << namefile << "<<\n";
 	_indexFile++;
 }
 
@@ -158,7 +182,6 @@ bool	BodyParse::clearBuffers(std::string &data, std::string &accumulatedData, st
 	carryOver.clear();
 	_fileOutput.flush();
 	readingChunk = false;
-	// throw std::runtime_error("201 Created");
 	return true;
 }
 
@@ -175,6 +198,8 @@ bool BodyParse::ChunkedBoundaryParse(std::string& buff)
 	static std::string accumulatedData;
 	static std::string carryOver;
 
+	if (_isCGI)
+		handleCGI(buff);
 	if (_clearData)
 		clearBuffers(data, accumulatedData, carryOver, readingChunk), _clearData = false;
 	if (!data.empty())
@@ -209,12 +234,12 @@ bool BodyParse::ChunkedBoundaryParse(std::string& buff)
 					accumulatedData.clear();
 					return BoundaryParse(tempBuff);
 			    }
-			    throw std::runtime_error("201 Created");
+			    throw std::string("201 Created");
 			}
 			readingChunk = true;
 		}
 		if (writeChunkToFile(buff, length, carryOver, accumulatedData))
-			throw std::runtime_error("201 Created");
+			throw std::string("201 Created");
 		if (length == 0)
 		{
 			if (buff.size() >= 2)
@@ -249,7 +274,7 @@ void	BodyParse::openFileOfBoundary(std::string buff)
 		start = buff.find(target) + target.length();
 		end = buff.find('\"', start);
 		if (end == std::string::npos)
-			throw std::runtime_error("404 Bad Request");
+			throw std::string("404 Bad Request");
 		filename = buff.substr(start, end - start);
 		start = filename.rfind(".");
 		if (start != std::string::npos)
@@ -263,7 +288,7 @@ void	BodyParse::openFileOfBoundary(std::string buff)
 		start = buff.find(target) + target.length();
 		end = buff.find("\r\n", start);
 		if (end == std::string::npos)
-			throw std::runtime_error("404 Bad Request");
+			throw std::string("404 Bad Request");
 		filename =  Utility::trimSpace(buff.substr(start, end - start));
 		_metaData["content-type"] = filename;
 		openFileBasedOnContentType();
@@ -274,27 +299,35 @@ void	BodyParse::openFileOfBoundary(std::string buff)
 	std::cout <<"Create File :>>" << oss.str() << "<<\n";
 	_fileOutput.open(oss.str(), std::ios::binary);
 	if (_fileOutput.fail())
-		throw std::runtime_error("500 Internal Server Error");
+		throw std::string("500 Internal Server Error 3");
 	_indexFile++;
 }
 
-// My version :
+void	BodyParse::handleCGI(std::string &buff)
+{
+	if (!_fileTrash.is_open())
+	{
+		_fileTrash.open(_bodyFileName, std::ios::binary);
+		if (_fileTrash.fail())
+			throw std::string("500 Internal Server Error1");
+	}
+	checkContentTooLarge(buff.size());
+	_fileTrash << buff;
+	_fileTrash.flush();
+}
+
 bool BodyParse::BoundaryParse(std::string& buff)
 {
 	static std::string data;
 	static bool	clearData = true;
 	size_t processed = 0;
 
+	if (_isCGI)
+		handleCGI(buff);
 	if (clearData)
-	{
-		data.clear();
-		clearData = false;	
-	}
+		data.clear(), clearData = false;
 	if (!data.empty())
-	{
-		buff = data + buff;
-		data.clear();
-	}
+		buff = data + buff, data.clear();
 	while (processed < buff.size())
 	{
 		size_t boundaryPos = buff.find(_boundary, processed);
@@ -341,7 +374,7 @@ void	BodyParse::checkContentTooLarge(size_t length)
 	{
 		_bodySize -= length;
 		if (_maxBodySize >= 0 && _bodySize < 0)
-			throw std::runtime_error("413 Content Too Large1");
+			throw std::string("413 Content Too Large1");
 	}
 	else
 	{
@@ -349,7 +382,7 @@ void	BodyParse::checkContentTooLarge(size_t length)
 		std::cout << "Body size = " << _bodySize << std::endl;
 		std::cout << "Max body size = " << _maxBodySize << std::endl;
 		if (_maxBodySize >= 0 && _bodySize > _maxBodySize)
-			throw std::runtime_error("413 Content Too Large2");
+			throw std::string("413 Content Too Large2");
 	}	
 }
 
@@ -390,10 +423,10 @@ bool BodyParse::ChunkedParse(std::string &buff)
 			char *trash = NULL;
 			length = std::strtol(lengthStr.c_str(), &trash, 16);
 			if (*trash)
-				throw std::runtime_error("404 Bad Request");
+				throw std::string("404 Bad Request");
 			checkContentTooLarge(length);
 			if (length == 0)
-				_fileOutput.close(), throw std::runtime_error("201 Created");
+				_fileOutput.close(), throw std::string("201 Created");
 			readingChunk = true;
 		}
 		size_t bytesToRead = std::min(length, buff.size());
@@ -419,13 +452,15 @@ bool BodyParse::ContentLengthParse(std::string &buff)
 	_bodySize -= bytesToProcess;
 	if (_bodySize <= 0)
 	{
-		_fileOutput.flush();
-		return true;
+		_fileOutput.close();
+		throw std::string("201 Created");
 	}
 	return false;
 }
 
 BodyParse::~BodyParse()
 {
+	_fileTrash.flush();
 	_fileOutput.close();
+	_fileTrash.close();
 }

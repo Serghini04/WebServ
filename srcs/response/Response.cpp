@@ -102,7 +102,7 @@ void Response::SendError(enum status code)
 {
     request.SetStatusCode(code);
     if (code == eNotFound)
-        request.SetStatusCodeMsg("404 Not Found");
+        request.SetStatusCodeMsg("404 Not Found1");
     else if (code == eFORBIDDEN)
         request.SetStatusCodeMsg("403 forbidden");
     handelRequestErrors();
@@ -115,12 +115,12 @@ void Response::ProcessUrl()
     std::string index = "";
     std::ostringstream oss;
     
-    if (!location["root"].empty())
-        location["root"].erase(location["root"].end() - 1);
+    // if (!location["root"].empty())
+    //     location["root"].erase(location["root"].end() - 1);
     if (!location["index"].empty() && request.URL() == "/")
     {
         index = location["index"];
-        index.erase(index.end() - 1);
+        // index.erase(index.end() - 1);
     }
     else if (location["index"].empty() &&
              (location["auto_index"].empty() || location["auto_index"].find("off") != std::string::npos))
