@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/05 12:11:46 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/05 15:14:38 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -382,7 +382,7 @@ std::vector<std::string> RequestParse::getenv() {
     return env_strings;
 }
 
-void RequestParse::runcgiscripte() {
+void RequestParse::runCgiScripte() {
 	int		pid;
 	size_t	i = 0;
 	char*	env[14];

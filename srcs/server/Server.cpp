@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/02/05 13:48:08 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/05 15:07:15 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,7 @@ void Server::RecivData(int clientSocket)
             SendError(clientSocket);
 		// hidriouc add folowing line for test runing script ??
 		if ((*clientsRequest[clientSocket]).isCGI())
-			(*clientsRequest[clientSocket]).runcgiscripte();
+			(*clientsRequest[clientSocket]).runCgiScripte();
 		return;
     }
 }
