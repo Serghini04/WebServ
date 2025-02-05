@@ -190,7 +190,7 @@ std::string Response::processResponse(int state)
                 if (!file.is_open())
                     SendError(eNotFound);
             }
-            else if (request.statusCode() == eOK)
+            else if (request.method() == ePOST)
             {
                 file.open("post.json");
                 this->contentType = Utility::getExtensions("", ".json");
