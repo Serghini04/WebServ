@@ -137,7 +137,7 @@ bool	parseKeyValue(const std::string& line_content, int &index_line, std::string
 		return true;
 	}}
 	if (value.empty() || value.back() != ';') {
-		std::cerr<<"Error: Missing ';' Or invalid Strecture In Line :"<<
+		std::cerr<<"Error: Missing ';' Or Unexpected Syntaxe In Line :"<<
 		index_line<<std::endl;
 		exit(EXIT_FAILURE);
 	}
@@ -196,7 +196,7 @@ void saveAttribute(const std::string& confline, Conserver& server, int index_lin
 	if (is_validAttServer(key, value, index_line)) {
 		server.addAttribute(key, value);
 	} else {
-		std::cerr << "Invalid structure in line: " << index_line << "!!" << std::endl;
+		std::cerr << "Unexpected Syntaxe in line: " << index_line << "!!" << std::endl;
 		exit(EXIT_FAILURE);
 	}
 }
@@ -221,48 +221,63 @@ std::string	checklocationPath(std::string value)
 	return NewValue;
 }
 
-void	parseLocation(const std::string& confline, Conserver& server, std::ifstream& infile, int& index_line) {
+bool	isValidLocation(std::string line){
+	std::stringstream strs(line);
+	std::string word[4];
+	int i = -1;
+
+	while (strs >> word[++i])
+		;
+	if (word[0] == "location"&& word[3].empty())
+		if ((!word[1].empty() && word[2] == "{") || word[1][word[1].length() - 1] == '{')
+			return true;
+	return false;
+}
+void	parseLocation(const std::string& confline, Conserver& server, std::ifstream& infile, int& index, std::stack<char>&	ServStack, std::map<std::string, std::string>& lis) {
 	std::map<std::string, std::string> location_map;
 	std::string line_content;
 	std::stack<char> LocationStack;
 
 	std::string Key, Value;
-	parseKeyValue(confline, index_line, Key, Value);
+	parseKeyValue(confline, index, Key, Value);
 	if ((Value=trim(Value)).empty())
-		throw ((std::string)"Empty location Path in thr lin " + Utility::ToStr(index_line) + "!");
+		throw ((std::string)"Empty location Path in thr lin " + Utility::ToStr(index) + "!");
 	location_map["PATH"] = checklocationPath(Value);
 	server.addPath(location_map["PATH"]);
 	LocationStack.push('{');
-	while (std::getline(infile, line_content) && (line_content = trim(line_content) )[0] != '}') {
-	index_line++;
-	if (line_content.empty())
-		continue;
-	parseKeyValue(line_content, index_line, Key, Value);
-	if (Key == "{") {
-	std::cerr << "In line : "<< index_line << "\n";
-	throw((std::string)("Error: Invalid structure !"));
+	while (std::getline(infile, line_content) && (line_content = trim(line_content) )[0] != '}')
+	{
+		index++;
+		if (line_content.empty())
+			continue;
+		parseKeyValue(line_content, index, Key, Value);
+		if (is_validAttLocation(Key, Value, index))
+			location_map[Key] = Value;
+		else
+			throw((std::string)("Error: Unexpected Syntaxe(line " + Utility::ToStr(index) + " )!"));
 	}
-	if (Key == "cgi")
-		;
-	if (is_validAttLocation(Key, Value, index_line))
-		location_map[Key] = Value;
-	else
-		throw((std::string)("Error: Invalid structure(line " + Utility::ToStr(index_line) + " )!"));
-	}
-	if (line_content == "}"){
-	LocationStack.pop();
+	if (line_content.find('}') != std::string::npos){
+		LocationStack.pop();
+		line_content = line_content.substr(1);
+		if(line_content == "}")
+			ServStack.pop();
 	}
 	if (LocationStack.size())
-		throw (std::string("Error: Invalid structure (line ")+ Utility::ToStr(index_line)+")!");
+		throw (std::string("Error: Unexpected Syntaxe (line ")+ Utility::ToStr(index)+")!");
 	if (location_map.empty() || location_map.size() == 1) {
-		throw( std::string("Error: Invalid location block at line ") + Utility::ToStr(index_line));
+		throw( std::string("Error: Invalid location block at line ") + Utility::ToStr(index));
 	}
 	if (location_map["allowed_methods"].find("POST")!= std::string::npos &&
 	(location_map["upload_store"].empty() || !location_map["upload_store"][0]))
 	std::cerr<<"'"<<location_map["PATH"]<<"'", throw ((std::string)": The location requires an 'upload_store' attribute!");
-	index_line++;
+	index++;
 	server.addLocation(location_map);
-}
+	(line_content.size() >= 1)? line_content = line_content.substr(0): line_content= "";
+	if (!line_content.empty() && isValidLocation(line_content))
+		parseLocation(line_content, server, infile, index, ServStack,lis);
+	else if (!line_content.empty())
+		saveAttribute(line_content,server,index,lis);
+	}
 
 void	processServerBlock(std::ifstream& infile, Conserver& server, int& index_line, std::stack<char>& ServStack, std::map<std::string, std::string>& listenings) {
 	std::string	confline;
@@ -280,8 +295,8 @@ void	processServerBlock(std::ifstream& infile, Conserver& server, int& index_lin
 			confline = confline.substr(1);
 		ServStack.push('{');
 	}
-	if (confline.find("location")!= std::string::npos && confline[confline.length() -1 ] == '{')
-		parseLocation(confline, server, infile, index_line);
+	if (isValidLocation(confline))
+		parseLocation(confline, server, infile, index_line, ServStack,listenings);
 	else 
 		saveAttribute(confline, server, index_line, listenings);
 	}
