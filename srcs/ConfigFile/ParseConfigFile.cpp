@@ -28,6 +28,7 @@ std::string trim(const std::string& str) {
 	size_t end = newstr.find_last_not_of(" \t");
 	return newstr.substr(0, end+1);
 }
+
 bool is_validvalueServer(std::string &key, std::string &value, int index_line)
 {
 	std::string tb[3];
@@ -136,27 +137,22 @@ bool	parseKeyValue(const std::string& line_content, int &index_line, std::string
 		value = value.substr(0,value.find_first_of("{"));
 		return true;
 	}}
-	if (value.empty() || value.back() != ';') {
-		std::cerr<<"Error: Missing ';' Or Unexpected Syntaxe In Line :"<<
-		index_line<<std::endl;
-		exit(EXIT_FAILURE);
-	}
+	if (value.empty() || value.back() != ';')
+		throw (std::string("Error: Unexpected Syntaxe, line ") + Utility::ToStr(index_line));
+	
 	value.erase(value.length()-1);
 	if (value.find(';') != std::string::npos)
-	{
-		std::cerr << "Invalid strecture in line "<<index_line<<std::endl;
-		exit(EXIT_FAILURE);
-	}
+		throw (std::string("Error: Unexpected Syntaxe, line ") + Utility::ToStr(index_line));
 		return true;
 }
 
-void saveAttribute(const std::string& confline, Conserver& server, int index_line, std::map<std::string, std::string>& listenings) {
+void saveAttribute(const std::string& confline, Conserver& server, int index_line, std::map<std::string, std::string>& listenings)
+{
 	std::string trimmed_line = trim(confline);
 	static bool sin = false;
 	static std::string host;
 	std::string key, value;
 	
-
 	if (trimmed_line.empty() || trimmed_line == "}") {
 	return;
 	}
@@ -340,16 +336,16 @@ std::vector<Conserver>	parseConfigFile(char *in_file){
 			if (Check_Line(confline, ServStack)){
 				processServerBlock(infile, server, index_line, ServStack, listenings);
 				if(ServStack.size()){
-					throw (std::string("Error: Unbalanced brackets '{}', line :") + Utility::ToStr(index_line));
+					throw (std::string("Error: Unbalanced brackets '{}', line ") + Utility::ToStr(index_line));
 				}
 				if (server.getAttributes("root").empty()){
-					throw((std::string )"Error: server without root line !"+ Utility::ToStr(index_line - 1));
+					throw((std::string )"Error: server without root line "+ Utility::ToStr(index_line - 1));
 				}
 				else
 					servers.push_back(server);
 			}
 			else{
-				throw (std::string("Error: Unexpected Syntaxe, line : ") + Utility::ToStr(index_line));
+				throw (std::string("Error: Unexpected Syntaxe, line ") + Utility::ToStr(index_line));
 			}
 		}
 	}
