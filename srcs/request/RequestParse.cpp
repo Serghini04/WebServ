@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/05 21:03:52 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/06 12:49:33 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -316,7 +316,7 @@ bool RequestParse::parseHeader(std::string &header, std::string &buff)
 			if (index != "" && (Utility::stringEndsWith(index, ".py") || Utility::stringEndsWith(index, ".php")))
 			{
 				setIsCGI(true);
-				_url += index;
+				_url += "/" + index;
 			}
 		}
 		throw std::string("200 OK");
@@ -413,7 +413,7 @@ void RequestParse::runCgiScripte() {
 	}
 	env[i] = NULL;
 	if(_method == "POST"){
-		// std::cerr << "this what i open :" << _body.BodyFileName().c_str() << std::endl;
+		std::cerr << "this what i open :" << _body.BodyFileName().c_str() << std::endl;
 		bodyfd = open(_body.BodyFileName().c_str(), O_RDONLY);
 		if (bodyfd == -1) {
 		perror("Failed to open body file");
