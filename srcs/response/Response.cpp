@@ -187,6 +187,7 @@ std::string Response::processResponse(int state)
                     firstCall = 0;
                     return getHeader();
                 }
+                std::cerr << ">>" <<  str << "<<\n";
                 file.open(str, std::ios::binary | std::ios::in);
                 size_t pos = str.find(".");
                 if (pos != std::string::npos)
