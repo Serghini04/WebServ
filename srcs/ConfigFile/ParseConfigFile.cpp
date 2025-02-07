@@ -23,6 +23,7 @@ std::string trimcomment(const std::string& str) {
 	size_t end = str.find_first_of("#");
 	return (start == std::string::npos || start >= end) ? "" : str.substr(start, end - 1);
 }
+
 std::string trim(const std::string& str) {
 	std::string newstr =  trimcomment(str);
 	size_t end = newstr.find_last_not_of(" \t");
@@ -65,6 +66,7 @@ bool is_validvalueServer(std::string &key, std::string &value, int index_line)
 
 	return true;
 }
+
 bool	is_validAttServer(std::string &key, std::string &value, int inde)
 {
 	value.erase(value.end());
@@ -73,19 +75,21 @@ bool	is_validAttServer(std::string &key, std::string &value, int inde)
 	validATT.push_back("client_max_body_size"), validATT.push_back("error_page");
 	validATT.push_back("index"),validATT.push_back("root");
 	if (!is_validvalueServer(key,value, inde)) return false;
-	for (size_t i = 0; i < validATT.size(); i++){
-	if (validATT[i] == key)
+	for (size_t i = 0; i < validATT.size(); i++)
 	{
-		if (key == "error_page")
+		if (validATT[i] == key)
 		{
-			key += "_";
-			key += Utility::ToStr(inde);
+			if (key == "error_page")
+			{
+				key += "_";
+				key += Utility::ToStr(inde);
+			}
+			return true;
 		}
-		return true;
-	}
 	}
 	return false;
 }
+
 bool	is_validAttLocation(std::string key, std::string value, int index)
 {
 	(void)value;
@@ -104,23 +108,27 @@ bool	is_validAttLocation(std::string key, std::string value, int index)
 	}
 	return false;
 }
+
 bool	Check_Line(std::string Name, std::stack<char>& ServStack)
 {
+	std::string	str2;
+	std::string	str1;
+
 	if (Name == "server{" || Name == "server"){
 		if (Name == "server{")
 			ServStack.push('{');
 		return true;
 	}
-
 	size_t space_pos = Name.find(' ');
-	if (space_pos != std::string::npos) {
-	std::string str1 = Name.substr(0, space_pos);
+	if (space_pos != std::string::npos)
+		str1 = Name.substr(0, space_pos);
 	size_t next_start = Name.find_first_not_of(' ', space_pos);
-	std::string str2 = (next_start != std::string::npos) ? Name.substr(next_start) : "";
-	 if (str1 == "server" && ( str2 == "{")){
-			ServStack.push('{');
+	if (next_start != std::string::npos)
+		str2 = Name.substr(next_start);
+	if (str1 == "server" && ( str2 == "{"))
+	{
+		ServStack.push('{');
 		return true;
-	 }
 	}
 	return false;
 }
@@ -146,16 +154,15 @@ bool	parseKeyValue(const std::string& line_content, int &index_line, std::string
 		return true;
 }
 
-void saveAttribute(const std::string& confline, Conserver& server, int index_line, std::map<std::string, std::string>& listenings)
+void	saveAttribute(const std::string& confline, Conserver& server, int index_line, std::map<std::string, std::string>& listenings)
 {
 	std::string trimmed_line = trim(confline);
 	static bool sin = false;
 	static std::string host;
 	std::string key, value;
 	
-	if (trimmed_line.empty() || trimmed_line == "}") {
-	return;
-	}
+	if (trimmed_line.empty() || trimmed_line == "}")
+		return;
 	parseKeyValue(trimmed_line, index_line, key, value);
 	if (key == "host" && !value.empty()) {
 		if (!host.empty() && !listenings[ host+"8080"].empty()) {
@@ -217,6 +224,7 @@ std::string	checklocationPath(std::string value)
 	return NewValue;
 }
 
+
 bool	isValidLocation(std::string line){
 	std::stringstream strs(line);
 	std::string word[4];
@@ -227,14 +235,17 @@ bool	isValidLocation(std::string line){
 	if (word[0] == "location"&& word[3].empty())
 		if ((!word[1].empty() && word[2] == "{") || word[1][word[1].length() - 1] == '{')
 			return true;
-	return false;
+			return false;
 }
-void	parseLocation(const std::string& confline, Conserver& server, std::ifstream& infile, int& index, std::stack<char>&	ServStack, std::map<std::string, std::string>& lis) {
-	std::map<std::string, std::string> location_map;
-	std::string line_content;
-	std::stack<char> LocationStack;
 
-	std::string Key, Value;
+void	parseLocation(const std::string& confline, Conserver& server, std::ifstream& infile, int& index, std::stack<char>&	ServStack, std::map<std::string, std::string>& lis)
+{
+	std::map<std::string, std::string>	location_map;
+	std::string			line_content;
+	std::stack<char>	LocationStack;
+	std::string			Key, Value;
+
+
 	parseKeyValue(confline, index, Key, Value);
 	if ((Value=trim(Value)).empty())
 		throw ((std::string)"Empty location Path in thr lin " + Utility::ToStr(index) + "!");
@@ -255,7 +266,7 @@ void	parseLocation(const std::string& confline, Conserver& server, std::ifstream
 	if (line_content.find('}') != std::string::npos){
 		LocationStack.pop();
 		line_content = line_content.substr(1);
-		if(line_content == "}")
+		if(trim(line_content) == "}")
 			ServStack.pop();
 	}
 	if (LocationStack.size())
@@ -273,41 +284,48 @@ void	parseLocation(const std::string& confline, Conserver& server, std::ifstream
 		parseLocation(line_content, server, infile, index, ServStack,lis);
 	else if (!line_content.empty())
 		saveAttribute(line_content,server,index,lis);
-	}
+}
 
-void	processServerBlock(std::ifstream& infile, Conserver& server, int& index_line, std::stack<char>& ServStack, std::map<std::string, std::string>& listenings) {
+void	processServerBlock(std::ifstream& inf, Conserver& server, int& index, std::stack<char>& SStack, std::map<std::string, std::string>& lis_gs)
+{
 	std::string	confline;
 	bool		signe = false;
 
-	while (std::getline(infile, confline) && (confline = trim(confline)) != "}") {
-	index_line++;
-	if (confline.empty())
-		continue;
-	if (!signe && !ServStack.size() &&( confline != "{" && confline[0] != '{' ))
-		throw((std::string)"'server' has no opening yet '{' line:" + Utility::ToStr(index_line - 1));
-	else if (confline == "{" || confline[0] == '{' )
+	while (std::getline(inf, confline) && ++index)
 	{
-		if (confline[0] == '{')
-			confline = confline.substr(1);
-		ServStack.push('{');
+		confline = trim(confline);
+		if (confline.empty())
+			continue;
+		if (!signe && !SStack.size() && confline != "{" && confline[0] != '{' )
+			throw((std::string)"'server' has not opening yet '{' line:" + Utility::ToStr(index - 1));
+		else if (confline == "{" || confline[0] == '{' )
+		{
+			if (confline[0] == '{')
+				confline = confline.substr(1);
+			SStack.push('{');
+			signe = true;
+		}
+		if (confline == "}" || confline.find('}') != std::string::npos)
+			break;
+		if (isValidLocation(confline))
+			parseLocation(confline, server, inf, index, SStack,lis_gs);
+		else {
+			saveAttribute(confline, server, index, lis_gs);
+		}
 	}
-	if (isValidLocation(confline))
-		parseLocation(confline, server, infile, index_line, ServStack,listenings);
-	else 
-		saveAttribute(confline, server, index_line, listenings);
-	}
+	index++;
 	if (confline == "}")
-		ServStack.pop();
-	index_line++;
+		SStack.pop();
 	if (server.getAttributes("client_max_body_size").empty())
 		server.addBodySize("");
-	if (!listenings["Default"].empty()){
-		server.addlistening(std::pair<std::string, std::string>(listenings["Default"], "8080"));
-		listenings[listenings["Default"]+"8080"] = Utility::ToStr(index_line);
+	if (!lis_gs["Default"].empty()){
+		server.addlistening(std::pair<std::string, std::string>(lis_gs["Default"], "8080"));
+		lis_gs[lis_gs["Default"]+"8080"] = Utility::ToStr(index);
 	}
 	if (server.getLocation("/").empty())
 		throw((std::string)"Server without root location !");
 }
+
 
 std::vector<Conserver>	parseConfigFile(char *in_file){
 	std::ifstream			infile;
@@ -326,21 +344,18 @@ std::vector<Conserver>	parseConfigFile(char *in_file){
 		if (!infile.is_open())
 			throw((std::string)"Error: Failed to open configuration file !" );
 		index_line = 0;
-		while (std::getline(infile, confline))
+		while (std::getline(infile, confline) && ++index_line)
 		{
 			Conserver server;
-			index_line++;
-			confline = trim(confline);
-			if (confline.empty())
+			if ((confline = trim(confline)).empty())
 				continue;
-			if (Check_Line(confline, ServStack)){
+			if (Check_Line(confline, ServStack))
+			{
 				processServerBlock(infile, server, index_line, ServStack, listenings);
-				if(ServStack.size()){
+				if(ServStack.size())
 					throw (std::string("Error: Unbalanced brackets '{}', line ") + Utility::ToStr(index_line));
-				}
-				if (server.getAttributes("root").empty()){
+				if (server.getAttributes("root").empty())
 					throw((std::string )"Error: server without root line "+ Utility::ToStr(index_line - 1));
-				}
 				else
 					servers.push_back(server);
 			}
@@ -354,11 +369,8 @@ std::vector<Conserver>	parseConfigFile(char *in_file){
 		exit(1);
 	}
 	for (size_t i = 0; i < servers.size(); i++)
-	{
-		std::vector<std::pair<std::string, std::string> > CurVec = servers[i].getlistening();
-		if (!CurVec.empty())
+		if (!servers[i].getlistening().empty())
 			Rservers.push_back(servers[i]);
-	}
 	return servers;
 }
 

@@ -117,21 +117,10 @@ std::vector<std::pair<std::string, std::string> >  Conserver::getlistening()
 
 std::map<std::string, std::string> Conserver::getLocation(std::string valueToFind)
 {
-	// Iterate through the list
 	for (std::list<std::map<std::string, std::string> >::iterator listIt = location_list.begin();
-	 listIt != location_list.end(); ++listIt)
-	{
-		// Iterate through the map
-		for (std::map<std::string, std::string>::iterator mapIt = listIt->begin();
-		 mapIt != listIt->end(); ++mapIt) {
-		// Check if the value matches
-			
-			if (mapIt->second == valueToFind) {
-			return *listIt; // Return the entire map that contains the value
-		}
-		}
-	}
-	// Return an empty map if the value is not found
+		listIt != location_list.end(); ++listIt)
+		if ( (*listIt)["PATH"] == valueToFind) 
+				return *listIt;
 	return std::map<std::string, std::string>();
 }
 
