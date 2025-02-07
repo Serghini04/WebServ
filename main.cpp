@@ -21,6 +21,7 @@ int main(int ac, char **av)
 	// for(size_t i = 0; i < lis.size(); i++){
 	// 	std::cout << lis[i].first <<":"<<lis[i].second<<std::endl;
 	// }
+	std::cerr <<">>" <<servers[0].getLocation("goinfre")["auto_index"] <<std::endl;
 	if (servers.size()){
 	Server ser;
 	ser.CreateServer(servers);}
