@@ -46,3 +46,4 @@ class Conserver {
 };
 
 std::vector<Conserver> parseConfigFile(char* );
+void parseLocation(const std::string& confline, Conserver& server, std::ifstream& infile, int& index, std::stack<char>& ServStack, std::map<std::string, std::string>& lis);
