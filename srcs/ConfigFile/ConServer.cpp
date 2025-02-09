@@ -48,9 +48,8 @@ void Conserver::addlistening(std::pair<std::string, std::string > lsn)
 	{
 		if (it->second == lsn.second && it->first == lsn.first)
 		{
-		std::cout << it->first <<":"<< it->second<<std::endl;
-			std::cerr << "duplicate port << "<<lsn.second<< " >>!"<<std::endl;
-			exit(EXIT_FAILURE);
+			std::cerr << "[Warning]: Duplicate listening << " << lsn.first << ":" <<lsn.second<< " >> ignored!" << std::endl;
+			return;
 		}
 		it++;
 	}
