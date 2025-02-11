@@ -344,43 +344,81 @@ void    RequestParse::readBuffer(std::string buff)
 	}
 }
 
-#include <iostream>
-#include <vector>
-#include <string>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-
 std::vector<std::string> RequestParse::getenv() {
-    std::vector<std::string> env_strings;
+	std::vector<std::string> env_strings;
 
-    env_strings.push_back("REQUEST_METHOD=" + _method);
-    env_strings.push_back("QUERY_STRING=" + _queryString);
-    env_strings.push_back("CONTENT_LENGTH=" + _metaData["content-length"]);
-    env_strings.push_back("CONTENT_TYPE=" + _metaData["content-type"]);
-    env_strings.push_back("SCRIPT_FILENAME="+_configServer.getAttributes("root")+_url);
-    env_strings.push_back("SCRIPT_NAME="+_url);
-    env_strings.push_back("SERVER_PROTOCOL=http/1.1");
-    env_strings.push_back("REMOTE_ADDR="+ _metaData["host"]);
-    env_strings.push_back("REMOTE_PORT=");
-    env_strings.push_back("HTTP_USER_AGENT=PostmanRuntime/7.29.0");
-    env_strings.push_back("HTTP_COOKIE=" +_metaData["cookie"]);
-    env_strings.push_back("SERVER_NAME=" + _configServer.getAttributes("server_name"));
-    env_strings.push_back("SERVER_PORT=" + _configServer.getlistening()[0].second);
+	env_strings.push_back("REQUEST_METHOD=" + _method);
+	env_strings.push_back("QUERY_STRING=" + _queryString);
+	env_strings.push_back("CONTENT_LENGTH=" + _metaData["content-length"]);
+	env_strings.push_back("CONTENT_TYPE=" + _metaData["content-type"]);
+	env_strings.push_back("SCRIPT_FILENAME="+_configServer.getAttributes("root")+_url);
+	env_strings.push_back("SCRIPT_NAME="+_url);
+	env_strings.push_back("SERVER_PROTOCOL=http/1.1");
+	env_strings.push_back("REMOTE_ADDR="+ _metaData["host"]);
+	env_strings.push_back("REMOTE_PORT=");
+	env_strings.push_back("HTTP_USER_AGENT=PostmanRuntime/7.29.0");
+	env_strings.push_back("HTTP_COOKIE=" +_metaData["cookie"]);
+	env_strings.push_back("SERVER_NAME=" + _configServer.getAttributes("server_name"));
+	env_strings.push_back("SERVER_PORT=" + _configServer.getlistening()[0].second);
 
-    return env_strings;
+	return env_strings;
 }
 
-void RequestParse::runcgiscripte() {
+int RequestParse::parseCGIOutput(const char* cgiOutputfile) 
+{
+	std::ifstream file(cgiOutputfile);
+	if (!file.is_open())
+	{
+		std::cerr << "Error opening file: " << cgiOutputfile << std::endl;
+		return 500;
+	}
+
+	std::string line;
+	std::string lines;
+	bool headerEnded = false;
+	while (getline(file, line))
+	{
+		if (line.empty())
+		{
+			headerEnded = true;
+			break;
+		}
+		lines += line + "\r\n";
+	}
+	if (!headerEnded) 
+	{
+		std::cerr << "Malformed header section in CGI output." << std::endl;
+		return 500;
+	}
+	size_t headerEnd = lines.find("\r\n\r\n");
+	if (headerEnd == std::string::npos)
+	{
+		std::cerr << "No valid header separator found." << std::endl;
+		return 500;
+	}
+	std::string headers = lines.substr(0, headerEnd);
+	std::string body = lines.substr(headerEnd + 4);
+	if (headers.find("Content-Type:") == std::string::npos)
+	{
+		std::cerr << "Missing Content-Type header." << std::endl;
+		return 500;
+	}
+	file.close();
+	return 200;
+}
+
+
+int	RequestParse::runcgiscripte() {
 	int		pid;
 	size_t	i = 0;
 	char*	env[14];
 	int		bodyfd;
+	int		status;
+	int		elapsed_time = 0;
 
 	std::vector<std::string> env_strings = RequestParse::getenv();
 	while (i < env_strings.size()) {
-		env[i] = strdup(env_strings[i].c_str());
+		env[i] = (char*)env_strings[i].c_str();
 		i++;
 	}
 	env[i] = NULL;
@@ -389,18 +427,14 @@ void RequestParse::runcgiscripte() {
 		bodyfd = open(_body.BodyFileName().c_str(), O_RDONLY);
 		if (bodyfd == -1) {
 		perror("Failed to open body file");
-		for (int i = 0; env[i] != NULL; i++)
-			free(env[i]);
-		exit(EXIT_FAILURE);
+		// exit(EXIT_FAILURE);
 	}}
 	int outfd = open("/tmp/outCGI.text", O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (outfd == -1) {
 		perror("Failed to open output file");
 		close(bodyfd);
 		unlink("/tmp/outCGI.text");
-		for (int i = 0; env[i] != NULL; i++) 
-			free(env[i]);
-		exit(EXIT_FAILURE);
+		// exit(EXIT_FAILURE);
 	}
 
 	pid = fork();
@@ -410,11 +444,11 @@ void RequestParse::runcgiscripte() {
 			close(bodyfd);
 			close(outfd);
 			unlink("/tmp/outCGI.text");
-			exit(EXIT_FAILURE);
+			// exit(EXIT_FAILURE);
 		}
 		std::string scriptepath = _configServer.getAttributes("root");
 		std::string scriptename = scriptepath + _url;
-		char *args[] = { (char *)scriptename.c_str(), NULL };
+		char *args[] = {(char *)scriptename.c_str(),(char *)"POST",(char *)"data=somevalue", NULL};
 		execve(scriptename.c_str(), args, env);
 		perror("execve failed");
 		if(_method == "POST")
@@ -422,17 +456,30 @@ void RequestParse::runcgiscripte() {
 		close(outfd);
 		exit(EXIT_FAILURE);
 	}
-	else if (pid > 0) {
+	else if (pid > 0) 
+	{
 		if(_method == "POST")
 			close(bodyfd);
-		close(outfd);
-		int status;
-		waitpid(pid, &status, 0);
-	} else {
-		perror("fork Failed");
+		while (elapsed_time < CGI_TIMEOUT)
+		{
+				sleep(1);
+				elapsed_time++;
+
+				if (waitpid(pid, &status, WNOHANG) > 0)
+					break;
+		}
+		if	(elapsed_time >= CGI_TIMEOUT)
+		{
+				kill(pid, SIGKILL);
+				waitpid(pid, &status, 0);
+				return 504;
+		}
+	
 	}
-	for (int i = 0; env[i] != NULL; i++)
-		free(env[i]);
+	else
+		perror("fork Failed");
+	std::cout <<">>>>>|" <<parseCGIOutput("/tmp/outCGI.text") <<std::endl;
+	return parseCGIOutput("/tmp/outCGI.text");
 }
 
 RequestParse::~RequestParse()
