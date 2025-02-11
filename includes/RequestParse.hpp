@@ -17,7 +17,10 @@
 # include <BodyParse.hpp>
 # include <map>
 #include <fcntl.h>
-#include <unistd.h> 
+#include <unistd.h>
+#include <signal.h>
+
+#define CGI_TIMEOUT 5
 
 enum status
 {
@@ -96,7 +99,8 @@ class   RequestParse
 		void		deleteURI();
 
 		// Execution of CGI by hidriouc
-		void		runcgiscripte();
+		int	runcgiscripte();
+		int	parseCGIOutput(const char* cgiOutputfile);
 		std::vector<std::string>	getenv();
 
 		~RequestParse();
