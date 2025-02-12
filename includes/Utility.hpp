@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Utility.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 18:36:13 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/01 15:48:39 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/12 14:07:24 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,6 +163,14 @@ public:
 			return "";
 		std::string::iterator last = std::find_if(line.rbegin(), line.rend(), isNotSpace).base();
 		return std::string(first, last);
+	}
+	static std::string trimJstSpace(std::string line)
+	{
+		size_t first = line.find_first_not_of(" \r");
+		if (first == std::string::npos)
+			return "";
+		size_t last = line.find_last_not_of(" \r");
+		return line.substr(first, last);
 	}
 	static int StrToInt(std::string str)
 	{
