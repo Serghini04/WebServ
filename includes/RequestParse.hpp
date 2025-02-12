@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RequestParse.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/01 15:18:11 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/12 14:08:22 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include <signal.h>
 
 #define CGI_TIMEOUT 5
+#define SIZE_BUFFER 50
 
 enum status
 {
@@ -99,9 +100,17 @@ class   RequestParse
 		void		deleteURI();
 
 		// Execution of CGI by hidriouc
-		int	runcgiscripte();
-		int	parseCGIOutput(const char* cgiOutputfile);
-		std::vector<std::string>	getenv();
+		int		runcgiscripte();
+		void	_validateContentLength(const std::string& contentLength, size_t bodysize);
+		void	_validateContentType(const std::string& contentType);
+		void	_parseHeaderLine(const std::string& line, std::string lines[]);
+		int		_parseHeaders(size_t bodysize, const std::string& headers);
+		int		_forkAndExecute(char* env[]);
+		int		_waitForCGIProcess(int pid);
+		int		parseCGIOutput(const char* cgiOutputFile);
+		std::vector<std::string>	_buildEnvVars();
+		void						_openFileSafely(std::ifstream& file, const std::string& filename);
+		std::string					_extractHeaderValue(const std::string& line);
 
 		~RequestParse();
 };
