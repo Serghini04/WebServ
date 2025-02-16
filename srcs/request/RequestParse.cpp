@@ -6,7 +6,7 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/12 14:06:31 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/02/16 11:05:41 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -369,7 +369,7 @@ void RequestParse::_openFileSafely(std::ifstream& file, const std::string& filen
 {
 	file.open(filename.c_str());
 	if (!file.is_open())
-		throw std::runtime_error("Error opening file: " + filename);
+		throw (std::string)("Error opening file: " + filename);
 }
 
 std::string RequestParse::_extractHeaderValue(const std::string& line)
@@ -387,13 +387,13 @@ void	RequestParse::_validateContentLength(const std::string& contentLength, size
 {
 	if (contentLength.empty() || contentLength.find_first_not_of("0123456789") != std::string::npos ||
 		(int)bodysize != Utility::StrToInt(contentLength))
-		throw std::runtime_error("ERROR: Unexpected Content-Length!");
+		throw (std::string)("ERROR: Unexpected Content-Length!");
 }
 
 void RequestParse::_validateContentType(const std::string& contentType)
 {
 	if (contentType.empty() || !(contentType == "text/html" || contentType == "text/json"))
-		throw std::runtime_error("ERROR: Unexpected Content-Type!");
+		throw (std::string)("ERROR: Unexpected Content-Type!");
 }
 
 void RequestParse::_parseHeaderLine(const std::string& line, std::string lines[])
@@ -422,19 +422,31 @@ int	RequestParse::_parseHeaders(size_t bodysize, const std::string& headers)
 
 	while (std::getline(ss, line))
 		_parseHeaderLine(line, lines);
-
 	if (lines[0] != "HTTP/1.1 200 OK\r")
-		throw std::runtime_error("ERROR: Unexpected Start header");
+		throw (std::string)("ERROR: Unexpected Start header");
 	_validateContentLength(lines[1], bodysize);
 	_validateContentType(lines[2]);
 	return 200;
 }
+void	RequestParse::_dupfd(int infd, int outfd)
+{
+	if (infd > 0)
+		if (dup2(infd, STDIN_FILENO) == -1){
+		perror ("dup2 failed !!");
+		exit(EXIT_FAILURE);
+		}
+	if (dup2(outfd, STDOUT_FILENO) == -1){
+		perror ("dup2 failed !!");
+		exit(EXIT_FAILURE);
+	}
+}
 
-int RequestParse::_forkAndExecute(char* env[])
+int RequestParse::_forkAndExecute(int infd, int outfd, char* env[])
 {
 	int pid = fork();
 	if (pid == 0)
 	{
+		_dupfd(infd, outfd);
 		std::string scriptPath = _configServer.getAttributes("root") + _url;
 		char* args[] = {(char*)scriptPath.c_str(), (char*)"POST", (char*)"data=somevalue", NULL};
 		if (execve(scriptPath.c_str(), args, env) == -1)
@@ -468,11 +480,9 @@ int RequestParse::parseCGIOutput(const char* cgiOutputFile)
 	_openFileSafely(file, cgiOutputFile);
 	std::string lines, buffer;
 	char buf[SIZE_BUFFER + 1] = {0};
-
 	while (file.read(buf, SIZE_BUFFER))
 		lines.append(buf);
 	lines.append(buf, file.gcount());
-
 	size_t headerEnd = lines.find("\r\n\r\n");
 	if (headerEnd == std::string::npos) 
 	{
@@ -489,26 +499,35 @@ int	RequestParse::runcgiscripte()
 	char*	env[env_strings.size() + 1];
 	size_t	i = 0;
 	int		bodyfd = -1;
+	int		re;
 
-	for (; i < env_strings.size(); ++i)
-		env[i] = (char*)env_strings[i].c_str();
-	env[i] = NULL;
-	if (_method == "POST"){
-		bodyfd = open(_body.BodyFileName().c_str(), O_RDONLY);
-		if (bodyfd == -1)
-			throw std::runtime_error("Failed to open body file");
+	try 
+	{
+		for (; i < env_strings.size(); ++i)
+			env[i] = (char*)env_strings[i].c_str();
+		env[i] = NULL;
+		if (_method == "POST"){
+			bodyfd = open(_body.BodyFileName().c_str(), O_RDONLY);
+			if (bodyfd == -1)
+				throw (std::string)("Failed to open body file");
+		}
+		int outfd = open("/tmp/outCGI.text", O_CREAT | O_WRONLY | O_TRUNC, 0644);
+		if (outfd == -1) {
+			if (_method == "POST") close(bodyfd);
+			unlink("/tmp/outCGI.text");
+			throw (std::string)("Failed to open output file");
+		}
+		int	pid = _forkAndExecute(bodyfd, outfd, env);
+		if (pid < 0) 
+			throw (std::string)("Fork failed");
+		if (_method == "POST")
+			close(bodyfd);
+		re = _waitForCGIProcess(pid) == 200 ? parseCGIOutput("/tmp/outCGI.text") : 504;
+	}catch(std::string err){
+		std::cerr << err << std::endl;
+		re = 504;
 	}
-	int outfd = open("/tmp/outCGI.text", O_CREAT | O_WRONLY | O_TRUNC, 0644);
-	if (outfd == -1) {
-		if (_method == "POST") close(bodyfd);
-		unlink("/tmp/outCGI.text");
-		throw std::runtime_error("Failed to open output file");
-	}
-	int	pid = _forkAndExecute(env);
-	if (pid < 0) 
-		throw std::runtime_error("Fork failed");
-	if (_method == "POST") close(bodyfd);
-	return _waitForCGIProcess(pid) == 200 ? parseCGIOutput("/tmp/outCGI.text") : 504;
+	return re;
 }
 
 

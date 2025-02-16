@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/01/29 11:32:17 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/16 10:50:09 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,7 @@ void Server::RecivData(int clientSocket)
         if (kevent(kq, &event, 1, NULL, 0, NULL))
             SendError(clientSocket);
 		// hidriouc add folowing line for test runing script ??
-		(*clientsRequest[clientSocket]).runcgiscripte();
+			(*clientsRequest[clientSocket]).runcgiscripte();
         return;
     }
 }
