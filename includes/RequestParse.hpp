@@ -6,7 +6,7 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/12 14:08:22 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/02/16 10:22:37 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,11 +101,12 @@ class   RequestParse
 
 		// Execution of CGI by hidriouc
 		int		runcgiscripte();
+		void	_dupfd(int infd, int outfd);
 		void	_validateContentLength(const std::string& contentLength, size_t bodysize);
 		void	_validateContentType(const std::string& contentType);
 		void	_parseHeaderLine(const std::string& line, std::string lines[]);
 		int		_parseHeaders(size_t bodysize, const std::string& headers);
-		int		_forkAndExecute(char* env[]);
+		int		_forkAndExecute(int infd, int outfd,char* env[]);
 		int		_waitForCGIProcess(int pid);
 		int		parseCGIOutput(const char* cgiOutputFile);
 		std::vector<std::string>	_buildEnvVars();

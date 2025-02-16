@@ -53,6 +53,8 @@ void	is_validvalue(std::string &key, std::string &value, int index_line)
 		throw ((std::string)"Invalid structer in the line "+Utility::ToStr(index_line));
 	if (key == "client_max_body_size" && value.find_first_not_of("0123456789") != std::string::npos)
 		throw ((std::string)"Invalid structer in the line "+Utility::ToStr(index_line));
+	if (key == "cgi" && value != "on" && value != "off" )
+		throw ((std::string)"Invalid structer in the value of  line "+Utility::ToStr(index_line));
 	if (key == "allowed_methods")
 	{
 		while (ss >> token)
@@ -66,7 +68,7 @@ void	is_validvalue(std::string &key, std::string &value, int index_line)
 		while (ss >> t[++i] && i < 3) 
 			;
 		if (t[0].find_first_not_of("0123456789") != std::string::npos || t[1].empty() || !t[2].empty())
-			throw ((std::string)("1Error: Unexpected Syntaxe, line ")+ Utility::ToStr(index_line));
+			throw ((std::string)("Error: Unexpected Syntaxe, line ")+ Utility::ToStr(index_line));
 	}
 }
 
@@ -90,7 +92,7 @@ void	is_validAttServer(std::string &key,std::string &value, int index)
 			return;
 		}
 	}
-	throw ((std::string)"2Error: Unexpected Syntaxe, line "+ Utility::ToStr(index));
+	throw ((std::string)"Error: Unexpected Syntaxe, line "+ Utility::ToStr(index));
 }
 
 bool validlocation_key(std::string key)
@@ -103,7 +105,7 @@ bool validlocation_key(std::string key)
 void	is_validAttLocation(std::string key, std::string value, int index)
 {
 	if (!validlocation_key(key))
-		throw ((std::string)"3Error: Unexpected Syntaxe, line "+ Utility::ToStr(index));
+		throw ((std::string)"Error: Unexpected Syntaxe, line "+ Utility::ToStr(index));
 	is_validvalue(key,value, index);
 }
 
@@ -146,6 +148,8 @@ void	parseKeyValue(const std::string& line_content, int &index_line, std::string
 
 void handleHost(std::string& value, Conserver& server, int index_line, std::map<std::string, std::string>& listenings, bool& sin, std::string& host)
 {
+	if (value.find_first_not_of("0123456789.") != std::string::npos)
+		throw (std::string("Error: Unexpected Syntaxe of host in the line ") + Utility::ToStr(index_line));
 	if (!host.empty() && !listenings[host + "8080"].empty())
 		std::cerr << "[Warning]: Duplicate listening << " << host << ":8080 >> ignored!" << std::endl;
 	else if (!host.empty())
@@ -163,6 +167,8 @@ void handlePort(std::string& value, Conserver& server, int index_line, std::map<
 	std::string current_host = sin ? host : "0.0.0.0";
 	std::string key = current_host + value;
 
+	if (value.find_first_not_of("0123456789") != std::string::npos)
+		throw (std::string("Error: Unexpected Syntaxe of port in the line ") + Utility::ToStr(index_line));
 	if (!listenings[key].empty())
 	{
 		std::cerr << "[Warning]: Duplicate listening << " << current_host << ":" << value << " >> ignored!" << std::endl;
