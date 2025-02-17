@@ -6,7 +6,7 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 18:36:13 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/12 14:07:24 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/02/16 15:26:41 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,6 +203,13 @@ public:
 		std::stringstream ss;
 		ss << nb;
 		return ss.str();
+	}
+	static int stringToInt(const std::string& str)
+	{
+		std::istringstream ss(str);
+		int num = 0;
+		ss >> num;
+		return num;
 	}
 	static bool	checkIfPathExists(const std::string& path)
 	{
