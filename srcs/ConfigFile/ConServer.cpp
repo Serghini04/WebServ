@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ConServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 16:54:05 by hidriouc          #+#    #+#             */
-/*   Updated: 2025/01/27 15:37:36 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/02/16 15:08:35 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,10 @@
 
 void	Conserver::addAttribute(const std::string& key, const std::string& value)
 {
-	serv_attributes[key] = value;
+	if (!serv_attributes[key].empty())
+		std::cerr << "[Warning] : Duplicate server_name '" << value << " has ignored'"<< std::endl;
+	else
+		serv_attributes[key] = value;
 }
 void	Conserver::addLocation(const std::map<std::string, std::string> loc_attribute)
 {

@@ -59,12 +59,13 @@ void	is_validvalue(std::string &key, std::string &value, int index_line)
 	{
 		while (ss >> token)
 			if (!is_valid_method(token))
-				throw std::runtime_error("Invalid method at line " + Utility::ToStr(index_line));
+				throw std::string("Invalid method at line " + Utility::ToStr(index_line));
 	}
 	if (key == "return")
 	{
 		std::string	t[3];
 		int			i = -1;
+
 		while (ss >> t[++i] && i < 3) 
 			;
 		if (t[0].find_first_not_of("0123456789") != std::string::npos || t[1].empty() || !t[2].empty())
@@ -84,6 +85,8 @@ void	is_validAttServer(std::string &key,std::string &value, int index)
 	{
 		if (validATT[i] == key)
 		{
+			if (key != "error_page" && value.find(' ') != std::string::npos)
+				throw ((std::string)("Error: Unexpected Syntaxe, line ")+ Utility::ToStr(index));
 			if (key == "error_page")
 			{
 				key += "_";
@@ -120,7 +123,7 @@ void	Check_Intree(std::string Name, std::stack<char>& ServStack, int& index)
 	str1 = trim(str1);
 	str2 = trim(str2);
 	if (!(str1 == "Server" && (str2 == "{" || str2.empty())) && str1 != "Server{")
-		throw (std::string("Error: Unexpected Syntaxe, line ") + Utility::ToStr(index));
+		throw (std::string("Error: Missing Server{} block, line ") + Utility::ToStr(index));
 	if (str1 == "Server{" || str2 == "{")
 		ServStack.push('{');
 }
@@ -130,26 +133,44 @@ void	parseKeyValue(const std::string& line_content, int &index_line, std::string
 	std::istringstream line_stream(line_content);
 
 	if (!(line_stream >> key))
-		throw (std::string("5Error: Malformed key in line "));
+		throw (std::string("Error: Malformed key in line "));
 	std::getline(line_stream, value);
 	value = trim(value);
 	if (!key.find("location"))
 		if (value[value.length() - 1] == '{'){
-			value = trim(value.substr(0,value.find_first_of("{")));
+			value = trim(value.substr(0,value.find_last_of("{")));
 			return ;
 		}
 	if (value.empty() || value.back() != ';')
 		throw (std::string("Error: Unexpected Syntaxe, line ") + Utility::ToStr(index_line));
 	value = trim(value.erase(value.length() - 1));
 	if (value.find(';') != std::string::npos)
-		throw (std::string("7Error: Unexpected Syntaxe, line ") + Utility::ToStr(index_line));
+		throw (std::string("Error: Unexpected Syntaxe, line ") + Utility::ToStr(index_line));
 		return ;
+}
+
+void	IsValidHostValue(std::string value, int index)
+{
+	std::istringstream ss(value);
+	std::vector<std::string> tokens;
+	std::string token;
+	int tokenint;
+	int i = -1;
+
+	while (std::getline(ss, token, '.'))
+	{
+		tokenint = Utility::stringToInt(token);
+		if (tokenint > 255 || tokenint < 0 || ++i > 3)
+			throw (std::string("Error: Invalid host, line ") + Utility::ToStr(index));
+		tokens.push_back(token);
+	}
 }
 
 void handleHost(std::string& value, Conserver& server, int index_line, std::map<std::string, std::string>& listenings, bool& sin, std::string& host)
 {
 	if (value.find_first_not_of("0123456789.") != std::string::npos)
 		throw (std::string("Error: Unexpected Syntaxe of host in the line ") + Utility::ToStr(index_line));
+	IsValidHostValue(value, index_line);
 	if (!host.empty() && !listenings[host + "8080"].empty())
 		std::cerr << "[Warning]: Duplicate listening << " << host << ":8080 >> ignored!" << std::endl;
 	else if (!host.empty())
@@ -231,7 +252,7 @@ bool	isValidLocation(std::string line)
 	std::string word[4];
 	int i = -1;
 
-	while (strs >> word[++i])
+	while (strs >> word[++i] && i < 3)
 		;
 	if (word[0] == "location"&& word[3].empty())
 		if ((!word[1].empty() && word[2] == "{") || word[1][word[1].length() - 1] == '{')
@@ -374,14 +395,14 @@ void validateServer(Conserver &server)
 		throw std::string("Error: Server without root");
 }
 
-std::vector<Conserver> filterServersWithListening(std::vector<Conserver> &servers)
-{
-	std::vector<Conserver> filtered_servers;
-	for (size_t i = 0; i < servers.size(); i++)
-		if (!servers[i].getlistening().empty())
-			filtered_servers.push_back(servers[i]);
-	return filtered_servers;
-}
+// std::vector<Conserver> filterServersWithListening(std::vector<Conserver> &servers)
+// {
+// 	std::vector<Conserver> filtered_servers;
+// 	for (size_t i = 0; i < servers.size(); i++)
+// 		if (!servers[i].getlistening().empty())
+// 			filtered_servers.push_back(servers[i]);
+// 	return filtered_servers;
+// }
 std::vector<Conserver> parseConfigFile(char *in_file)
 {
 	std::ifstream infile;
@@ -412,7 +433,8 @@ std::vector<Conserver> parseConfigFile(char *in_file)
 		std::cerr << err << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	return filterServersWithListening(servers);
+	// filterServersWithListening(servers);
+	return servers;
 }
 
 
