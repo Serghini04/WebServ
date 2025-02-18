@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:38:49 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/05 16:01:08 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/07 11:32:55 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -309,7 +309,7 @@ void	BodyParse::handleCGI(std::string &buff)
 	{
 		_fileTrash.open(_bodyFileName, std::ios::binary);
 		if (_fileTrash.fail())
-			throw std::string("500 Internal Server Error1");
+			throw std::string("500 Internal Server Error");
 	}
 	checkContentTooLarge(buff.size());
 	_fileTrash << buff;
@@ -374,7 +374,7 @@ void	BodyParse::checkContentTooLarge(size_t length)
 	{
 		_bodySize -= length;
 		if (_maxBodySize >= 0 && _bodySize < 0)
-			throw std::string("413 Content Too Large1");
+			throw std::string("413 Content Too Large");
 	}
 	else
 	{
