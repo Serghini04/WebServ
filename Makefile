@@ -5,6 +5,7 @@ CFLAGS =  -O3 -I./includes -Wall -Wextra -Werror -g -fsanitize=address
 REQ_FILES = srcs/request/RequestParse.cpp srcs/request/BodyParse.cpp
 
 SRC_S = srcs/server/Server.cpp srcs/ConfigFile/ConServer.cpp srcs/ConfigFile/ParseConfigFile.cpp 
+
 SRC_RES = srcs/response/Response.cpp
 
 SRC_RES = srcs/response/Response.cpp srcs/response/ResponseUtils.cpp

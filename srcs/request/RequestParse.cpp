@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/06 12:49:33 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/18 11:09:30 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,8 +101,6 @@ void	RequestParse::parseFirstLine(std::string  header)
 	if (_httpVersion != "HTTP/1.1")
 		throw std::string("400 Bad Request");
 	checkURL();
-	if (Utility::stringEndsWith(_url, ".py") || Utility::stringEndsWith(_url, ".php"))
-		_body.setIsCGI(true);
 	if (_method == "GET")
 		_enumMethod = eGET;
 	else if (_method == "POST")
@@ -228,9 +226,13 @@ void	RequestParse::checkAllowedMethod()
 {
 	std::string	location = matchingURL();
 
-	_location = location; 
+	_location = location;
 	std::cout << "based on this location =>" << location << "<" << std::endl;
-	if (_configServer.getLocation(location)["allowed_methods"].find(Utility::toUpperCase(_method)) == std::string::npos)
+	// std::cerr << ">>" << _location << "<<" << std::endl;
+	// std::cerr <<  _configServer.getLocation(_location)["cgi"] << std::endl;
+	if (_configServer.getLocation(_location)["cgi"] == "on" && (Utility::stringEndsWith(_url, ".py") || Utility::stringEndsWith(_url, ".php")))
+		_body.setIsCGI(true);
+	if (_configServer.getLocation(_location)["allowed_methods"].find(Utility::toUpperCase(_method)) == std::string::npos)
 		throw std::string("405 Method Not Allowed");
 	if (_enumMethod == ePOST)
 		_body.setFileName(_configServer.getLocation(location)["upload_store"] + "/Output");
@@ -310,7 +312,7 @@ bool RequestParse::parseHeader(std::string &header, std::string &buff)
 	header.clear();
 	if (_enumMethod == eGET)
 	{
-		if (Utility::isDirectory(_configServer.getAttributes("root") + _url))
+		if (_configServer.getLocation(_location)["cgi"] == "on" && Utility::isDirectory(_configServer.getAttributes("root") + _url))
 		{
 			std::string	index = _configServer.getLocation(_location)["index"];
 			if (index != "" && (Utility::stringEndsWith(index, ".py") || Utility::stringEndsWith(index, ".php")))
@@ -358,7 +360,6 @@ void    RequestParse::readBuffer(std::string buff)
 		if (isCGI())
 		{
 			puts("Is CGI");
-			
 			runCgiScripte();
 		}
 		_requestIsDone = 1;
@@ -408,7 +409,7 @@ void RequestParse::runCgiScripte() {
 
 	std::vector<std::string> env_strings = RequestParse::getenv();
 	while (i < env_strings.size()) {
-		env[i] = strdup(env_strings[i].c_str());
+		env[i] = (char *)env_strings[i].c_str();//strdup(env_strings[i].c_str());
 		i++;
 	}
 	env[i] = NULL;
@@ -417,18 +418,13 @@ void RequestParse::runCgiScripte() {
 		bodyfd = open(_body.BodyFileName().c_str(), O_RDONLY);
 		if (bodyfd == -1) {
 		perror("Failed to open body file");
-		for (int i = 0; env[i] != NULL; i++)
-			free(env[i]);
 		exit(EXIT_FAILURE);
 	}}
 	int outfd = open("/tmp/outCGI.html", O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (outfd == -1) {
 		perror("Failed to open output file");
 		close(bodyfd);
-		unlink("/tmp/outCGI.text");
-		for (int i = 0; env[i] != NULL; i++) 
-			free(env[i]);
-		exit(EXIT_FAILURE);
+		unlink("/tmp/outCGI.html");
 	}
 
 	pid = fork();
@@ -437,20 +433,21 @@ void RequestParse::runCgiScripte() {
 			perror("dup2 Failed");
 			close(bodyfd);
 			close(outfd);
-			unlink("/tmp/outCGI.text");
+			unlink("/tmp/outCGI.html");
 			exit(EXIT_FAILURE);
 		}
 		std::string scriptepath = _configServer.getAttributes("root");
 		std::string scriptename = scriptepath + _url;
 		char *args[] = { (char *)scriptename.c_str(), NULL };
-		// std::cerr << ">>" << _url << std::endl;
-		// std::cerr << ">>" << scriptename.c_str() << std::endl;
+		if (chdir(scriptename.substr(0, scriptename.rfind("/")).c_str()) == -1)
+			puts("3lawi 3ndo kbira ...");
 		execve(scriptename.c_str(), args, env);
 		perror("execve failed");
 		if(_method == "POST")
 			close(bodyfd);
 		close(outfd);
-		exit(EXIT_FAILURE);
+		_statusCodeMessage = "500 Internal Server Error";
+		_statusCode = eInternalServerError;
 	}
 	else if (pid > 0) {
 		if(_method == "POST")
@@ -461,8 +458,8 @@ void RequestParse::runCgiScripte() {
 	} else {
 		perror("fork Failed");
 	}
-	for (int i = 0; env[i] != NULL; i++)
-		free(env[i]);
+	// for (int i = 0; env[i] != NULL; i++)
+	// 	free(env[i]);
 }
 
 RequestParse::~RequestParse()
