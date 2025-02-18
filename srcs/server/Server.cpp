@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/02/05 16:02:48 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/07 11:27:11 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,6 +160,7 @@ void Server::RecivData(int clientSocket)
         return;
     }
     fullData.assign(buffer, bytesRead);
+    // std::cerr << ">>" << fullData <<"<<\n";
     (*clientsRequest[clientSocket]).readBuffer(fullData);
     if ((*clientsRequest[clientSocket]).requestIsDone())
     {

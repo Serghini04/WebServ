@@ -94,7 +94,7 @@ void Response::SendError(enum status code)
 {
     request.SetStatusCode(code);
     if (code == eNotFound)
-        request.SetStatusCodeMsg("404 Not Found1");
+        request.SetStatusCodeMsg("404 Not Found");
     else if (code == eFORBIDDEN)
         request.SetStatusCodeMsg("403 forbidden");
     handelRequestErrors();
