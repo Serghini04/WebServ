@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+
+import os
+import sys
+import cgi
+import cgitb
+
+# Enable error debugging
+cgitb.enable()
+
+def get_form_data():
+    """ Manually read stdin and parse form data """
+    if "CONTENT_LENGTH" in os.environ:
+        content_length = int(os.environ["CONTENT_LENGTH"])
+        raw_data = sys.stdin.buffer.read(content_length).decode("utf-8")  # Read as binary, then decode
+    else:
+        raw_data = ""
+
+    # Parse data manually since it's not using multipart/form-data
+    form_data = {}
+    for line in raw_data.strip().split("\n"):
+        key, value = line.split("=", 1)  # Split at first '='
+        form_data[key.strip()] = value.strip()
+
+    # Extract values safely
+    name = form_data.get("name", "Not provided")
+    password = form_data.get("password", "Not provided")
+
+    return name, password
+
+def generate_response(name, password):
+    """ Generate HTML response """
+    return f"""\
+    <html>
+    <head><title>CGI Form Output</title></head>
+    <body>
+    <h1>Form Data</h1>
+    <p><strong>Name:</strong> {name}</p>
+    <p><strong>Password:</strong> {password}</p>
+    </body>
+    </html>
+    """
+
+def main():
+    # Print HTTP response header
+    print("Content-Type: text/html")
+    print()  # Empty line separating headers from content
+
+    # Get form data from request body
+    name, password = get_form_data()
+
+    # Print the response
+    print(generate_response(name, password))
+
+if __name__ == "__main__":
+    main()
