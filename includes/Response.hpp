@@ -29,6 +29,7 @@ private:
     RequestParse                        &request;
     bool                                hasErrorFile;
     bool                                isDirectory;
+    bool                                endResponse;
     std::string                         directoryContent;
 public:
     Response(Conserver &conserver, RequestParse &request);
@@ -44,6 +45,7 @@ public:
     int         getFileSize();
     int        GetErrorFromStrSize();
     bool    IsDirectory(const char *path);
+    std::string handelRedirection(std::string redirection);
     std::string getCgiResponse();
 };
 

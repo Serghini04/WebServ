@@ -102,6 +102,7 @@ void Server::ConnectionClosed(int clientSocket)
 }
 void Server::ResponseEnds(int clientSocket)
 {
+    clientsRequest[clientSocket]->SetRequestIsDone(false);
     if(clientsRequest[clientSocket]->isCGI())
         clientsRequest[clientSocket]->setIsCGI(false);
     if (clientsRequest[clientSocket]->isConnectionClosed())
@@ -177,7 +178,11 @@ void Server::RecivData(int clientSocket)
         manageEvents(ADD_WRITE, clientSocket);
         // hidriouc add folowing line for test runing script ??
         if ((*clientsRequest[clientSocket]).isCGI())
-            (*clientsRequest[clientSocket]).runcgiscripte();
+            if((*clientsRequest[clientSocket]).runcgiscripte() != 200)
+            {
+                clientsRequest[clientSocket]->SetStatusCode(eNotFound);
+                clientsRequest[clientSocket]->SetStatusCodeMsg("Not Found");
+            }
         return;
     }
 }
