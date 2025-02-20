@@ -6,11 +6,12 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 16:54:05 by hidriouc          #+#    #+#             */
-/*   Updated: 2025/02/16 15:08:35 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/02/19 11:29:38 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <Server.hpp>
+#include <algorithm>
 #include <chrono>
 #include <cstddef>
 #include <cstdlib>
@@ -75,6 +76,20 @@ void	Conserver::addBodySize(std::string value)
 	}
 	if (value.empty())
 		client_max_body_size = -1;
+}
+std::pair<std::string, std::string>	Conserver::getreturnof(std::string path)
+{	std::string value;
+	std::pair <std::string, std::string > retpair("","");
+	if (path.empty())
+		value = getAttributes("return");
+	else
+		value = Conserver::getLocation(path)["return"];
+	if (!value.empty()){
+		
+		retpair.first = value.substr(0,value.find_first_of(" \t"));
+		retpair.second = value.substr(value.find_last_of(" \t") + 1);
+	}
+	return retpair;
 }
 std::vector<std::string> Conserver::getphats()
 {

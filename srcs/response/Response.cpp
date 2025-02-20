@@ -7,6 +7,7 @@ Response::Response(Conserver &conserver, RequestParse &request) : conserver(cons
     statusLine = "HTTP/1.1 200 OK\r\n";
     hasErrorFile = true;
     isDirectory = false;
+    endResponse = false;
 }
 
 Response::~Response()
@@ -171,23 +172,29 @@ int Response::processDirectory(std::string &path)
     return directoryContent.length();
 }
 
-std::string handelRedirection(std::string redirection)
+std::string Response::handelRedirection(std::string redirection)
 {
     std::string code;
     code = redirection.substr(0, 3);
+    std::string url_red = redirection.substr(code.length() + 1);
 
+     if (url_red.find("http://") != 0 && url_red.find("https://") != 0)
+        url_red = "http://" + url_red;
     std::string httpResponse =
         "HTTP/1.1 " + code + " Moved Permanently\r\n"
                                       "Location: " +
-        redirection.substr(code.length()) + "\r\n"
+        url_red + "\r\n"
                        "Content-Type: text/html; charset=UTF-8\r\n"
                        "Content-Length: 0\r\n"
                        "Connection: close\r\n"
                        "\r\n";
+    this->endResponse = true;
     return httpResponse;
 }
 std::string Response::processResponse(int state)
 {
+    if(this->endResponse)
+        return "";
     std::map<std::string, std::string> location = conserver.getLocation(request.location());
     if (firstCall)
     {
@@ -195,12 +202,17 @@ std::string Response::processResponse(int state)
             handelRequestErrors();
         else
         {
-            std::string redirection = conserver.getAttributes("");
+            std::string redirection = conserver.getAttributes("return");
             if (!redirection.empty())
                 return handelRedirection(redirection);
             ProcessUrl(location);
             if (!location["return"].empty())
                 return handelRedirection(location["return"]);
+            if (request.isCGI())
+            {
+                std::string line = getCgiResponse();
+                return line;
+            }
             if (request.statusCode() == eOK && request.method() != ePOST)
             {
                 std::string str = request.URL();
@@ -239,18 +251,18 @@ std::string Response::getCgiResponse()
     file.open("/tmp/outCGI.text", std::ios::binary | std::ios::in);
     if (!file.is_open())
         SendError(eNotFound);
+
+    this->endResponse = true;
     return FileToString();
 }
 
 std::string Response::getResponse()
 {
     std::string str;
-    if (request.isCGI())
-        str = getCgiResponse();
-    else if (request.statusCode() != eOK && request.statusCode() != eCreated)
+    if (request.statusCode() != eOK && request.statusCode() != eCreated)
         str = processResponse(0);
     else
         str = processResponse(1);
-    std::cout << str << std::endl;
+    // std::cout << str << std::endl;
     return str;
 }

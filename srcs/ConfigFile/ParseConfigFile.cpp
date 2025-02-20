@@ -65,11 +65,15 @@ void	is_validvalue(std::string &key, std::string &value, int index_line)
 	{
 		std::string	t[3];
 		int			i = -1;
+		int			status;
 
-		while (ss >> t[++i] && i < 3) 
+		while (++i < 3 && ss >> t[i] ) 
 			;
+		status = Utility::stringToInt(t[0]);
 		if (t[0].find_first_not_of("0123456789") != std::string::npos || t[1].empty() || !t[2].empty())
 			throw ((std::string)("Error: Unexpected Syntaxe, line ")+ Utility::ToStr(index_line));
+		if (!(status >= 300 && status <= 399))
+			throw ((std::string)("Error: Ivalide status code in line ")+ Utility::ToStr(index_line));
 	}
 }
 
@@ -81,6 +85,11 @@ void	is_validAttServer(std::string &key,std::string &value, int index)
 	validATT.push_back("error_page");
 	validATT.push_back("index");
 	validATT.push_back("root");
+	if (key == "return"){
+		is_validvalue(key, value, index);
+		return ;
+	}
+	else{
 	for (size_t i = 0; i < validATT.size(); i++)
 	{
 		if (validATT[i] == key)
@@ -95,6 +104,7 @@ void	is_validAttServer(std::string &key,std::string &value, int index)
 			return;
 		}
 	}
+	}
 	throw ((std::string)"Error: Unexpected Syntaxe, line "+ Utility::ToStr(index));
 }
 
@@ -105,7 +115,7 @@ bool validlocation_key(std::string key)
 			key == "auto_index" || key == "cgi");
 }
 
-void	is_validAttLocation(std::string key, std::string value, int index)
+void	is_validAttLocation(std::string &key, std::string &value, int index)
 {
 	if (!validlocation_key(key))
 		throw ((std::string)"Error: Unexpected Syntaxe, line "+ Utility::ToStr(index));
@@ -272,7 +282,7 @@ std::string	processLocationAttributes(std::ifstream& infile, int& index, std::ma
 			continue;
 		parseKeyValue(line, index, Key, Value);
 		is_validAttLocation(Key, Value, index);
-		location_map[Key] = Value;
+			location_map[Key] = Value;
 	}
 	line = trim(line);
 	if (line.find('}') != std::string::npos) 
