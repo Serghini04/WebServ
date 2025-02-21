@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/05 15:07:15 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/21 11:54:59 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,12 @@
 # include <string>
 # include <BodyParse.hpp>
 # include <map>
-#include <fcntl.h>
-#include <unistd.h> 
+# include <fcntl.h>
+# include <unistd.h>
+# include <signal.h>
+
+# define CGI_TIMEOUT 5
+# define SIZE_BUFFER 50
 
 enum status
 {
@@ -97,9 +101,20 @@ class   RequestParse
 		void		parseMetaData(std::string header);
 		void		deleteURI();
 
-		// Execution of CGI
-		void						runCgiScripte();
-		std::vector<std::string>	getenv();
+		// Execution of CGI by hidriouc
+		int		runcgiscripte();
+		void	_dupfd(int infd, int outfd);
+		void	_validateContentLength(const std::string& contentLength, size_t bodysize);
+		void	_validateContentType(const std::string& contentType);
+		void	_parseHeaderLine(const std::string& line, std::string lines[]);
+		int		_parseHeaders(size_t bodysize, const std::string& headers);
+		int		_forkAndExecute(int infd, int outfd,char* env[]);
+		int		_waitForCGIProcess(int pid);
+		int		parseCGIOutput(const char* cgiOutputFile);
+
+		std::vector<std::string>	_buildEnvVars();
+		void						_openFileSafely(std::ifstream& file, const std::string& filename);
+		std::string					_extractHeaderValue(const std::string& line);
 
 		~RequestParse();
 };

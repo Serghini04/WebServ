@@ -43,7 +43,7 @@ private:
     static const int TIMEOUT_SECONDS = 5;
     void            ConnectWithClient(uintptr_t server);
     void            HandelEvents(int n, struct kevent events[]);
-    int             ConfigTheSocket(Conserver &config);
+    void            ConfigTheSocket(Conserver &config);
     void            SendData(int clientSocket);
     void            RecivData(int clientSocket);
     void            ResponseEnds(int clientSocket);

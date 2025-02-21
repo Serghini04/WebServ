@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:38:49 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/07 11:32:55 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/20 17:12:38 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,7 @@ void BodyParse::openFileBasedOnContentType()
 	namefile += Utility::getExtensions(_metaData["content-type"], "");
 	_fileOutput.open(namefile.c_str(), std::ios::binary);
 	if (_fileOutput.fail())
-		throw std::string("500 Internal Server Error2");
+		throw std::string("500 Internal Server Error");
 	if (_isCGI)
 		_bodyFileName = namefile;
 	else
@@ -296,7 +296,7 @@ void	BodyParse::openFileOfBoundary(std::string buff)
 	}
 	else
 		oss << _fileName << _indexFile << ".txt";
-	std::cout <<"Create File :>>" << oss.str() << "<<\n";
+	// std::cout <<"Create File :>>" << oss.str() << "<<\n";
 	_fileOutput.open(oss.str(), std::ios::binary);
 	if (_fileOutput.fail())
 		throw std::string("500 Internal Server Error");
@@ -382,7 +382,7 @@ void	BodyParse::checkContentTooLarge(size_t length)
 		std::cout << "Body size = " << _bodySize << std::endl;
 		std::cout << "Max body size = " << _maxBodySize << std::endl;
 		if (_maxBodySize >= 0 && _bodySize > _maxBodySize)
-			throw std::string("413 Content Too Large2");
+			throw std::string("413 Content Too Large");
 	}	
 }
 
