@@ -6,7 +6,7 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/02/16 10:50:09 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/02/05 13:48:08 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,22 @@
 Server::Server()
 {
 }
-
+void Server::setupConnectionTimer(int clientSocket)
+{
+    // Set up a timer event for this connection
+    EV_SET(&timerEvent,
+           clientSocket,        // Use client socket as identifier
+           EVFILT_TIMER,        // Timer filter
+           EV_ADD | EV_ONESHOT, // One-shot timer
+           NOTE_SECONDS,        // Use seconds resolution
+           TIMEOUT_SECONDS,     // 5 second timeout
+           NULL);               // No user data
+    if (kevent(kq, &timerEvent, 1, NULL, 0, NULL) == -1)
+    {
+        SendError(clientSocket);
+        return;
+    }
+}
 Server::~Server()
 {
     for (std::map<int, Conserver *>::const_iterator
@@ -26,6 +41,26 @@ Server::~Server()
     }
 }
 
+void Server::manageEvents(enum EventsEnum events, int clientSocket)
+{
+    switch (events)
+    {
+    case ADD_READ:
+        EV_SET(&event, clientSocket, EVFILT_READ, EV_ADD, 0, 0, NULL);
+        break;
+    case ADD_WRITE:
+        EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
+        break;
+    case REMOVE_READ:
+        EV_SET(&event, clientSocket, EVFILT_READ, EV_CLEAR, 0, 0, NULL);
+        break;
+    case REMOVE_WRITE:
+        EV_SET(&event, clientSocket, EVFILT_READ, EV_CLEAR, 0, 0, NULL);
+        break;
+    }
+    if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
+        SendError(clientSocket);
+}
 void errorMsg(std::string str, int fd)
 {
     std::cout << str << strerror(errno) << std::endl;
@@ -50,60 +85,74 @@ int make_socket_nonblocking(int sockfd)
 }
 void Server::CleanUpAllocation(int clientSocket)
 {
-    EV_SET(&event, clientSocket, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
-    if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
-        SendError(clientSocket);
-    EV_SET(&event, clientSocket, EVFILT_READ, EV_DELETE, 0, 0, NULL);
-    if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
-        SendError(clientSocket);
-    delete clientsRequest[clientSocket];
-    delete clientsResponse[clientSocket];
-    clientsResponse.erase(clientSocket);
-    clientsRequest.erase(clientSocket);
+    manageEvents(REMOVE_READ, clientSocket);
+    manageEvents(REMOVE_WRITE, clientSocket);
+    if (clientsRequest.count(clientSocket))
+    {
+        delete clientsRequest[clientSocket];
+        clientsRequest.erase(clientSocket);
+    }
+    if (clientsResponse.count(clientSocket))
+    {
+        delete clientsResponse[clientSocket];
+        clientsResponse.erase(clientSocket);
+    }
 }
 
 void Server::ConnectionClosed(int clientSocket)
 {
     CleanUpAllocation(clientSocket);
+    serversClients.erase(clientSocket);
     close(clientSocket);
 }
+
 void Server::ResponseEnds(int clientSocket)
 {
+    clientsRequest[clientSocket]->SetRequestIsDone(false);
+    if (clientsRequest[clientSocket]->isCGI())
+        clientsRequest[clientSocket]->setIsCGI(false);
     if (clientsRequest[clientSocket]->isConnectionClosed())
         ConnectionClosed(clientSocket);
     else
         CleanUpAllocation(clientSocket);
 }
-int Server::ConfigTheSocket(Conserver &config)
+
+void Server::ConfigTheSocket(Conserver &config)
 {
-    sockaddr_in addressSocket;
     int serverSocket;
     int opt = 1;
-    serverSocket = socket(AF_INET, SOCK_STREAM, 0);
-    if (serverSocket == -1)
-        return -1;
-    if (setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == -1)
+    std::vector<std::pair<std::string, std::string> > address = config.getlistening();
+    for (size_t i = 0; i < address.size(); i++)
     {
-        perror("setsockopt SO_REUSEADDR failed");
-        return -1;
+        sockaddr_in addressSocket;
+
+        memset(&addressSocket, 0, sizeof(addressSocket));
+        serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+        if (serverSocket == -1)
+            errorMsg("Socket Creation Fails", serverSocket);
+        if (setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == -1)
+            errorMsg("nonblocking Fails", serverSocket);
+        if (setsockopt(serverSocket, SOL_SOCKET, SO_REUSEPORT, &opt, sizeof(opt)) == -1)
+            errorMsg("setsockopt Fails", serverSocket);
+        if (make_socket_nonblocking(serverSocket) == -1)
+            errorMsg("nonblocking Fails", serverSocket);
+        addressSocket.sin_family = AF_INET;
+        addressSocket.sin_port = htons(Utility::StrToInt(address[i].second.c_str()));
+        addressSocket.sin_addr.s_addr = INADDR_ANY;
+        // addressSocket.sin_addr.s_addr = inet_addr(address[i].first.c_str());
+        int bindResult = bind(serverSocket, (const sockaddr *)&addressSocket, sizeof(addressSocket));
+        if (bindResult == -1)
+            errorMsg("bind Fails", serverSocket);
+        if (listen(serverSocket, 128) == -1)
+            errorMsg("listen Fails", serverSocket);
+        this->serversConfigs[serverSocket] = &config;
+        if (serverSocket == -1)
+            errorMsg("Socket Creation Fails", serverSocket);
+        EV_SET(&event, serverSocket, EVFILT_READ, EV_ADD, 0, 0, NULL);
+        if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
+            errorMsg("kqueue registration failed", serverSocket);
+        servers.push_back(serverSocket);
     }
-    if (setsockopt(serverSocket, SOL_SOCKET, SO_REUSEPORT, &opt, sizeof(opt)) == -1)
-    {
-        perror("setsockopt SO_REUSEPORT failed");
-        return -1;
-    }
-    addressSocket.sin_addr.s_addr = INADDR_ANY;
-    addressSocket.sin_family = AF_INET;
-    // addressSocket.sin_port = htons(Utility::StrToInt(config.getAttributes("port")));
-    addressSocket.sin_port = htons(PORT);
-    if (make_socket_nonblocking(serverSocket) == -1)
-        return -1;
-    if (bind(serverSocket, (const sockaddr *)&addressSocket, sizeof(addressSocket)) == -1)
-        return -1;
-    if (listen(serverSocket, 1024) == -1)
-        return -1;
-    this->serversConfigs[serverSocket] = &config;
-    return serverSocket;
 }
 
 void Server::RecivData(int clientSocket)
@@ -115,26 +164,16 @@ void Server::RecivData(int clientSocket)
     memset(buffer, 0, sizeof(buffer));
     bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
     if (bytesRead <= 0)
-    {
-        if (errno == EAGAIN || errno == EWOULDBLOCK)
-            return;
-        if (errno == ECONNRESET)
-        {
-            ConnectionClosed(clientSocket);
-            return;
-        }
         return;
-    }
     fullData.assign(buffer, bytesRead);
     (*clientsRequest[clientSocket]).readBuffer(fullData);
     if ((*clientsRequest[clientSocket]).requestIsDone())
     {
         puts("Data Recived");
-        EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
-        if (kevent(kq, &event, 1, NULL, 0, NULL))
-            SendError(clientSocket);
-		// hidriouc add folowing line for test runing script ??
-			(*clientsRequest[clientSocket]).runcgiscripte();
+        manageEvents(REMOVE_READ, clientSocket);
+        manageEvents(ADD_WRITE, clientSocket);
+        if ((*clientsRequest[clientSocket]).isCGI())
+            (*clientsRequest[clientSocket]).runcgiscripte();
         return;
     }
 }
@@ -146,13 +185,8 @@ void Server::SendData(int clientSocket)
 
     if (!clientsResponse.count(clientSocket))
         clientsResponse[clientSocket] = new Response(*serversConfigs[serversClients[clientSocket]],
-                                                     *clientsRequest[clientSocket]);
+                                                     clientsRequest[clientSocket]);
     std::string response = clientsResponse[clientSocket]->getResponse();
-    if (response.empty())
-    {
-        ResponseEnds(clientSocket);
-        return;
-    }
     responseSize = response.size();
     while (totalSent < responseSize)
     {
@@ -160,23 +194,20 @@ void Server::SendData(int clientSocket)
                                  response.c_str() + totalSent,
                                  responseSize - totalSent,
                                  0);
-        if (bytesSent <= 0)
+        if (bytesSent < 0)
         {
             if (errno == EAGAIN || errno == EWOULDBLOCK)
                 return;
-            if (errno == EPIPE)
-            {
-                ConnectionClosed(clientSocket);
-                return;
-            }
             SendError(clientSocket);
             return;
         }
+        else if (bytesSent == 0)
+            ResponseEnds(clientSocket);
         totalSent += bytesSent;
     }
 }
 
-void Server::ConnectWithClient(int kq, uintptr_t server)
+void Server::ConnectWithClient(uintptr_t server)
 {
     sockaddr_in clientAddress;
     socklen_t clientAddrLen;
@@ -191,10 +222,9 @@ void Server::ConnectWithClient(int kq, uintptr_t server)
         SendError(clientSocket);
     else
     {
-        serversClients[clientSocket] = server;
-        EV_SET(&event, clientSocket, EVFILT_READ, EV_ADD, 0, 0, NULL);
-        if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
-            SendError(clientSocket);
+        serversClients[clientSocket] = (int)server;
+        setupConnectionTimer(clientSocket);
+        manageEvents(ADD_READ, clientSocket);
     }
 }
 
@@ -205,7 +235,7 @@ void Server::HandelEvents(int n, struct kevent events[])
     for (int i = 0; i < n; i++)
     {
         if (std::find(servers.begin(), servers.end(), (intptr_t)events[i].ident) != servers.end())
-            ConnectWithClient(kq, events[i].ident);
+            ConnectWithClient(events[i].ident);
         else if (events[i].filter == EVFILT_READ)
         {
             clientSocket = events[i].ident;
@@ -218,8 +248,14 @@ void Server::HandelEvents(int n, struct kevent events[])
             clientSocket = events[i].ident;
             SendData(clientSocket);
         }
+        else if (events[i].filter == EVFILT_TIMER)
+        {
+            clientSocket = events[i].ident;
+            ConnectionClosed(clientSocket);
+        }
     }
 }
+
 int Server::CreateServer(std::vector<Conserver> &config)
 {
     int serverSocket = 0;
@@ -229,15 +265,7 @@ int Server::CreateServer(std::vector<Conserver> &config)
     if (kq == -1)
         errorMsg("kqueue creation failed", serverSocket);
     for (size_t i = 0; i < config.size(); i++)
-    {
-        serverSocket = ConfigTheSocket(config[i]);
-        if (serverSocket == -1)
-            errorMsg("Socket Creation Fails", serverSocket);
-        EV_SET(&event, serverSocket, EVFILT_READ, EV_ADD, 0, 0, NULL);
-        if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
-            errorMsg("kqueue registration failed", serverSocket);
-        servers.push_back(serverSocket);
-    }
+        ConfigTheSocket(config[i]);
     while (true)
     {
         int n = kevent(kq, NULL, 0, events, MAX_CLIENTS, NULL);
@@ -245,7 +273,6 @@ int Server::CreateServer(std::vector<Conserver> &config)
             errorMsg("kevent Fails", serverSocket);
         HandelEvents(n, events);
     }
-    close(serverSocket);
     close(kq);
     return 0;
 }

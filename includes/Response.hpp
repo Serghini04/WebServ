@@ -26,24 +26,27 @@ private:
     Conserver&                          conserver;
     static std::string                  errHtml;
     std::string                         errMsg;
-    RequestParse                        &request;
+    RequestParse                        *request;
     bool                                hasErrorFile;
     bool                                isDirectory;
+    bool                                endResponse;
     std::string                         directoryContent;
 public:
-    Response(Conserver &conserver, RequestParse &request);
+    Response(Conserver &conserver, RequestParse *request);
     ~Response();
     std::string FileToString();
     std::string getResponse();
     int         processDirectory(std::string &path);
     std::string processResponse(int isSuccess);
     std::string getHeader();
-    void        ProcessUrl();
+    void        ProcessUrl(std::map<std::string, std::string> location);
     void        handelRequestErrors();
     void        SendError(enum status code);
     int         getFileSize();
     int        GetErrorFromStrSize();
-    static bool IsDirectory(const char* path);
+    bool    IsDirectory(const char *path);
+    std::string handelRedirection(std::string redirection);
+    std::string getCgiResponse();
 };
 
 

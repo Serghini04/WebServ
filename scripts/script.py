@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import os
 import sys
 
@@ -7,9 +6,10 @@ import sys
 sys.stdout.flush()
 
 # Print required CGI headers
-print("HTTP/1.1 200 OK\r\n") # Separate headers from body
-print("Content-Length: 115\r\n") # Separate headers from body
-print("Content-Type: text/json\r\n\r\n") # Separate headers from body
+# print("HTTP/1.1 200 OK") # Separate headers from body
+print("HTTP/1.1 200 OK\r\n", end="")
+print("Content-Length: 115\r\n", end="") # Separate headers from body
+print("Content-Type: text/html\r\n\r\n", end="") # Separate headers from body
 
 # HTML response body
 print("<html>")
