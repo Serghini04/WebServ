@@ -10,7 +10,7 @@ def clear_cookie():
     cookie['session']['max-age'] = 0
     print(cookie.output())
 
-print("Content-Type: text/html")
+print("Content-Type: text/html\r\n\r\n")
 clear_cookie()
 print("""
 <!DOCTYPE html>
