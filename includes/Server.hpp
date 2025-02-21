@@ -17,7 +17,7 @@
 #include <Response.hpp>
 #include <RequestParse.hpp>
 #define MAX_BUFFER 16384
-#define MAX_CLIENTS 10240
+#define MAX_CLIENTS 1024 * 2
 #define PORT 1111
 class Response;
 class RequestParse;
