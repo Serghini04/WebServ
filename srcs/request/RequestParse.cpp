@@ -228,9 +228,15 @@ void	RequestParse::checkAllowedMethod()
 {
 	std::string	location = matchingURL();
 
-	_location = location; 
-	// std::cout << "based on this location =>" << location << "<" << std::endl;
-	if (_configServer.getLocation(location)["allowed_methods"].find(Utility::toUpperCase(_method)) == std::string::npos)
+	_location = location;
+	std::cout << "based on this location =>" << location << "<" << std::endl;
+	// std::cerr << ">>" << _location << "<<" << std::endl;
+	// std::cerr <<  _configServer.getLocation(_location)["cgi"] << std::endl;
+	if (_configServer.getLocation(_location)["cgi"] == "on" && (Utility::stringEndsWith(_url, ".py") || Utility::stringEndsWith(_url, ".php")))
+	{
+		_body.setIsCGI(true);
+	}
+	if (_configServer.getLocation(_location)["allowed_methods"].find(Utility::toUpperCase(_method)) == std::string::npos)
 		throw std::string("405 Method Not Allowed");
 	if (_enumMethod == ePOST)
 		_body.setFileName(_configServer.getLocation(location)["upload_store"] + "/Output");
@@ -430,11 +436,13 @@ int	RequestParse::_parseHeaders(size_t bodysize, const std::string& headers)
 	std::stringstream ss(headers);
 	std::string line, lines[3];
 
+	(void)bodysize;
 	while (std::getline(ss, line))
 		_parseHeaderLine(line, lines);
-	if (lines[0] != "HTTP/1.1 200 OK\r")
-		throw (std::string)("ERROR:** Unexpected Start header");
-	_validateContentLength(lines[1], bodysize);
+	// if (lines[0] != "HTTP/1.1 200 OK\r"){
+	// 	throw (std::string)("ERROR:** Unexpected Start header");
+	// }
+	// _validateContentLength(lines[1], bodysize);
 	_validateContentType(lines[2]);
 	return 200;
 }
@@ -456,9 +464,12 @@ int RequestParse::_forkAndExecute(int infd, int outfd, char* env[])
 	int pid = fork();
 	if (pid == 0)
 	{
+			
 		_dupfd(infd, outfd);
 		std::string scriptPath = _configServer.getAttributes("root") + _url;
 		char* args[] = {(char*)scriptPath.c_str(), (char*)"POST", (char*)"data=somevalue", NULL};
+		if (chdir(scriptPath.substr(0, scriptPath.rfind("/")).c_str()) == -1)
+			;
 		if (execve(scriptPath.c_str(), args, env) == -1)
 		{
 			perror("execve failed");
@@ -490,17 +501,17 @@ int RequestParse::parseCGIOutput(const char* cgiOutputFile)
 	_openFileSafely(file, cgiOutputFile);
 	std::string lines, buffer;
 	char buf[SIZE_BUFFER + 1] = {0};
-	while (file.read(buf, SIZE_BUFFER))
-		lines.append(buf);
-	lines.append(buf, file.gcount());
-	size_t headerEnd = lines.find("\r\n\r\n");
-	if (headerEnd == std::string::npos) 
-	{
-		std::cerr << "No valid header separator found." << std::endl;
-		return 500;
-	}
+	while (file.read(buf, SIZE_BUFFER)){
 
-	return _parseHeaders(lines.substr(headerEnd + 4).size(), lines.substr(0, headerEnd));
+		lines.append(buf);
+	}
+	lines.append(buf);
+	// size_t headerEnd = lines.find("\r\n\r\n");
+	// if (headerEnd == std::string::npos) 
+	// 	throw ((std::string)"No valid header separator found.");
+
+	// return _parseHeaders(lines.substr(headerEnd + 4).size(), lines.substr(0, headerEnd));
+	return 200;
 }
 
 int	RequestParse::runcgiscripte()
@@ -509,7 +520,6 @@ int	RequestParse::runcgiscripte()
 	char*	env[env_strings.size() + 1];
 	size_t	i = 0;
 	int		bodyfd = -1;
-	int		re;
 
 	try 
 	{
@@ -532,12 +542,15 @@ int	RequestParse::runcgiscripte()
 			throw (std::string)("Fork failed");
 		if (_method == "POST")
 			close(bodyfd);
-		re = _waitForCGIProcess(pid) == 200 ? parseCGIOutput("/tmp/outCGI.text") : 504;
+		_statusCode = _waitForCGIProcess(pid) == 200 ? (status)parseCGIOutput("/tmp/outCGI.text") : (status)504;
+		if (_statusCode == 504)
+			_statusCodeMessage = "Gateway Timeout";
 	}catch(std::string err){
-		std::cerr << err << std::endl;
-		re = 504;
+		std::cerr <<"hahwa" <<err << std::endl;
+		_statusCode = (status)500;
+		_statusCodeMessage = "Internal Server Error";
 	}
-	return re;
+	return 0;
 }
 
 

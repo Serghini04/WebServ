@@ -126,15 +126,15 @@ void	Check_Intree(std::string Name, std::stack<char>& ServStack, int& index)
 {
 	std::string	str2;
 	std::string	str1;
-	std::istringstream	ss(Name);
+	std::istringstream	ss(Utility::toLowerCase(Name));
 
 	ss >> str1;
 	ss >> str2;
 	str1 = trim(str1);
 	str2 = trim(str2);
-	if (!(str1 == "Server" && (str2 == "{" || str2.empty())) && str1 != "Server{")
+	if (!(str1 == "server" && (str2 == "{" || str2.empty())) && str1 != "server{")
 		throw (std::string("Error: Missing Server{} block, line ") + Utility::ToStr(index));
-	if (str1 == "Server{" || str2 == "{")
+	if (str1 == "server{" || str2 == "{")
 		ServStack.push('{');
 }
 

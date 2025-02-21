@@ -6,7 +6,7 @@ def show_cookie(c):
         print(a,':', morsel.value,'<br>')
 
 cookie = cookies.BaseCookie()
-print("Content-type: text/html\r\n")
+print("Content-type: text/html\r\n\r\n")
 if 'HTTP_COOKIE' in os.environ: 
     cookie.load(os.environ["HTTP_COOKIE"])
     # cookie.clear()
