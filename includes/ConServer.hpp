@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ConServer.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 16:02:15 by hidriouc          #+#    #+#             */
-/*   Updated: 2025/01/25 15:21:27 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/02/19 10:49:13 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,24 +26,25 @@
 class Conserver {
 	private:
 		std::map<std::string, std::string> serv_attributes;
-		std::list<std::map<std::string, std::string> > location_list;
 		std::vector<std::pair<std::string, std::string> > listening;
+		std::list<std::map<std::string, std::string> > location_list;
 		std::vector <std::string> AllPaths;
 		long long client_max_body_size;
-		
 	public:
-		void addAttribute(const std::string& key, const std::string& value);
-		void addPath(std::string path);
-		std::vector<std::string> getphats();
-		void addLocation(const std::map<std::string, std::string> loc_attribute);
-		void addlistening(std::pair<std::string, std::string> listen);
-		std::vector<std::pair<std::string, std::string> >  getlistening();
-		std::list<std::map<std::string, std::string> >	getlist();
-		std::string getAttributes(std::string att);
-		std::string getErrorPage(int ERRNumber);
+		void	addAttribute(const std::string& key, const std::string& value);
+		void	addPath(std::string path);
 		void	addBodySize(std::string value);
+		void	addLocation(const std::map<std::string, std::string> loc_attribute);
+		void	addlistening(std::pair<std::string, std::string> listen);
 		long long	getBodySize();
-		std::map<std::string, std::string> getLocation(std::string locaPath);
+		std::pair<std::string, std::string>	getreturnof(std::string path);
+		std::string	getAttributes(std::string att);
+		std::string	getErrorPage(int ERRNumber);
+		std::vector<std::string>	getphats();
+		std::map<std::string, std::string>	getLocation(std::string locaPath);
+		std::vector<std::pair<std::string, std::string> >	getlistening();
+		std::list<std::map<std::string, std::string> >		getlist();
 };
 
 std::vector<Conserver> parseConfigFile(char* );
+void parseLocation(const std::string& confline, Conserver& server, std::ifstream& infile, int& index, std::stack<char>& ServStack, std::map<std::string, std::string>& lis);

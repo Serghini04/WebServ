@@ -29,6 +29,7 @@ private:
     RequestParse                        &request;
     bool                                hasErrorFile;
     bool                                isDirectory;
+    bool                                endResponse;
     std::string                         directoryContent;
 public:
     Response(Conserver &conserver, RequestParse &request);
@@ -38,11 +39,14 @@ public:
     int         processDirectory(std::string &path);
     std::string processResponse(int isSuccess);
     std::string getHeader();
-    void        ProcessUrl();
+    void        ProcessUrl(std::map<std::string, std::string> location);
     void        handelRequestErrors();
     void        SendError(enum status code);
     int         getFileSize();
     int        GetErrorFromStrSize();
+    bool    IsDirectory(const char *path);
+    std::string handelRedirection(std::string redirection);
+    std::string getCgiResponse();
 };
 
 
