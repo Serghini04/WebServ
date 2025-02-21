@@ -229,6 +229,9 @@ void	RequestParse::checkAllowedMethod()
 	std::string	location = matchingURL();
 
 	_location = location;
+	if (_configServer.getAttributes("return") != "" || _configServer.getLocation(_location)["return"] != "")
+		throw std::string("200 OK");
+
 	std::cout << "based on this location =>" << location << "<" << std::endl;
 	// std::cerr << ">>" << _location << "<<" << std::endl;
 	// std::cerr <<  _configServer.getLocation(_location)["cgi"] << std::endl;
