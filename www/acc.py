@@ -121,11 +121,10 @@ def handleLogin():
             cookies_obj["SID"]["expires"] = 120  # Set the cookie to expire in 2 minutes
             
             # Output the cookie headers
+            print("HTTP/1.1 302 Found")
             print(cookies_obj.output())
             # print("HTTP/1.1 200 OK")
-            print("Content-Type: text/html\r\n\r\n")
-            # print("Location: acc.py")
-            # print("\r\n\r\n")
+            print("Location: acc.py\r\n\r\n")
     else:
         if os.path.exists('user_database'):
             with open('user_database', 'rb') as f:

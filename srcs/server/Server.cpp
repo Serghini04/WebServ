@@ -25,7 +25,6 @@ void Server::setupConnectionTimer(int clientSocket)
            NOTE_SECONDS,        // Use seconds resolution
            TIMEOUT_SECONDS,     // 5 second timeout
            NULL);               // No user data
-
     if (kevent(kq, &timerEvent, 1, NULL, 0, NULL) == -1)
     {
         SendError(clientSocket);
@@ -88,22 +87,29 @@ void Server::CleanUpAllocation(int clientSocket)
 {
     manageEvents(REMOVE_READ, clientSocket);
     manageEvents(REMOVE_WRITE, clientSocket);
-    delete clientsRequest[clientSocket];
-    delete clientsResponse[clientSocket];
-    clientsResponse.erase(clientSocket);
-    clientsRequest.erase(clientSocket);
+    if (clientsRequest.count(clientSocket))
+    {
+        delete clientsRequest[clientSocket];
+        clientsRequest.erase(clientSocket);
+    }
+    if (clientsResponse.count(clientSocket))
+    {
+        delete clientsResponse[clientSocket];
+        clientsResponse.erase(clientSocket);
+    }
 }
 
 void Server::ConnectionClosed(int clientSocket)
 {
-    if (clientsRequest.count(clientSocket))
-        CleanUpAllocation(clientSocket);
+    CleanUpAllocation(clientSocket);
+    serversClients.erase(clientSocket);
     close(clientSocket);
 }
+
 void Server::ResponseEnds(int clientSocket)
 {
     clientsRequest[clientSocket]->SetRequestIsDone(false);
-    if(clientsRequest[clientSocket]->isCGI())
+    if (clientsRequest[clientSocket]->isCGI())
         clientsRequest[clientSocket]->setIsCGI(false);
     if (clientsRequest[clientSocket]->isConnectionClosed())
         ConnectionClosed(clientSocket);
@@ -137,7 +143,6 @@ void Server::ConfigTheSocket(Conserver &config)
         int bindResult = bind(serverSocket, (const sockaddr *)&addressSocket, sizeof(addressSocket));
         if (bindResult == -1)
             errorMsg("bind Fails", serverSocket);
-
         if (listen(serverSocket, 128) == -1)
             errorMsg("listen Fails", serverSocket);
         this->serversConfigs[serverSocket] = &config;
@@ -159,16 +164,7 @@ void Server::RecivData(int clientSocket)
     memset(buffer, 0, sizeof(buffer));
     bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
     if (bytesRead <= 0)
-    {
-        if (errno == EAGAIN || errno == EWOULDBLOCK)
-            return;
-        if (errno == ECONNRESET)
-        {
-            ConnectionClosed(clientSocket);
-            return;
-        }
         return;
-    }
     fullData.assign(buffer, bytesRead);
     (*clientsRequest[clientSocket]).readBuffer(fullData);
     if ((*clientsRequest[clientSocket]).requestIsDone())
@@ -176,13 +172,8 @@ void Server::RecivData(int clientSocket)
         puts("Data Recived");
         manageEvents(REMOVE_READ, clientSocket);
         manageEvents(ADD_WRITE, clientSocket);
-        // hidriouc add folowing line for test runing script ??
         if ((*clientsRequest[clientSocket]).isCGI())
-            if((*clientsRequest[clientSocket]).runcgiscripte() != 200)
-            {
-                clientsRequest[clientSocket]->SetStatusCode(eNotFound);
-                clientsRequest[clientSocket]->SetStatusCodeMsg("Not Found");
-            }
+            (*clientsRequest[clientSocket]).runcgiscripte();
         return;
     }
 }
@@ -194,13 +185,8 @@ void Server::SendData(int clientSocket)
 
     if (!clientsResponse.count(clientSocket))
         clientsResponse[clientSocket] = new Response(*serversConfigs[serversClients[clientSocket]],
-                                                     *clientsRequest[clientSocket]);
+                                                     clientsRequest[clientSocket]);
     std::string response = clientsResponse[clientSocket]->getResponse();
-    if (response.empty())
-    {
-        ResponseEnds(clientSocket);
-        return;
-    }
     responseSize = response.size();
     while (totalSent < responseSize)
     {
@@ -208,18 +194,15 @@ void Server::SendData(int clientSocket)
                                  response.c_str() + totalSent,
                                  responseSize - totalSent,
                                  0);
-        if (bytesSent <= 0)
+        if (bytesSent < 0)
         {
             if (errno == EAGAIN || errno == EWOULDBLOCK)
                 return;
-            if (errno == EPIPE)
-            {
-                ConnectionClosed(clientSocket);
-                return;
-            }
             SendError(clientSocket);
             return;
         }
+        else if (bytesSent == 0)
+            ResponseEnds(clientSocket);
         totalSent += bytesSent;
     }
 }
