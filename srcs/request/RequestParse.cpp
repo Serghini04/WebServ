@@ -6,7 +6,7 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/16 11:05:41 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/02/21 12:34:59 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -408,7 +408,7 @@ void RequestParse::_parseHeaderLine(const std::string& line, std::string lines[]
 			throw((std::string)"Content-Length !");
 		lines[1] = _extractHeaderValue(line);
 	}
-	else if (line.find("Content-Type:") != std::string::npos){
+	 if (line.find("Content-Type:") != std::string::npos){
 		if (!lines[2].empty())
 			throw((std::string)"Content-Type!");
 		lines[2] = _extractHeaderValue(line);
@@ -420,11 +420,12 @@ int	RequestParse::_parseHeaders(size_t bodysize, const std::string& headers)
 	std::stringstream ss(headers);
 	std::string line, lines[3];
 
+	(void)bodysize;
 	while (std::getline(ss, line))
 		_parseHeaderLine(line, lines);
-	if (lines[0] != "HTTP/1.1 200 OK\r")
-		throw (std::string)("ERROR: Unexpected Start header");
-	_validateContentLength(lines[1], bodysize);
+	// if (lines[0] != "HTTP/1.1 200 OK\r")
+	// 	throw (std::string)("ERROR: Unexpected Start header");
+	// _validateContentLength(lines[1], bodysize);
 	_validateContentType(lines[2]);
 	return 200;
 }
@@ -448,8 +449,9 @@ int RequestParse::_forkAndExecute(int infd, int outfd, char* env[])
 	{
 		_dupfd(infd, outfd);
 		std::string scriptPath = _configServer.getAttributes("root") + _url;
-		char* args[] = {(char*)scriptPath.c_str(), (char*)"POST", (char*)"data=somevalue", NULL};
-		if (execve(scriptPath.c_str(), args, env) == -1)
+		std::string AbsPath = _configServer.getLocation(_location)["cgi"].substr(_configServer.getLocation(_location)["cgi"].find(' ')+ 1) ;
+	char* args[] = {(char*)AbsPath.c_str(), (char*)scriptPath.c_str(), NULL};
+		if (execve(AbsPath.c_str(), args, env) == -1)
 		{
 			perror("execve failed");
 			exit(EXIT_FAILURE);
@@ -482,7 +484,6 @@ int RequestParse::parseCGIOutput(const char* cgiOutputFile)
 	char buf[SIZE_BUFFER + 1] = {0};
 	while (file.read(buf, SIZE_BUFFER))
 		lines.append(buf);
-	lines.append(buf, file.gcount());
 	size_t headerEnd = lines.find("\r\n\r\n");
 	if (headerEnd == std::string::npos) 
 	{
