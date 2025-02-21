@@ -30,6 +30,7 @@ class UserDataBase:
 
 
 def printAccPage(session):
+    print("HTTP/1.1 200 OK")
     print("Content-Type: text/html\r\n\r\n")
     print("<html>")
     print("<head>")
@@ -43,6 +44,7 @@ def printAccPage(session):
     print("</html>")
 
 def printUserMsg(msg):
+    print("HTTP/1.1 200 OK")
     print("Content-Type: text/html\r\n\r\n")
     print("<html>")
     print("<head>")
@@ -55,6 +57,7 @@ def printUserMsg(msg):
     print("</html>")
 
 def printLogin():
+    print("HTTP/1.1 200 OK")
     print("Content-Type: text/html\r\n\r\n")
     print("<html> ")
     print("<head>")
@@ -119,8 +122,10 @@ def handleLogin():
             
             # Output the cookie headers
             print(cookies_obj.output())
-            print("Location: acc.py")
-            print("\r\n\r\n")
+            # print("HTTP/1.1 200 OK")
+            print("Content-Type: text/html\r\n\r\n")
+            # print("Location: acc.py")
+            # print("\r\n\r\n")
     else:
         if os.path.exists('user_database'):
             with open('user_database', 'rb') as f:

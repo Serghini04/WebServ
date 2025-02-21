@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   ConServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 16:54:05 by hidriouc          #+#    #+#             */
-/*   Updated: 2025/01/27 15:37:36 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/02/19 11:29:38 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <Server.hpp>
+#include <algorithm>
 #include <chrono>
 #include <cstddef>
 #include <cstdlib>
@@ -21,7 +22,10 @@
 
 void	Conserver::addAttribute(const std::string& key, const std::string& value)
 {
-	serv_attributes[key] = value;
+	if (!serv_attributes[key].empty())
+		std::cerr << "[Warning] : Duplicate server_name '" << value << " has ignored'"<< std::endl;
+	else
+		serv_attributes[key] = value;
 }
 void	Conserver::addLocation(const std::map<std::string, std::string> loc_attribute)
 {
@@ -48,9 +52,8 @@ void Conserver::addlistening(std::pair<std::string, std::string > lsn)
 	{
 		if (it->second == lsn.second && it->first == lsn.first)
 		{
-		std::cout << it->first <<":"<< it->second<<std::endl;
-			std::cerr << "duplicate port << "<<lsn.second<< " >>!"<<std::endl;
-			exit(EXIT_FAILURE);
+			std::cerr << "[Warning]: Duplicate listening << " << lsn.first << ":" <<lsn.second<< " >> ignored!" << std::endl;
+			return;
 		}
 		it++;
 	}
@@ -73,6 +76,20 @@ void	Conserver::addBodySize(std::string value)
 	}
 	if (value.empty())
 		client_max_body_size = -1;
+}
+std::pair<std::string, std::string>	Conserver::getreturnof(std::string path)
+{	std::string value;
+	std::pair <std::string, std::string > retpair("","");
+	if (path.empty())
+		value = getAttributes("return");
+	else
+		value = Conserver::getLocation(path)["return"];
+	if (!value.empty()){
+		
+		retpair.first = value.substr(0,value.find_first_of(" \t"));
+		retpair.second = value.substr(value.find_last_of(" \t") + 1);
+	}
+	return retpair;
 }
 std::vector<std::string> Conserver::getphats()
 {
@@ -117,21 +134,10 @@ std::vector<std::pair<std::string, std::string> >  Conserver::getlistening()
 
 std::map<std::string, std::string> Conserver::getLocation(std::string valueToFind)
 {
-	// Iterate through the list
 	for (std::list<std::map<std::string, std::string> >::iterator listIt = location_list.begin();
-	 listIt != location_list.end(); ++listIt)
-	{
-		// Iterate through the map
-		for (std::map<std::string, std::string>::iterator mapIt = listIt->begin();
-		 mapIt != listIt->end(); ++mapIt) {
-		// Check if the value matches
-			
-			if (mapIt->second == valueToFind) {
-			return *listIt; // Return the entire map that contains the value
-		}
-		}
-	}
-	// Return an empty map if the value is not found
+		listIt != location_list.end(); ++listIt)
+		if ( (*listIt)["PATH"] == valueToFind) 
+				return *listIt;
 	return std::map<std::string, std::string>();
 }
 
