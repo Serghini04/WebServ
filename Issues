@@ -1,11 +1,5 @@
 1. case index_on : don't print folders "." ".."
 
-2. Timeout cgi
-
 3. Handle multiple CGI
 
 4. Close fd leaks.
-
-5. redirect_code should be between 300 to 399.
-
-5. Cookies part

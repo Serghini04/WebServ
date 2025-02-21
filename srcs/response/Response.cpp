@@ -7,6 +7,7 @@ Response::Response(Conserver &conserver, RequestParse &request) : conserver(cons
     statusLine = "HTTP/1.1 200 OK\r\n";
     hasErrorFile = true;
     isDirectory = false;
+    endResponse = false;
 }
 
 Response::~Response()
@@ -66,6 +67,8 @@ std::string Response::getHeader()
     std::string ser = conserver.getAttributes("server_name");
     ser.erase(ser.end() - 1);
     _headerMap["Server"] = ser;
+    if (request.isCGI())
+        contentType = Utility::getExtensions("", ".html");
     _headerMap["Content-Type"] = contentType;
     _headerMap["Content-Length"] = bodySize.str();
     _headerMap["Connection"] = request.getMetaData().count("Connection") == 0 ? "keep-alive" : request.getMetaData()["Connection"];
@@ -100,20 +103,26 @@ void Response::SendError(enum status code)
     handelRequestErrors();
 }
 
-void Response::ProcessUrl()
+void Response::ProcessUrl(std::map<std::string, std::string> location)
 {
     std::string newUrl = conserver.getAttributes("root");
-    std::map<std::string, std::string> location = conserver.getLocation(request.location());
     std::string index = "";
     std::ostringstream oss;
-    
-    if (!location["index"].empty() && request.URL() == "/")
-        index = location["index"];
-    else if (location["index"].empty() && Utility::isDirectory(request.URL()) &&
-             (location["auto_index"].empty() || location["auto_index"].find("off") != std::string::npos))
-        SendError(eFORBIDDEN);
-    oss << newUrl << location["root"] << request.URL() << index;
+
+    if (Utility::isDirectory(newUrl + request.URL()))
+    {
+        if (!location["index"].empty())
+            oss << newUrl << location["root"] << request.URL() << "/" << location["index"];
+        else if (location["index"].empty() &&
+                 (location["auto_index"].empty() || location["auto_index"].find("off") != std::string::npos))
+            SendError(eFORBIDDEN);
+        else
+            oss << newUrl << location["root"] + request.URL();
+    }
+    else
+        oss << newUrl << location["root"] + request.URL();
     newUrl = oss.str();
+    std::cout << newUrl << std::endl;
     request.setUrl(newUrl);
 }
 
@@ -164,22 +173,50 @@ int Response::processDirectory(std::string &path)
     return directoryContent.length();
 }
 
+std::string Response::handelRedirection(std::string redirection)
+{
+    std::string code;
+    code = redirection.substr(0, 3);
+    std::string url_red = redirection.substr(code.length() + 1);
+
+     if (url_red.find("http://") != 0 && url_red.find("https://") != 0)
+        url_red = "http://" + url_red;
+    std::string httpResponse =
+        "HTTP/1.1 " + code + " Moved Permanently\r\n"
+                                      "Location: " +
+        url_red + "\r\n"
+                       "Content-Type: text/html; charset=UTF-8\r\n"
+                       "Content-Length: 0\r\n"
+                       "Connection: close\r\n"
+                       "\r\n";
+    this->endResponse = true;
+    return httpResponse;
+}
 std::string Response::processResponse(int state)
 {
+    if(this->endResponse)
+        return "";
+    std::map<std::string, std::string> location = conserver.getLocation(request.location());
     if (firstCall)
     {
         if (state == 0)
             handelRequestErrors();
         else
         {
-            ProcessUrl();
+            std::string redirection = conserver.getAttributes("return");
+            if (!redirection.empty())
+                return handelRedirection(redirection);
+            ProcessUrl(location);
+            if (!location["return"].empty())
+                return handelRedirection(location["return"]);
+            if (request.isCGI())
+            {
+                std::string line = getCgiResponse();
+                return line;
+            }
             if (request.statusCode() == eOK && request.method() != ePOST)
             {
-                std::string str;
-                if (request.isCGI())
-                    str = "/tmp/outCGI.html";
-                else
-                    str = request.URL();
+                std::string str = request.URL();
                 if (Utility::isDirectory(str.c_str()))
                 {
                     isDirectory = true;
@@ -187,7 +224,6 @@ std::string Response::processResponse(int state)
                     firstCall = 0;
                     return getHeader();
                 }
-                std::cerr << ">>" <<  str << "<<\n";
                 file.open(str, std::ios::binary | std::ios::in);
                 size_t pos = str.find(".");
                 if (pos != std::string::npos)
@@ -209,14 +245,25 @@ std::string Response::processResponse(int state)
     return getHeader();
 }
 
-std::string Response::getResponse()
+std::string Response::getCgiResponse()
 {
     std::string str;
 
-    if (request.statusCode() != eOK 
-            && request.statusCode() != eCreated)
+    file.open("/tmp/outCGI.text", std::ios::binary | std::ios::in);
+    if (!file.is_open())
+        SendError(eNotFound);
+
+    this->endResponse = true;
+    return FileToString();
+}
+
+std::string Response::getResponse()
+{
+    std::string str;
+    if (request.statusCode() != eOK && request.statusCode() != eCreated)
         str = processResponse(0);
     else
         str = processResponse(1);
+    // std::cout << str << std::endl;
     return str;
 }
