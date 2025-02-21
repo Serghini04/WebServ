@@ -26,13 +26,13 @@ private:
     Conserver&                          conserver;
     static std::string                  errHtml;
     std::string                         errMsg;
-    RequestParse                        &request;
+    RequestParse                        *request;
     bool                                hasErrorFile;
     bool                                isDirectory;
     bool                                endResponse;
     std::string                         directoryContent;
 public:
-    Response(Conserver &conserver, RequestParse &request);
+    Response(Conserver &conserver, RequestParse *request);
     ~Response();
     std::string FileToString();
     std::string getResponse();
