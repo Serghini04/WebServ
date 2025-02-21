@@ -3,26 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="/assets/css/accstyle.css">
+    <title>Login Form</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --background: #f3f4f6;
+            --text: #1f2937;
+            --card: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--background);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .login-container {
+            background: var(--card);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-title {
+            font-size: 1.75rem;
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--primary);
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .login-button:hover {
+            background: var(--primary-hover);
+        }
+
+        .register-link {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .register-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <div class="auth-container">
-        <h1 class="auth-title">Sign In</h1>
+    <main class="login-container">
+        <h1 class="login-title">Welcome Back</h1>
         <form action="acc.py" method="get">
             <div class="form-group">
-                <label class="form-label" for="username">Username</label>
-                <input class="form-input" type="text" id="username" name="username" required>
+                <label for="username">Username:</label>
+                <input type="text" id="username" placeholder="Enter Username" name="username" required>
             </div>
             <div class="form-group">
-                <label class="form-label" for="password">Password</label>
-                <input class="form-input" type="password" id="password" name="password" required>
+                <label for="password">Password:</label>
+                <input type="password" id="password" placeholder="Enter Password" name="password" required>
             </div>
-            <button type="submit" class="btn-primary">Sign In</button>
+            <button type="submit" class="login-button">Sign In</button>
+            <p class="register-link">No account? <a href="register.html">Create one</a></p>
         </form>
-        <div class="auth-footer">
-            Don't have an account? <a href="/register.html" class="auth-link">Register</a>
-        </div>
-    </div>
+    </main>
 </body>
 </html>

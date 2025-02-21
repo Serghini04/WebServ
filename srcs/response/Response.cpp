@@ -1,6 +1,6 @@
 #include <Response.hpp>
 
-Response::Response(Conserver &conserver, RequestParse &request) : conserver(conserver), request(request)
+Response::Response(Conserver &conserver, RequestParse *request) : conserver(conserver), request(request)
 {
     size = 0;
     firstCall = 1;
@@ -19,7 +19,7 @@ int Response::GetErrorFromStrSize()
 {
     if (errMsg.empty())
     {
-        errMsg = replacePlaceholders(getFileHtml(), "$MSG", request.statusCodeMessage());
+        errMsg = replacePlaceholders(getFileHtml(), "$MSG", request->statusCodeMessage());
         return errMsg.size();
     }
     return -1;
@@ -67,11 +67,11 @@ std::string Response::getHeader()
     std::string ser = conserver.getAttributes("server_name");
     ser.erase(ser.end() - 1);
     _headerMap["Server"] = ser;
-    if (request.isCGI())
+    if (request->isCGI())
         contentType = Utility::getExtensions("", ".html");
     _headerMap["Content-Type"] = contentType;
     _headerMap["Content-Length"] = bodySize.str();
-    _headerMap["Connection"] = request.getMetaData().count("Connection") == 0 ? "keep-alive" : request.getMetaData()["Connection"];
+    _headerMap["Connection"] = request->getMetaData().count("Connection") == 0 ? "keep-alive" : request->getMetaData()["Connection"];
     _headerMap["Keep-Alive"] = "timeout=5, max = 100";
     response << statusLine;
     for (std::map<std::string, std::string>::const_iterator
@@ -86,8 +86,8 @@ std::string Response::getHeader()
 
 void Response::handelRequestErrors()
 {
-    statusLine = "HTTP/1.1 " + request.statusCodeMessage() + "\r\n";
-    file.open(conserver.getErrorPage(request.statusCode()));
+    statusLine = "HTTP/1.1 " + request->statusCodeMessage() + "\r\n";
+    file.open(conserver.getErrorPage(request->statusCode()));
     if (file.fail())
         hasErrorFile = false;
     this->contentType = Utility::getExtensions("", ".html");
@@ -95,11 +95,11 @@ void Response::handelRequestErrors()
 
 void Response::SendError(enum status code)
 {
-    request.SetStatusCode(code);
+    request->SetStatusCode(code);
     if (code == eNotFound)
-        request.SetStatusCodeMsg("404 Not Found");
+        request->SetStatusCodeMsg("404 Not Found");
     else if (code == eFORBIDDEN)
-        request.SetStatusCodeMsg("403 forbidden");
+        request->SetStatusCodeMsg("403 forbidden");
     handelRequestErrors();
 }
 
@@ -109,21 +109,20 @@ void Response::ProcessUrl(std::map<std::string, std::string> location)
     std::string index = "";
     std::ostringstream oss;
 
-    if (Utility::isDirectory(newUrl + request.URL()))
+    if (Utility::isDirectory(newUrl + request->URL()))
     {
         if (!location["index"].empty())
-            oss << newUrl << location["root"] << request.URL() << "/" << location["index"];
+            oss << newUrl << location["root"] << request->URL() << "/" << location["index"];
         else if (location["index"].empty() &&
                  (location["auto_index"].empty() || location["auto_index"].find("off") != std::string::npos))
             SendError(eFORBIDDEN);
         else
-            oss << newUrl << location["root"] + request.URL();
+            oss << newUrl << location["root"] + request->URL();
     }
     else
-        oss << newUrl << location["root"] + request.URL();
+        oss << newUrl << location["root"] + request->URL();
     newUrl = oss.str();
-    std::cout << newUrl << std::endl;
-    request.setUrl(newUrl);
+    request->setUrl(newUrl);
 }
 
 std::string getFileTime(struct stat &fileInfo, const std::string &file)
@@ -196,7 +195,7 @@ std::string Response::processResponse(int state)
 {
     if(this->endResponse)
         return "";
-    std::map<std::string, std::string> location = conserver.getLocation(request.location());
+    std::map<std::string, std::string> location = conserver.getLocation(request->location());
     if (firstCall)
     {
         if (state == 0)
@@ -209,14 +208,14 @@ std::string Response::processResponse(int state)
             ProcessUrl(location);
             if (!location["return"].empty())
                 return handelRedirection(location["return"]);
-            if (request.isCGI())
+            if (request->isCGI())
             {
                 std::string line = getCgiResponse();
                 return line;
             }
-            if (request.statusCode() == eOK && request.method() != ePOST)
+            if (request->statusCode() == eOK && request->method() != ePOST)
             {
-                std::string str = request.URL();
+                std::string str = request->URL();
                 if (Utility::isDirectory(str.c_str()))
                 {
                     isDirectory = true;
@@ -231,7 +230,7 @@ std::string Response::processResponse(int state)
                 if (!file.is_open())
                     SendError(eNotFound);
             }
-            else if (request.method() == ePOST)
+            else if (request->method() == ePOST)
             {
                 file.open("www/error_pages/post.json");
                 this->contentType = Utility::getExtensions("", ".json");
@@ -252,18 +251,17 @@ std::string Response::getCgiResponse()
     file.open("/tmp/outCGI.text", std::ios::binary | std::ios::in);
     if (!file.is_open())
         SendError(eNotFound);
-
     this->endResponse = true;
     return FileToString();
 }
 
 std::string Response::getResponse()
 {
-    std::string str;
-    if (request.statusCode() != eOK && request.statusCode() != eCreated)
+    std::string str = "";
+
+    if (request && request->statusCode() != eOK && request->statusCode() != eCreated)
         str = processResponse(0);
-    else
+    else if(request)
         str = processResponse(1);
-    // std::cout << str << std::endl;
     return str;
 }
