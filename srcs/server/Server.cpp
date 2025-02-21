@@ -138,8 +138,7 @@ void Server::ConfigTheSocket(Conserver &config)
             errorMsg("nonblocking Fails", serverSocket);
         addressSocket.sin_family = AF_INET;
         addressSocket.sin_port = htons(Utility::StrToInt(address[i].second.c_str()));
-        addressSocket.sin_addr.s_addr = INADDR_ANY;
-        // addressSocket.sin_addr.s_addr = inet_addr(address[i].first.c_str());
+        addressSocket.sin_addr.s_addr = inet_addr(address[i].first.c_str());
         int bindResult = bind(serverSocket, (const sockaddr *)&addressSocket, sizeof(addressSocket));
         if (bindResult == -1)
             errorMsg("bind Fails", serverSocket);
