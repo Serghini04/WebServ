@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/21 16:26:16 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/21 18:07:06 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,6 +224,8 @@ void	RequestParse::checkAllowedMethod()
 	std::string	location = matchingURL();
 
 	_location = location;
+	if (_configServer.getAttributes("return") != "" || _configServer.getLocation(_location)["return"] != "")
+		throw std::string("200 OK");
 	if (_configServer.getLocation(_location)["cgi"] == "on" && (Utility::stringEndsWith(_url, ".py") || Utility::stringEndsWith(_url, ".php")))
 		_body.setIsCGI(true);
 	if (_configServer.getLocation(_location)["allowed_methods"].find(Utility::toUpperCase(_method)) == std::string::npos)
