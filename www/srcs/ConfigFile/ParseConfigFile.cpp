@@ -43,15 +43,19 @@ void resetListeningState(bool& sin, std::string& host, std::map<std::string, std
 	host.clear();
 	listenings["Default"].clear();
 }
-bool is_validCGIATT(std::string	value)
+bool is_validCGIATT(std::string& key,std::string& value)
 {
 	std::stringstream	ss(value);
 	std::string			tb[3];
 	int i = -1;
-	while (ss >> tb[++i])
+	while (i < 3 && ss >> tb[++i])
 		;
 	if ((tb[0] != ".py" && tb[0] != ".php") || !tb[2].empty())
 		return 1;
+	key = key + tb[0];
+	value = tb[1];
+	std::cout << ">>>*|" << key << std::endl;
+	std::cout << ">>>|" << value << std::endl;
 	return 0;
 }
 void	is_validvalue(std::string &key, std::string &value, int index_line)
@@ -63,7 +67,7 @@ void	is_validvalue(std::string &key, std::string &value, int index_line)
 		throw ((std::string)"Invalid structer in the line "+Utility::ToStr(index_line));
 	if (key == "client_max_body_size" && value.find_first_not_of("0123456789") != std::string::npos)
 		throw ((std::string)"Invalid structer in the line "+Utility::ToStr(index_line));
-	if (key == "cgi" && is_validCGIATT(value))
+	if (key == "cgi" && is_validCGIATT(key, value))
 		throw ((std::string)"**Invalid structer in the value of  line "+Utility::ToStr(index_line));
 	if (key == "allowed_methods")
 	{
@@ -136,15 +140,15 @@ void	Check_Intree(std::string Name, std::stack<char>& ServStack, int& index)
 {
 	std::string	str2;
 	std::string	str1;
-	std::istringstream	ss(Name);
+	std::istringstream	ss(Utility::toLowerCase(Name));
 
 	ss >> str1;
 	ss >> str2;
 	str1 = trim(str1);
 	str2 = trim(str2);
-	if (!(str1 == "Server" && (str2 == "{" || str2.empty())) && str1 != "Server{")
+	if (!(str1 == "server" && (str2 == "{" || str2.empty())) && str1 != "server{")
 		throw (std::string("Error: Missing Server{} block, line ") + Utility::ToStr(index));
-	if (str1 == "Server{" || str2 == "{")
+	if (str1 == "server{" || str2 == "{")
 		ServStack.push('{');
 }
 
