@@ -6,7 +6,7 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/21 12:34:59 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/02/21 18:29:35 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,16 @@ RequestParse::RequestParse(Conserver &conserver) : _body(conserver.getBodySize()
 bool	isDuplicate(char a, char b)
 {
 	return a == '/' && b == '/';
+}
+
+bool	RequestParse::isCGI()
+{
+	return _body.isCGI();
+}
+
+void	RequestParse::setIsCGI(bool s)
+{
+	_body.setIsCGI(s);
 }
 
 void	RequestParse::checkURL()
@@ -218,9 +228,15 @@ void	RequestParse::checkAllowedMethod()
 {
 	std::string	location = matchingURL();
 
-	_location = location; 
+	_location = location;
 	std::cout << "based on this location =>" << location << "<" << std::endl;
-	if (_configServer.getLocation(location)["allowed_methods"].find(Utility::toUpperCase(_method)) == std::string::npos)
+	// std::cerr << ">>" << _location << "<<" << std::endl;
+	// std::cerr <<  _configServer.getLocation(_location)["cgi"] << std::endl;
+	if (_configServer.getLocation(_location)["cgi"] == "on" && (Utility::stringEndsWith(_url, ".py") || Utility::stringEndsWith(_url, ".php")))
+	{
+		_body.setIsCGI(true);
+	}
+	if (_configServer.getLocation(_location)["allowed_methods"].find(Utility::toUpperCase(_method)) == std::string::npos)
 		throw std::string("405 Method Not Allowed");
 	if (_enumMethod == ePOST)
 		_body.setFileName(_configServer.getLocation(location)["upload_store"] + "/Output");
@@ -343,7 +359,7 @@ void    RequestParse::readBuffer(std::string buff)
 		_requestIsDone = 1;
 	}
 }
-
+// hidriouc part :
 std::vector<std::string> RequestParse::_buildEnvVars() 
 {
 	std::vector<std::string> env_vars;
@@ -418,15 +434,12 @@ void RequestParse::_parseHeaderLine(const std::string& line, std::string lines[]
 int	RequestParse::_parseHeaders(size_t bodysize, const std::string& headers)
 {
 	std::stringstream ss(headers);
-	std::string line, lines[3];
+	std::string line;
 
 	(void)bodysize;
-	while (std::getline(ss, line))
-		_parseHeaderLine(line, lines);
-	// if (lines[0] != "HTTP/1.1 200 OK\r")
-	// 	throw (std::string)("ERROR: Unexpected Start header");
-	// _validateContentLength(lines[1], bodysize);
-	_validateContentType(lines[2]);
+	while (std::getline(ss, line) && line.find ("Content-Typ") == std::string::npos)
+		;
+	_validateContentType(line);
 	return 200;
 }
 void	RequestParse::_dupfd(int infd, int outfd)
@@ -447,10 +460,16 @@ int RequestParse::_forkAndExecute(int infd, int outfd, char* env[])
 	int pid = fork();
 	if (pid == 0)
 	{
+		std::string exte = "cgi." + _url.substr(_url.length() - 3);
 		_dupfd(infd, outfd);
 		std::string scriptPath = _configServer.getAttributes("root") + _url;
-		std::string AbsPath = _configServer.getLocation(_location)["cgi"].substr(_configServer.getLocation(_location)["cgi"].find(' ')+ 1) ;
-	char* args[] = {(char*)AbsPath.c_str(), (char*)scriptPath.c_str(), NULL};
+		std::string AbsPath = _configServer.getLocation(_location)[exte].substr(_configServer.getLocation(_location)[exte].find(' ')+ 1) + ;
+		char* args[] = {(char*)AbsPath.c_str(), (char*)scriptPath.c_str(), NULL};
+		if (chdir(scriptPath.substr(0, scriptPath.rfind("/")).c_str()) == -1)
+			;
+		std::cerr <<"----------------------------------" <<std::endl;
+		std::cerr <<">>>|" << AbsPath.c_str()<<"|"<< _location <<std::endl;
+		std::cerr <<"----------------------------------"<<std::endl;
 		if (execve(AbsPath.c_str(), args, env) == -1)
 		{
 			perror("execve failed");
@@ -486,12 +505,10 @@ int RequestParse::parseCGIOutput(const char* cgiOutputFile)
 		lines.append(buf);
 	size_t headerEnd = lines.find("\r\n\r\n");
 	if (headerEnd == std::string::npos) 
-	{
-		std::cerr << "No valid header separator found." << std::endl;
-		return 500;
-	}
+		throw ((std::string)"No valid header separator found.");
 
 	return _parseHeaders(lines.substr(headerEnd + 4).size(), lines.substr(0, headerEnd));
+	return 200;
 }
 
 int	RequestParse::runcgiscripte()
@@ -500,7 +517,6 @@ int	RequestParse::runcgiscripte()
 	char*	env[env_strings.size() + 1];
 	size_t	i = 0;
 	int		bodyfd = -1;
-	int		re;
 
 	try 
 	{
@@ -523,12 +539,14 @@ int	RequestParse::runcgiscripte()
 			throw (std::string)("Fork failed");
 		if (_method == "POST")
 			close(bodyfd);
-		re = _waitForCGIProcess(pid) == 200 ? parseCGIOutput("/tmp/outCGI.text") : 504;
+		_statusCode = _waitForCGIProcess(pid) == 200 ? (status)parseCGIOutput("/tmp/outCGI.text") : (status)504;
+		if (_statusCode == 504)
+			_statusCodeMessage = "Gateway Timeout";
 	}catch(std::string err){
-		std::cerr << err << std::endl;
-		re = 504;
+		_statusCode = (status)500;
+		_statusCodeMessage = "Internal Server Error";
 	}
-	return re;
+	return 0;
 }
 
 
