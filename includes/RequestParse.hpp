@@ -77,9 +77,11 @@ class   RequestParse
 		bool		requestIsDone();
 		bool		isHeader();
 		std::string	URL();
+		bool		isCGI();
 		methods		method();
 
 		// set :
+		void		setIsCGI(bool s);
 		void		setUrl(std::string s);
 		void		setIsHeader(bool isHeader);
 		void		SetStatusCode(status s);
