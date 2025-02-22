@@ -52,10 +52,10 @@ void Server::manageEvents(enum EventsEnum events, int clientSocket)
         EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
         break;
     case REMOVE_READ:
-        EV_SET(&event, clientSocket, EVFILT_READ, EV_CLEAR, 0, 0, NULL);
+        EV_SET(&event, clientSocket, EVFILT_READ, EV_DELETE, 0, 0, NULL);
         break;
     case REMOVE_WRITE:
-        EV_SET(&event, clientSocket, EVFILT_READ, EV_CLEAR, 0, 0, NULL);
+        EV_SET(&event, clientSocket, EVFILT_READ, EV_DELETE, 0, 0, NULL);
         break;
     }
     if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
@@ -90,20 +90,25 @@ void Server::CleanUpAllocation(int clientSocket)
     if (clientsRequest.count(clientSocket))
     {
         delete clientsRequest[clientSocket];
+        clientsRequest[clientSocket] = NULL;
         clientsRequest.erase(clientSocket);
     }
     if (clientsResponse.count(clientSocket))
     {
         delete clientsResponse[clientSocket];
+        clientsResponse[clientSocket] = NULL;
         clientsResponse.erase(clientSocket);
     }
 }
 
 void Server::ConnectionClosed(int clientSocket)
 {
-    CleanUpAllocation(clientSocket);
-    serversClients.erase(clientSocket);
-    close(clientSocket);
+    if (clientsResponse.count(clientSocket))
+    {
+        CleanUpAllocation(clientSocket);
+        serversClients.erase(clientSocket);
+        close(clientSocket);
+    }
 }
 
 void Server::ResponseEnds(int clientSocket)
@@ -126,7 +131,6 @@ void Server::ConfigTheSocket(Conserver &config)
     {
         sockaddr_in addressSocket;
 
-        memset(&addressSocket, 0, sizeof(addressSocket));
         serverSocket = socket(AF_INET, SOCK_STREAM, 0);
         if (serverSocket == -1)
             errorMsg("Socket Creation Fails", serverSocket);
@@ -200,7 +204,10 @@ void Server::SendData(int clientSocket)
             return;
         }
         else if (bytesSent == 0)
+        {
             ResponseEnds(clientSocket);
+            return;
+        }
         totalSent += bytesSent;
     }
 }
@@ -237,7 +244,7 @@ void Server::HandelEvents(int n, struct kevent events[])
         else if (events[i].filter == EVFILT_READ)
         {
             clientSocket = events[i].ident;
-            if (clientsRequest.find(clientSocket) == clientsRequest.end())
+            if (!clientsRequest.count(clientSocket))
                 clientsRequest[clientSocket] = new RequestParse(*serversConfigs[serversClients[clientSocket]]);
             RecivData(clientSocket);
         }
