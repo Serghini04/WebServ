@@ -32,6 +32,12 @@ void Server::setupConnectionTimer(int clientSocket)
 }
 Server::~Server()
 {
+    for (std::map<int, Conserver *>::const_iterator
+             it = serversConfigs.begin();
+         it != serversConfigs.end(); it++)
+    {
+        delete it->second;
+    }
 }
 
 void Server::manageEvents(enum EventsEnum events, int clientSocket)
@@ -40,19 +46,25 @@ void Server::manageEvents(enum EventsEnum events, int clientSocket)
     {
     case ADD_READ:
         EV_SET(&event, clientSocket, EVFILT_READ, EV_ADD, 0, 0, NULL);
+        if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
+            SendError(clientSocket);
         break;
     case ADD_WRITE:
         EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
+        if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
+            SendError(clientSocket);
         break;
     case REMOVE_READ:
         EV_SET(&event, clientSocket, EVFILT_READ, EV_DELETE, 0, 0, NULL);
+        if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
+            SendError(clientSocket);
         break;
     case REMOVE_WRITE:
         EV_SET(&event, clientSocket, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
+        if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
+            SendError(clientSocket);
         break;
     }
-    if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
-        SendError(clientSocket);
 }
 void errorMsg(std::string str, int fd)
 {
@@ -153,8 +165,8 @@ void Server::RecivData(int clientSocket)
     char buffer[MAX_BUFFER];
 
     memset(buffer, 0, sizeof(buffer));
-    bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
     puts("Recive Data");
+    bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
     if (bytesRead <= 0)
     {
         if (errno == EAGAIN || errno == EWOULDBLOCK)
@@ -198,6 +210,11 @@ void Server::SendData(int clientSocket)
         {
             if (errno == EAGAIN || errno == EWOULDBLOCK)
                 return;
+            if (errno == EPIPE)
+            {
+                ResponseEnds(clientSocket);
+                return;
+            }
             SendError(clientSocket);
             return;
         }
@@ -210,7 +227,7 @@ void Server::SendData(int clientSocket)
     }
 }
 
-void Server::ConnectWithClient(uintptr_t server)
+void Server::ConnectWithClient(int server)
 {
     sockaddr_in clientAddress;
     socklen_t clientAddrLen;
@@ -225,7 +242,7 @@ void Server::ConnectWithClient(uintptr_t server)
         SendError(clientSocket);
     else
     {
-        serversClients[clientSocket] = (int)server;
+        serversClients[clientSocket] = server;
         setupConnectionTimer(clientSocket);
         manageEvents(ADD_READ, clientSocket);
     }
@@ -236,7 +253,7 @@ void Server::HandelEvents(int n, struct kevent events[])
     for (int i = 0; i < n; i++)
     {
         if (std::find(servers.begin(), servers.end(), (intptr_t)events[i].ident) != servers.end())
-            ConnectWithClient(events[i].ident);
+            ConnectWithClient((int)events[i].ident);
         else if (events[i].filter == EVFILT_READ)
         {
             clientSocket = events[i].ident;

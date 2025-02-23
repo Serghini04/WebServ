@@ -32,6 +32,12 @@ private:
         REMOVE_READ,
         REMOVE_WRITE,
     };
+    struct eventClient
+    {
+        int client;
+        struct kevent eventWrite;
+        struct kevent eventRead;
+    };
     int serverSocket;
     int kq;
     struct kevent event;
@@ -41,8 +47,8 @@ private:
     std::map<int, int > serversClients;
     std::vector<int> servers;
     struct kevent timerEvent;
-    static const int TIMEOUT_SECONDS = 1;
-    void            ConnectWithClient(uintptr_t server);
+    static const int TIMEOUT_SECONDS = 2;
+    void            ConnectWithClient(int server);
     void            HandelEvents(int n, struct kevent events[]);
     void            ConfigTheSocket(Conserver &config);
     void            SendData(int clientSocket);
