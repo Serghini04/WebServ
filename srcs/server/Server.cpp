@@ -32,12 +32,6 @@ void Server::setupConnectionTimer(int clientSocket)
 }
 Server::~Server()
 {
-    for (std::map<int, Conserver *>::const_iterator
-             it = serversConfigs.begin();
-         it != serversConfigs.end(); it++)
-    {
-        delete it->second;
-    }
 }
 
 void Server::manageEvents(enum EventsEnum events, int clientSocket)
@@ -100,26 +94,20 @@ void Server::CleanUpAllocation(int clientSocket)
 
 void Server::ConnectionClosed(int clientSocket)
 {
-    if (clientsResponse.count(clientSocket))
-    {
-        CleanUpAllocation(clientSocket);
-        serversClients.erase(clientSocket);
-        close(clientSocket);
-    }
+    CleanUpAllocation(clientSocket);
+    close(clientSocket);
 }
 
 void Server::ResponseEnds(int clientSocket)
 {
-    if (clientsResponse.count(clientSocket))
-    {
-        clientsRequest[clientSocket]->SetRequestIsDone(false);
-        if (clientsRequest[clientSocket]->isCGI())
-            clientsRequest[clientSocket]->setIsCGI(false);
-        if (clientsRequest[clientSocket]->isConnectionClosed())
-            ConnectionClosed(clientSocket);
-        else
-            CleanUpAllocation(clientSocket);
-    }
+    puts("Response Ends");
+    clientsRequest[clientSocket]->SetRequestIsDone(false);
+    if (clientsRequest[clientSocket]->isCGI())
+        clientsRequest[clientSocket]->setIsCGI(false);
+    if (clientsRequest[clientSocket]->isConnectionClosed())
+        ConnectionClosed(clientSocket);
+    else
+        CleanUpAllocation(clientSocket);
 }
 
 void Server::ConfigTheSocket(Conserver &config)
@@ -166,6 +154,7 @@ void Server::RecivData(int clientSocket)
 
     memset(buffer, 0, sizeof(buffer));
     bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
+    puts("Recive Data");
     if (bytesRead <= 0)
     {
         if (errno == EAGAIN || errno == EWOULDBLOCK)
@@ -221,7 +210,7 @@ void Server::SendData(int clientSocket)
     }
 }
 
-void Server::ConnectWithClient(int server)
+void Server::ConnectWithClient(uintptr_t server)
 {
     sockaddr_in clientAddress;
     socklen_t clientAddrLen;
@@ -236,7 +225,7 @@ void Server::ConnectWithClient(int server)
         SendError(clientSocket);
     else
     {
-        serversClients[clientSocket] = server;
+        serversClients[clientSocket] = (int)server;
         setupConnectionTimer(clientSocket);
         manageEvents(ADD_READ, clientSocket);
     }
@@ -263,7 +252,8 @@ void Server::HandelEvents(int n, struct kevent events[])
         else if (events[i].filter == EVFILT_TIMER)
         {
             clientSocket = events[i].ident;
-            ConnectionClosed(clientSocket);
+            if (!clientsResponse.count(clientSocket))
+                close(clientSocket);
         }
     }
 }
