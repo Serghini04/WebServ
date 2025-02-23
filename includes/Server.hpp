@@ -16,7 +16,8 @@
 #include <map>
 #include <Response.hpp>
 #include <RequestParse.hpp>
-#define MAX_BUFFER 16384
+#include <netinet/tcp.h>  
+#define MAX_BUFFER 1024 * 2
 #define MAX_CLIENTS 1024 * 2
 #define PORT 1111
 class Response;
@@ -40,7 +41,7 @@ private:
     std::map<int, int > serversClients;
     std::vector<int> servers;
     struct kevent timerEvent;
-    static const int TIMEOUT_SECONDS = 5;
+    static const int TIMEOUT_SECONDS = 1;
     void            ConnectWithClient(int server);
     void            HandelEvents(int n, struct kevent events[]);
     void            ConfigTheSocket(Conserver &config);
