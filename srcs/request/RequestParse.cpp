@@ -347,8 +347,8 @@ void    RequestParse::readBuffer(std::string buff)
 		header.clear();
 		_statusCode = (status)atoi(e.c_str());
 		_statusCodeMessage = e;
-		std::cout << "Processing Request: Method = " << _method << ", URL = \"" << _url << "\"" << std::endl;
-		std::cout << "Based on this location: " << _location << std::endl;
+		// std::cout << "Processing Request: Method = " << _method << ", URL = \"" << _url << "\"" << std::endl;
+		// std::cout << "Based on this location: " << _location << std::endl;
 		if (isCGI())
 			runcgiscripte();
 		_requestIsDone = 1;
