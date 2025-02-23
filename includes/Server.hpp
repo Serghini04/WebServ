@@ -41,7 +41,7 @@ private:
     std::vector<int> servers;
     struct kevent timerEvent;
     static const int TIMEOUT_SECONDS = 5;
-    void            ConnectWithClient(uintptr_t server);
+    void            ConnectWithClient(int server);
     void            HandelEvents(int n, struct kevent events[]);
     void            ConfigTheSocket(Conserver &config);
     void            SendData(int clientSocket);
