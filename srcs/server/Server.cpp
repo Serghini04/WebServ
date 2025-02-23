@@ -18,12 +18,12 @@ Server::Server()
 void Server::setupConnectionTimer(int clientSocket)
 {
     EV_SET(&timerEvent,
-           clientSocket,        
-           EVFILT_TIMER,       
-           EV_ADD | EV_ONESHOT, 
-           NOTE_SECONDS,        
-           TIMEOUT_SECONDS,     
-           NULL);               
+           clientSocket,
+           EVFILT_TIMER,
+           EV_ADD | EV_ONESHOT,
+           NOTE_SECONDS,
+           TIMEOUT_SECONDS,
+           NULL);
     if (kevent(kq, &timerEvent, 1, NULL, 0, NULL) == -1)
     {
         SendError(clientSocket);
@@ -110,13 +110,16 @@ void Server::ConnectionClosed(int clientSocket)
 
 void Server::ResponseEnds(int clientSocket)
 {
-    clientsRequest[clientSocket]->SetRequestIsDone(false);
-    if (clientsRequest[clientSocket]->isCGI())
-        clientsRequest[clientSocket]->setIsCGI(false);
-    if (clientsRequest[clientSocket]->isConnectionClosed())
-        ConnectionClosed(clientSocket);
-    else
-        CleanUpAllocation(clientSocket);
+    if (clientsResponse.count(clientSocket))
+    {
+        clientsRequest[clientSocket]->SetRequestIsDone(false);
+        if (clientsRequest[clientSocket]->isCGI())
+            clientsRequest[clientSocket]->setIsCGI(false);
+        if (clientsRequest[clientSocket]->isConnectionClosed())
+            ConnectionClosed(clientSocket);
+        else
+            CleanUpAllocation(clientSocket);
+    }
 }
 
 void Server::ConfigTheSocket(Conserver &config)
@@ -164,7 +167,16 @@ void Server::RecivData(int clientSocket)
     memset(buffer, 0, sizeof(buffer));
     bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
     if (bytesRead <= 0)
+    {
+        if (errno == EAGAIN || errno == EWOULDBLOCK)
+            return;
+        if (errno == ECONNRESET)
+        {
+            ConnectionClosed(clientSocket);
+            return;
+        }
         return;
+    }
     fullData.assign(buffer, bytesRead);
     (*clientsRequest[clientSocket]).readBuffer(fullData);
     if ((*clientsRequest[clientSocket]).requestIsDone())
@@ -224,31 +236,35 @@ void Server::ConnectWithClient(int server)
         SendError(clientSocket);
     else
     {
-        serversClients[clientSocket] = (int)server;
+        serversClients[clientSocket] = server;
         setupConnectionTimer(clientSocket);
         manageEvents(ADD_READ, clientSocket);
     }
 }
-
 void Server::HandelEvents(int n, struct kevent events[])
 {
-    int soketFd;
-
+    int clientSocket;
     for (int i = 0; i < n; i++)
     {
-        soketFd = events[i].ident;
-        if (std::find(servers.begin(), servers.end(), soketFd) != servers.end())
-            ConnectWithClient(soketFd);
+        if (std::find(servers.begin(), servers.end(), (intptr_t)events[i].ident) != servers.end())
+            ConnectWithClient(events[i].ident);
         else if (events[i].filter == EVFILT_READ)
         {
-            if (!clientsRequest.count(soketFd))
-                clientsRequest[soketFd] = new RequestParse(*serversConfigs[serversClients[soketFd]]);
-            RecivData(soketFd);
+            clientSocket = events[i].ident;
+            if (!clientsRequest.count(clientSocket))
+                clientsRequest[clientSocket] = new RequestParse(*serversConfigs[serversClients[clientSocket]]);
+            RecivData(clientSocket);
         }
         else if (events[i].filter == EVFILT_WRITE)
-            SendData(soketFd);
+        {
+            clientSocket = events[i].ident;
+            SendData(clientSocket);
+        }
         else if (events[i].filter == EVFILT_TIMER)
-            ConnectionClosed(soketFd);
+        {
+            clientSocket = events[i].ident;
+            ConnectionClosed(clientSocket);
+        }
     }
 }
 
