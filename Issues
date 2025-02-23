@@ -1,5 +1,0 @@
-1. case index_on : don't print folders "." ".."
-
-3. Handle multiple CGI
-
-4. Close fd leaks.

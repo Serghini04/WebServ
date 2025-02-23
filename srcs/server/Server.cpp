@@ -17,14 +17,13 @@ Server::Server()
 }
 void Server::setupConnectionTimer(int clientSocket)
 {
-    // Set up a timer event for this connection
     EV_SET(&timerEvent,
-           clientSocket,        // Use client socket as identifier
-           EVFILT_TIMER,        // Timer filter
-           EV_ADD | EV_ONESHOT, // One-shot timer
-           NOTE_SECONDS,        // Use seconds resolution
-           TIMEOUT_SECONDS,     // 5 second timeout
-           NULL);               // No user data
+           clientSocket,        
+           EVFILT_TIMER,       
+           EV_ADD | EV_ONESHOT, 
+           NOTE_SECONDS,        
+           TIMEOUT_SECONDS,     
+           NULL);               
     if (kevent(kq, &timerEvent, 1, NULL, 0, NULL) == -1)
     {
         SendError(clientSocket);
@@ -55,7 +54,7 @@ void Server::manageEvents(enum EventsEnum events, int clientSocket)
         EV_SET(&event, clientSocket, EVFILT_READ, EV_DELETE, 0, 0, NULL);
         break;
     case REMOVE_WRITE:
-        EV_SET(&event, clientSocket, EVFILT_READ, EV_DELETE, 0, 0, NULL);
+        EV_SET(&event, clientSocket, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
         break;
     }
     if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
@@ -90,13 +89,11 @@ void Server::CleanUpAllocation(int clientSocket)
     if (clientsRequest.count(clientSocket))
     {
         delete clientsRequest[clientSocket];
-        clientsRequest[clientSocket] = NULL;
         clientsRequest.erase(clientSocket);
     }
     if (clientsResponse.count(clientSocket))
     {
         delete clientsResponse[clientSocket];
-        clientsResponse[clientSocket] = NULL;
         clientsResponse.erase(clientSocket);
     }
 }
@@ -212,7 +209,7 @@ void Server::SendData(int clientSocket)
     }
 }
 
-void Server::ConnectWithClient(uintptr_t server)
+void Server::ConnectWithClient(int server)
 {
     sockaddr_in clientAddress;
     socklen_t clientAddrLen;
@@ -235,29 +232,23 @@ void Server::ConnectWithClient(uintptr_t server)
 
 void Server::HandelEvents(int n, struct kevent events[])
 {
-    int clientSocket;
+    int soketFd;
 
     for (int i = 0; i < n; i++)
     {
-        if (std::find(servers.begin(), servers.end(), (intptr_t)events[i].ident) != servers.end())
-            ConnectWithClient(events[i].ident);
+        soketFd = events[i].ident;
+        if (std::find(servers.begin(), servers.end(), soketFd) != servers.end())
+            ConnectWithClient(soketFd);
         else if (events[i].filter == EVFILT_READ)
         {
-            clientSocket = events[i].ident;
-            if (!clientsRequest.count(clientSocket))
-                clientsRequest[clientSocket] = new RequestParse(*serversConfigs[serversClients[clientSocket]]);
-            RecivData(clientSocket);
+            if (!clientsRequest.count(soketFd))
+                clientsRequest[soketFd] = new RequestParse(*serversConfigs[serversClients[soketFd]]);
+            RecivData(soketFd);
         }
         else if (events[i].filter == EVFILT_WRITE)
-        {
-            clientSocket = events[i].ident;
-            SendData(clientSocket);
-        }
+            SendData(soketFd);
         else if (events[i].filter == EVFILT_TIMER)
-        {
-            clientSocket = events[i].ident;
-            ConnectionClosed(clientSocket);
-        }
+            ConnectionClosed(soketFd);
     }
 }
 
