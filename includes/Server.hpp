@@ -17,7 +17,8 @@
 #include <Response.hpp>
 #include <RequestParse.hpp>
 #include <netinet/tcp.h>  
-#define MAX_BUFFER 1024 * 3
+#include <unordered_map>
+#define MAX_BUFFER 1024 * 2
 #define MAX_CLIENTS 1024 * 2
 #define PORT 1111
 class Response;
@@ -32,19 +33,12 @@ private:
         REMOVE_READ,
         REMOVE_WRITE,
     };
-    struct eventClient
-    {
-        int client;
-        struct kevent eventWrite;
-        struct kevent eventRead;
-    };
-    int serverSocket;
     int kq;
     struct kevent event;
-    std::map<int, RequestParse* > clientsRequest;
-    std::map<int, Response* > clientsResponse;
-    std::map<int, Conserver*> serversConfigs;
-    std::map<int, int > serversClients;
+    std::unordered_map<int, RequestParse* > clientsRequest;
+    std::unordered_map<int, Response* > clientsResponse;
+    std::unordered_map<int, Conserver*> serversConfigs;
+    std::unordered_map<int, int > serversClients;
     std::vector<int> servers;
     struct kevent timerEvent;
     static const int TIMEOUT_SECONDS = 2;
