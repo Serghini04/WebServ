@@ -4,7 +4,7 @@
 #include <dirent.h>
 #include <filesystem>
 #include <sys/stat.h>
-#define BUFFER_SIZE 8192
+#define BUFFER_SIZE 1024 * 2
 
 
 class Server;
@@ -36,7 +36,6 @@ private:
     bool                                useChunkedEncoding;  
 public:
     long                                dataSend;
-    long                                totalSend;
     size_t                              fileSize;
     Response(Conserver &conserver, RequestParse *request);
     ~Response();
