@@ -3,6 +3,18 @@
 Response::Response(Conserver &conserver, RequestParse *request) : conserver(conserver), request(request)
 {
     size = 0;
+    fileSize = 0;
+    dataSend = 0;
+    totalSend = 0;
+    if (!debug.is_open())
+    {
+        debug.open("/Users/mal-mora/goinfre/out.txt", std::ios::binary);
+        if (debug.fail())
+        {
+            puts("ff");
+            exit(1);
+        }
+    }
     firstCall = 1;
     statusLine = "HTTP/1.1 200 OK\r\n";
     hasErrorFile = true;
@@ -27,6 +39,7 @@ int Response::GetErrorFromStrSize()
 
 std::string Response::FileToString()
 {
+
     if (!hasErrorFile)
     {
         hasErrorFile = !hasErrorFile;
@@ -41,19 +54,24 @@ std::string Response::FileToString()
     {
         std::string buf(BUFFER_SIZE, '\0');
         file.read(&buf[0], BUFFER_SIZE);
+        debug.write("\n>>>>>>>>>>>>>>>\n", 16);
+        debug.write(buf.c_str(), file.gcount());
+        debug.write("\n>>>>>>>>>>>>>>>\n", 16);
         buf.resize(file.gcount());
+        fileSize -= file.gcount();
         return buf;
     }
     return "";
 }
 
-int Response::getFileSize()
+long long Response::getFileSize()
 {
     if (!hasErrorFile)
         return GetErrorFromStrSize();
     file.seekg(0, std::ios::end);
     size = file.tellg();
     file.seekg(0, std::ios::beg);
+    std::cout << "size " << size << std::endl;
     return size;
 }
 
@@ -175,11 +193,9 @@ int Response::processDirectory(std::string &path)
 //priority: 1 (redirection)
 std::string Response::handelRedirection(std::string redirect_code, std::string redirect_url) 
 {
-
     if (redirect_url.find("http://") != 0 && redirect_url.find("https://") != 0) {
         redirect_url = "http://" + redirect_url;
     }
-
    std::string httpResponse =
         "HTTP/1.1 " + redirect_code + " Moved Permanently\r\n"
         "Location: " + redirect_url + "\r\n"
@@ -190,9 +206,10 @@ std::string Response::handelRedirection(std::string redirect_code, std::string r
    this->endResponse = true;
    return httpResponse;
 }
+
 std::string Response::processResponse(int state)
 {
-    if(this->endResponse)
+    if(endResponse)
         return "";
     std::map<std::string, std::string> location = conserver.getLocation(request->location());
     if (firstCall)
@@ -223,6 +240,7 @@ std::string Response::processResponse(int state)
                     firstCall = 0;
                     return getHeader();
                 }
+                std::cout << "open file -------------------------------"<< request->URL() << std::endl;
                 file.open(str, std::ios::binary | std::ios::in);
                 size_t pos = str.find(".");
                 if (pos != std::string::npos)
@@ -237,6 +255,7 @@ std::string Response::processResponse(int state)
             }
         }
         size = getFileSize();
+        fileSize = size;
     }
     else
         return FileToString();
@@ -247,8 +266,8 @@ std::string Response::processResponse(int state)
 std::string Response::getCgiResponse()
 {
     std::string str;
-
-    file.open("/tmp/outCGI.text", std::ios::binary | std::ios::in);
+    if(!endResponse)
+        file.open("/tmp/outCGI.text", std::ios::binary | std::ios::in);
     if (!file.is_open())
         SendError(eNotFound);
     this->endResponse = true;
@@ -259,9 +278,16 @@ std::string Response::getResponse()
 {
     std::string str = "";
 
-    if (request && request->statusCode() != eOK && request->statusCode() != eCreated)
+    if (request->statusCode() != eOK && request->statusCode() != eCreated)
         str = processResponse(0);
-    else if (request)
+    else
         str = processResponse(1);
+    // if(str == "")
+    // std::cout << "--------------------------------------------\n";
+    // std::cout << str << std::endl;
+    // std::cout << "--------------------------------------------\n";
+        // exit(0);
     return str;
 }
+
+
