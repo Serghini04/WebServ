@@ -18,7 +18,7 @@
 #include <RequestParse.hpp>
 #include <netinet/tcp.h>  
 #include <unordered_map>
-#define MAX_BUFFER 1024 * 8
+#define MAX_BUFFER 1024 * 2
 #define MAX_CLIENTS 1024 * 2
 #define PORT 1111
 class Response;
