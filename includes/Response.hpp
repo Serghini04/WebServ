@@ -36,7 +36,6 @@ private:
     bool                                useChunkedEncoding;  
 public:
     long                                dataSend;
-    long                                totalSend;
     size_t                              fileSize;
     Response(Conserver &conserver, RequestParse *request);
     ~Response();

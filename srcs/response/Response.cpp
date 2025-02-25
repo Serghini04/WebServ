@@ -3,9 +3,6 @@
 Response::Response(Conserver &conserver, RequestParse *request) : conserver(conserver), request(request)
 {
     size = 0;
-    fileSize = 0;
-    dataSend = 0;
-    totalSend = 0;
     if (!debug.is_open())
     {
         debug.open("/Users/mal-mora/goinfre/out.txt", std::ios::binary);
