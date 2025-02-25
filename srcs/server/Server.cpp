@@ -108,7 +108,7 @@ void Server::ConnectionClosed(int clientSocket)
 
 void Server::ResponseEnds(int clientSocket)
 {
-    if (clientsRequest.count(clientSocket))
+    if (clientsRequest[clientSocket])
     {
         puts("Response Ends ");
         clientsRequest[clientSocket]->SetRequestIsDone(false);
