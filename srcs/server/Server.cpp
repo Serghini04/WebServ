@@ -51,10 +51,10 @@ void Server::manageEvents(enum EventsEnum events, int clientSocket)
         EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
         break;
     case REMOVE_READ:
-        EV_SET(&event, clientSocket, EVFILT_READ, EV_DELETE, 0, 0, NULL);
+        EV_SET(&event, clientSocket, EVFILT_READ, EV_CLEAR, 0, 0, NULL);
         break;
     case REMOVE_WRITE:
-        EV_SET(&event, clientSocket, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
+        EV_SET(&event, clientSocket, EVFILT_WRITE, EV_CLEAR, 0, 0, NULL);
         break;
     }
     if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
@@ -182,6 +182,7 @@ void Server::RecivData(int clientSocket)
     {
         puts("Recive Data");
         manageEvents(ADD_WRITE, clientSocket);
+        manageEvents(REMOVE_READ, clientSocket);
         if ((*clientsRequest[clientSocket]).isCGI())
             (*clientsRequest[clientSocket]).runcgiscripte();
         return;
