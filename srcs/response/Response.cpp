@@ -3,6 +3,15 @@
 Response::Response(Conserver &conserver, RequestParse *request) : conserver(conserver), request(request)
 {
     size = 0;
+    // if (!debug.is_open())
+    // {
+    //     debug.open("/Users/mal-mora/goinfre/out.txt", std::ios::binary);
+    //     if (debug.fail())
+    //     {
+    //         puts("ff");
+    //         exit(1);
+    //     }
+    // }
     firstCall = 1;
     statusLine = "HTTP/1.1 200 OK\r\n";
     hasErrorFile = true;
@@ -14,6 +23,7 @@ Response::~Response()
 {
     file.clear();
     file.close();
+	// unlink("/tmp/outCGI.text");
 }
 int Response::GetErrorFromStrSize()
 {
@@ -27,6 +37,7 @@ int Response::GetErrorFromStrSize()
 
 std::string Response::FileToString()
 {
+
     if (!hasErrorFile)
     {
         hasErrorFile = !hasErrorFile;
@@ -41,13 +52,14 @@ std::string Response::FileToString()
     {
         std::string buf(BUFFER_SIZE, '\0');
         file.read(&buf[0], BUFFER_SIZE);
+        debug.write(buf.c_str(), file.gcount());
         buf.resize(file.gcount());
         return buf;
     }
     return "";
 }
 
-int Response::getFileSize()
+long long Response::getFileSize()
 {
     if (!hasErrorFile)
         return GetErrorFromStrSize();
@@ -172,28 +184,27 @@ int Response::processDirectory(std::string &path)
     return directoryContent.length();
 }
 
-//priority: 1 (redirection)
-std::string Response::handelRedirection(std::string redirect_code, std::string redirect_url) 
+// priority: 1 (redirection)
+std::string Response::handelRedirection(std::string redirect_code, std::string redirect_url)
 {
-
-    if (redirect_url.find("http://") != 0 && redirect_url.find("https://") != 0) {
+    if (redirect_url.find("http://") != 0 && redirect_url.find("https://") != 0)
+    {
         redirect_url = "http://" + redirect_url;
     }
-
-   std::string httpResponse =
+    std::string httpResponse =
         "HTTP/1.1 " + redirect_code + " Moved Permanently\r\n"
-        "Location: " + redirect_url + "\r\n"
-        "Content-Type: text/html; charset=UTF-8\r\n"
-        "Content-Length: 0\r\n"
-        "Connection: close\r\n"
-        "\r\n";
-   this->endResponse = true;
-   return httpResponse;
+                                      "Location: " +
+        redirect_url + "\r\n"
+                       "Content-Type: text/html; charset=UTF-8\r\n"
+                       "Content-Length: 0\r\n"
+                       "Connection: close\r\n"
+                       "\r\n";
+    this->endResponse = true;
+    return httpResponse;
 }
+
 std::string Response::processResponse(int state)
 {
-    if(this->endResponse)
-        return "";
     std::map<std::string, std::string> location = conserver.getLocation(request->location());
     if (firstCall)
     {
@@ -232,11 +243,12 @@ std::string Response::processResponse(int state)
             }
             else if (request->method() == ePOST)
             {
-                file.open("post.json");
+                file.open("www/error_pages/post.json");
                 this->contentType = Utility::getExtensions("", ".json");
             }
         }
         size = getFileSize();
+        fileSize = size;
     }
     else
         return FileToString();
@@ -247,8 +259,8 @@ std::string Response::processResponse(int state)
 std::string Response::getCgiResponse()
 {
     std::string str;
-
-    file.open("/tmp/outCGI.text", std::ios::binary | std::ios::in);
+    if (!endResponse)
+        file.open("/tmp/outCGI.text", std::ios::binary | std::ios::in);
     if (!file.is_open())
         SendError(eNotFound);
     this->endResponse = true;
@@ -259,9 +271,12 @@ std::string Response::getResponse()
 {
     std::string str = "";
 
-    if (request->statusCode() != eOK && request->statusCode() != eCreated)
-        str = processResponse(0);
-    else
-        str = processResponse(1);
+    if (request)
+    {
+        if (request->statusCode() != eOK && request->statusCode() != eCreated)
+            str = processResponse(0);
+        else
+            str = processResponse(1);
+    }
     return str;
 }
