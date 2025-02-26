@@ -6,7 +6,7 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/23 11:35:26 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/02/26 10:15:10 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@
 #include <signal.h>
 #include <errno.h>
 
-#define CGI_TIMEOUT 5
-#define SIZE_BUFFER 50
+# define CGI_TIMEOUT 5
+# define SIZE_BUFFER 50
 
 enum status
 {
@@ -115,6 +115,7 @@ class   RequestParse
 		int		_forkAndExecute(int infd, int outfd, char* env[], int ERRfile);
 		int		_waitForCGIProcess(int pid);
 		int		parseCGIOutput(const char* cgiOutputFile);
+
 		std::vector<std::string>	_buildEnvVars();
 		void						_openFileSafely(std::ifstream& file, const std::string& filename);
 		std::string					_extractHeaderValue(const std::string& line);
