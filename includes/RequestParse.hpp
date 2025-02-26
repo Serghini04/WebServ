@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RequestParse.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/21 11:54:59 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/26 10:15:10 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,12 @@
 # include <string>
 # include <BodyParse.hpp>
 # include <map>
-# include <fcntl.h>
-# include <unistd.h>
-# include <signal.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <signal.h>
+#include <errno.h>
 
-# define CGI_TIMEOUT 5
+# define CGI_TIMEOUT 10
 # define SIZE_BUFFER 50
 
 enum status
@@ -103,12 +104,15 @@ class   RequestParse
 
 		// Execution of CGI by hidriouc
 		int		runcgiscripte();
-		void	_dupfd(int infd, int outfd);
+		bool	is_InvalideURL();
+		bool	CheckStdERR(const char* fileERR);
+		void	_dupfd(int infd, int outfd, int ERRfile);
+		void	clear(int bodyfd, int outfd, int fileERR);
 		void	_validateContentLength(const std::string& contentLength, size_t bodysize);
 		void	_validateContentType(const std::string& contentType);
 		void	_parseHeaderLine(const std::string& line, std::string lines[]);
 		int		_parseHeaders(size_t bodysize, const std::string& headers);
-		int		_forkAndExecute(int infd, int outfd,char* env[]);
+		int		_forkAndExecute(int infd, int outfd, char* env[], int ERRfile);
 		int		_waitForCGIProcess(int pid);
 		int		parseCGIOutput(const char* cgiOutputFile);
 

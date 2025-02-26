@@ -374,7 +374,7 @@ def handleLogin():
         if session is None:
             printUserMsg("Failed To Login, Username or Password is wrong!")
         else:
-            print("Correct Credentials :D", file=sys.stderr)
+            # print("Correct Credentials :D", file=sys.stderr)
 
             # Initialize or reset the cookies
             cookies_obj = cookies.SimpleCookie()
@@ -390,6 +390,7 @@ def handleLogin():
             # Output the cookie headers
             print("HTTP/1.1 302 Found")
             print(cookies_obj.output())
+            print("Content-Type: text/html")
             print("Location: acc.py\r\n\r\n")
     else:
         # Registration process
@@ -410,7 +411,7 @@ def handleLogin():
                 printUserMsg("Account registered successfully!")
         except Exception as e:
             # Debug output
-            print(f"Registration error: {str(e)}", file=sys.stderr)
+            # print(f"Registration error: {str(e)}", file=sys.stderr)
             printUserMsg(f"Error during registration: {str(e)}")
 
 # Load CGI form
@@ -430,7 +431,7 @@ else:
 
         if "SID" in cookies_obj:
             sid = cookies_obj["SID"].value
-            print("Your Session ID is", sid, file=sys.stderr)
+            # print("Your Session ID is", sid, file=sys.stderr)
             session_file = 'sessions/session_' + sid
             
             # Check if the session file exists

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/02/21 17:25:34 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/26 10:32:10 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,7 +183,6 @@ void Server::RecivData(int clientSocket)
     {
         puts("Recive Data");
         manageEvents(ADD_WRITE, clientSocket);
-        manageEvents(REMOVE_READ, clientSocket);
         if ((*clientsRequest[clientSocket]).isCGI())
             (*clientsRequest[clientSocket]).runcgiscripte();
         return;
