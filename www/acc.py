@@ -117,6 +117,11 @@ def printAccPage(session):
             <div class="message-box success">
                 <p>Your Session ID: {session.getSid()}</p>
             </div>
+            <form id="upload" enctype="multipart/form-data" method="POST" action="/upload">
+                <input id="fileupload" name="myfile" type="file" multiple="multiple"/>
+                <br>
+                <input type="submit" value="Upload" id="submit"/>
+            </form>
             <a href="login.html" class="btn-primary">Return to Homepage</a>
         </div>
     </body>
