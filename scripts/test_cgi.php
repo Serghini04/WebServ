@@ -1,37 +1,21 @@
+#!/usr/bin/php
 <?php
-// Generate a simple HTML page
-header("Content-Type: text/html; charset=UTF-8");
+// Define the HTML content
+$query_string = getenv("QUERY_STRING") ?: "No query provided";
+$html = "<html>
+<head><title>CGI Test</title></head>
+<body>
+<h1>Hello from CGI!</h1>
+<p>Hello Mr $query_string </p>
+</body>
+</html>";
 
-echo "<!DOCTYPE html>";
-echo "<html lang='en'>";
-echo "<head>";
-echo "<meta charset='UTF-8'>";
-echo "<meta name='viewport' content='width=device-width, initial-scale=1.0'>";
-echo "<title>CGI PHP Test</title>";
-echo "</head>";
-echo "<body>";
-echo "<h1>Welcome to the CGI PHP Test</h1>";
-echo "<p>This is a dynamically generated HTML page.</p>";
+// Calculate content length
+$content_length = strlen($html);
 
-echo "<h2>Request Data</h2>";
-echo "<pre>";
-
-// Display CGI environment variables
-echo "--- CGI Environment Variables ---\n";
-foreach ($_SERVER as $key => $value) {
-    echo htmlspecialchars("$key: $value\n");
-}
-
-echo "\n--- GET Parameters ---\n";
-foreach ($_GET as $key => $value) {
-    echo htmlspecialchars("$key: $value\n");
-}
-
-echo "\n--- POST Data ---\n";
-$postData = file_get_contents("php://input");
-echo htmlspecialchars($postData . "\n");
-
-echo "</pre>";
-echo "</body>";
-echo "</html>";
+// Output raw HTTP response
+echo "HTTP/1.1 200 OK\r\n";
+echo "Content-Length: $content_length\r\n";
+echo "Content-Type: text/html\r\n\r\n";
+echo $html;
 ?>

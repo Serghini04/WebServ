@@ -172,24 +172,23 @@ int Response::processDirectory(std::string &path)
     return directoryContent.length();
 }
 
-std::string Response::handelRedirection(std::string redirection)
+//priority: 1 (redirection)
+std::string Response::handelRedirection(std::string redirect_code, std::string redirect_url) 
 {
-    std::string code;
-    code = redirection.substr(0, 3);
-    std::string url_red = redirection.substr(code.length() + 1);
 
-     if (url_red.find("http://") != 0 && url_red.find("https://") != 0)
-        url_red = "http://" + url_red;
-    std::string httpResponse =
-        "HTTP/1.1 " + code + " Moved Permanently\r\n"
-                                      "Location: " +
-        url_red + "\r\n"
-                       "Content-Type: text/html; charset=UTF-8\r\n"
-                       "Content-Length: 0\r\n"
-                       "Connection: close\r\n"
-                       "\r\n";
-    this->endResponse = true;
-    return httpResponse;
+    if (redirect_url.find("http://") != 0 && redirect_url.find("https://") != 0) {
+        redirect_url = "http://" + redirect_url;
+    }
+
+   std::string httpResponse =
+        "HTTP/1.1 " + redirect_code + " Moved Permanently\r\n"
+        "Location: " + redirect_url + "\r\n"
+        "Content-Type: text/html; charset=UTF-8\r\n"
+        "Content-Length: 0\r\n"
+        "Connection: close\r\n"
+        "\r\n";
+   this->endResponse = true;
+   return httpResponse;
 }
 std::string Response::processResponse(int state)
 {
@@ -202,12 +201,13 @@ std::string Response::processResponse(int state)
             handelRequestErrors();
         else
         {
-            std::string redirection = conserver.getAttributes("return");
-            if (!redirection.empty())
-                return handelRedirection(redirection);
+            std::pair<std::string, std::string> redirection = conserver.getreturnof("");
+            if (!redirection.first.empty())
+                return handelRedirection(redirection.first, redirection.second);
             ProcessUrl(location);
-            if (!location["return"].empty())
-                return handelRedirection(location["return"]);
+            redirection = conserver.getreturnof(request->location());
+            if (!redirection.first.empty())
+                return handelRedirection(redirection.first, redirection.second);
             if (request->isCGI())
             {
                 std::string line = getCgiResponse();
@@ -259,9 +259,9 @@ std::string Response::getResponse()
 {
     std::string str = "";
 
-    if (request && request->statusCode() != eOK && request->statusCode() != eCreated)
+    if (request->statusCode() != eOK && request->statusCode() != eCreated)
         str = processResponse(0);
-    else if(request)
+    else
         str = processResponse(1);
     return str;
 }

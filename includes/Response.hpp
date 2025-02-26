@@ -43,9 +43,9 @@ public:
     void        handelRequestErrors();
     void        SendError(enum status code);
     int         getFileSize();
-    int        GetErrorFromStrSize();
-    bool    IsDirectory(const char *path);
-    std::string handelRedirection(std::string redirection);
+    int         GetErrorFromStrSize();
+    bool        IsDirectory(const char *path);
+    std::string handelRedirection(std::string redirect_code, std::string redirect_url);
     std::string getCgiResponse();
 };
 
