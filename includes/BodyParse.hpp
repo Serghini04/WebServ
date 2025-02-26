@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:36:14 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/05 12:09:09 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/21 11:58:02 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,18 +75,18 @@ class BodyParse
 		
 		// Methods :
 		void		handleCGI(std::string &buff);
-		void		clearChunkedAttributes(std::string &data, size_t &length, bool &readingChunk, std::string &buff);
 		bool		parseBody(std::string &buff);
-		bool		clearBuffers(std::string &data, std::string &accumulatedData, std::string &carryOver, bool &readingChunk);
-		void		checkContentTooLarge(size_t length);
 		void		openFileBasedOnContentType();
-		bool		BoundaryParse(std::string &buff);
 		bool		ChunkedParse(std::string &buff);
-		bool		ChunkedBoundaryParse(std::string &buff);
-		bool		ContentLengthParse(std::string &buff);
+		bool		BoundaryParse(std::string &buff);
+		void		checkContentTooLarge(size_t length);
 		void		openFileOfBoundary(std::string buff);
-		bool		writeChunkToFile(std::string &buff, size_t &length, std::string &carryOver, std::string &accumulatedData);
+		bool		ContentLengthParse(std::string &buff);
+		bool		ChunkedBoundaryParse(std::string &buff);
 		void		setMetaData(std::map<std::string, std::string> &data);
+		void		clearChunkedAttributes(std::string &data, size_t &length, bool &readingChunk, std::string &buff);
+		bool		clearBuffers(std::string &data, std::string &accumulatedData, std::string &carryOver, bool &readingChunk);
+		bool		writeChunkToFile(std::string &buff, size_t &length, std::string &carryOver, std::string &accumulatedData);
 
 		~BodyParse();
 };
