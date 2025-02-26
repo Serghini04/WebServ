@@ -6,7 +6,7 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 16:54:05 by hidriouc          #+#    #+#             */
-/*   Updated: 2025/02/19 11:29:38 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/02/22 09:01:09 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ void Conserver::addPath(std::string path)
 	}
 	AllPaths.push_back(path);
 }
+
 void Conserver::addlistening(std::pair<std::string, std::string > lsn)
 {
 	std::vector<std::pair<std::string, std::string> >::iterator it = listening.begin();

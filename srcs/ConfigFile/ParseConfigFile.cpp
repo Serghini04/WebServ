@@ -50,12 +50,10 @@ bool is_validCGIATT(std::string& key,std::string& value)
 	int i = -1;
 	while (i < 3 && ss >> tb[++i])
 		;
-	if ((tb[0] != ".py" && tb[0] != ".php") || !tb[2].empty())
+	if ((tb[0] != ".py" && tb[0] != ".php" && tb[0] != ".sh") || !tb[2].empty())
 		return 1;
 	key = key + tb[0];
 	value = tb[1];
-	std::cout << ">>>*|" << key << std::endl;
-	std::cout << ">>>|" << value << std::endl;
 	return 0;
 }
 void	is_validvalue(std::string &key, std::string &value, int index_line)
@@ -457,7 +455,6 @@ std::vector<Conserver> parseConfigFile(char *in_file)
 		std::cerr << err << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	// filterServersWithListening(servers);
 	return servers;
 }
 
