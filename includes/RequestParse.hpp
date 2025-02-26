@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   RequestParse.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
 /*   Updated: 2025/02/26 10:15:10 by hidriouc         ###   ########.fr       */
