@@ -42,7 +42,7 @@ std::string	BodyParse::BodyFileName()
 BodyParse::BodyParse(long long maxBodySize)
 {
 	_maxBodySize = maxBodySize;
-	_bodyFileName = "/Users/mal-mora/Desktop/server/Output.trash";
+	_bodyFileName = "/Users/mal-mora/goinfre/Output.trash";
 	_isCGI = false;
     _type = eNone;
 	_bodySize = 0;
