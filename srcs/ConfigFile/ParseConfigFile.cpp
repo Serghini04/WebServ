@@ -43,7 +43,19 @@ void resetListeningState(bool& sin, std::string& host, std::map<std::string, std
 	host.clear();
 	listenings["Default"].clear();
 }
-
+bool is_validCGIATT(std::string& key,std::string& value)
+{
+	std::stringstream	ss(value);
+	std::string			tb[3];
+	int i = -1;
+	while (i < 3 && ss >> tb[++i])
+		;
+	if ((tb[0] != ".py" && tb[0] != ".php" && tb[0] != ".sh") || !tb[2].empty())
+		return 1;
+	key = key + tb[0];
+	value = tb[1];
+	return 0;
+}
 void	is_validvalue(std::string &key, std::string &value, int index_line)
 {
 	std::istringstream	ss(value);
@@ -53,8 +65,8 @@ void	is_validvalue(std::string &key, std::string &value, int index_line)
 		throw ((std::string)"Invalid structer in the line "+Utility::ToStr(index_line));
 	if (key == "client_max_body_size" && value.find_first_not_of("0123456789") != std::string::npos)
 		throw ((std::string)"Invalid structer in the line "+Utility::ToStr(index_line));
-	if (key == "cgi" && value != "on" && value != "off" )
-		throw ((std::string)"Invalid structer in the value of  line "+Utility::ToStr(index_line));
+	if (key == "cgi" && is_validCGIATT(key, value))
+		throw ((std::string)"**Invalid structer in the value of  line "+Utility::ToStr(index_line));
 	if (key == "allowed_methods")
 	{
 		while (ss >> token)
@@ -112,7 +124,7 @@ bool validlocation_key(std::string key)
 {
 	return (key == "allowed_methods" || key == "upload_store" ||
 			key == "root" || key == "index" || key == "return"||
-			key == "auto_index" || key == "cgi");
+			key == "auto_index" || key == "cgi" || key == "root");
 }
 
 void	is_validAttLocation(std::string &key, std::string &value, int index)
@@ -443,7 +455,6 @@ std::vector<Conserver> parseConfigFile(char *in_file)
 		std::cerr << err << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	// filterServersWithListening(servers);
 	return servers;
 }
 
