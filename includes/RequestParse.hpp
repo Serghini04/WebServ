@@ -6,7 +6,7 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/16 10:22:37 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/02/23 11:35:26 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <signal.h>
+#include <errno.h>
 
 #define CGI_TIMEOUT 5
 #define SIZE_BUFFER 50
@@ -103,12 +104,15 @@ class   RequestParse
 
 		// Execution of CGI by hidriouc
 		int		runcgiscripte();
-		void	_dupfd(int infd, int outfd);
+		bool	is_InvalideURL();
+		bool	CheckStdERR(const char* fileERR);
+		void	_dupfd(int infd, int outfd, int ERRfile);
+		void	clear(int bodyfd, int outfd, int fileERR);
 		void	_validateContentLength(const std::string& contentLength, size_t bodysize);
 		void	_validateContentType(const std::string& contentType);
 		void	_parseHeaderLine(const std::string& line, std::string lines[]);
 		int		_parseHeaders(size_t bodysize, const std::string& headers);
-		int		_forkAndExecute(int infd, int outfd,char* env[]);
+		int		_forkAndExecute(int infd, int outfd, char* env[], int ERRfile);
 		int		_waitForCGIProcess(int pid);
 		int		parseCGIOutput(const char* cgiOutputFile);
 		std::vector<std::string>	_buildEnvVars();
