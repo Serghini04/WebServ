@@ -4,7 +4,7 @@
 #include <dirent.h>
 #include <filesystem>
 #include <sys/stat.h>
-#define BUFFER_SIZE 16384
+#define BUFFER_SIZE 1024 * 2
 
 
 class Server;
@@ -17,10 +17,12 @@ class Response
 private:
     std::map<std::string, std::string> _headerMap;
     std::string                         contentType;
-    std::string                         str;
     int                                 firstCall;
-    int                                 size;
+    long  long                               size;
+    std::string currentResponse; // Holds the current response data to send
     std::ifstream                       file;
+    std::ofstream                       debug;
+    std::string                         file_path;
     std::string                         statusLine;
     std::string                         filename;
     Conserver&                          conserver;
@@ -31,7 +33,10 @@ private:
     bool                                isDirectory;
     bool                                endResponse;
     std::string                         directoryContent;
+    bool                                useChunkedEncoding;  
 public:
+    long                                dataSend;
+    size_t                              fileSize;
     Response(Conserver &conserver, RequestParse *request);
     ~Response();
     std::string FileToString();
@@ -42,7 +47,7 @@ public:
     void        ProcessUrl(std::map<std::string, std::string> location);
     void        handelRequestErrors();
     void        SendError(enum status code);
-    int         getFileSize();
+    long long   getFileSize();
     int         GetErrorFromStrSize();
     bool        IsDirectory(const char *path);
     std::string handelRedirection(std::string redirect_code, std::string redirect_url);
