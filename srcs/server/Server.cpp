@@ -6,7 +6,7 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/02/05 13:48:08 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/25 10:12:20 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,8 +138,7 @@ void Server::ConfigTheSocket(Conserver &config)
             errorMsg("nonblocking Fails", serverSocket);
         addressSocket.sin_family = AF_INET;
         addressSocket.sin_port = htons(Utility::StrToInt(address[i].second.c_str()));
-        addressSocket.sin_addr.s_addr = INADDR_ANY;
-        // addressSocket.sin_addr.s_addr = inet_addr(address[i].first.c_str());
+        addressSocket.sin_addr.s_addr = inet_addr(address[i].first.c_str());
         int bindResult = bind(serverSocket, (const sockaddr *)&addressSocket, sizeof(addressSocket));
         if (bindResult == -1)
             errorMsg("bind Fails", serverSocket);
@@ -173,7 +172,10 @@ void Server::RecivData(int clientSocket)
         manageEvents(REMOVE_READ, clientSocket);
         manageEvents(ADD_WRITE, clientSocket);
         if ((*clientsRequest[clientSocket]).isCGI())
+		{
+			puts("tazi");
             (*clientsRequest[clientSocket]).runcgiscripte();
+		}
         return;
     }
 }

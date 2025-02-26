@@ -1,21 +1,20 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
+
 import os
-import sys
 
-# Ensure script prints output immediately
-sys.stdout.flush()
+# Get the query string from the environment
+query_string = os.getenv("QUERY_STRING", "No query provided")
 
-# Print required CGI headers
-# print("HTTP/1.1 200 OK") # Separate headers from body
-print("HTTP/1.1 200 OK\r\n", end="")
-print("Content-Length: 115\r\n", end="") # Separate headers from body
-print("Content-Type: text/html\r\n\r\n", end="") # Separate headers from body
+# Print HTTP headers
+print("HTTP/1.1 200 OK")
+print("Content-Type: text/html")
+print("\n\r\n\r")  # Blank line to separate headers from body
 
-# HTML response body
-print("<html>")
+# Print HTML response
+pr**int("<html>")
 print("<head><title>CGI Test</title></head>")
 print("<body>")
 print("<h1>Hello from CGI!</h1>")
-print("<p>Query String: {}</p>".format(os.getenv("QUERY_STRING", "No query provided")))
+print(f"<p>Hello Mr {query_string}</p>")
 print("</body>")
 print("</html>")
