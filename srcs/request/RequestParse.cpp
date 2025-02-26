@@ -6,7 +6,7 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/26 12:20:00 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/02/26 18:36:48 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -641,13 +641,11 @@ int	RequestParse::runcgiscripte()
 		if (_statusCode == 504)
 			_statusCodeMessage = "504 Gateway Timeout";
 		if (CheckStdERR("/tmp/Errout.text"))
-			throw (std::string("Internal Server Error"));
+			throw (std::string("500 Internal Server Error"));
 	}catch(std::string err){
-		std::cout <<">>|"<< err<<std::endl;
 		_statusCode = (status)(500);
-		_statusCodeMessage = "Internal Server Error";
+		_statusCodeMessage = "500 Internal Server Error";
 	}
-	// std::cout <<">>|"<< _statusCode<<"|"<< _statusCodeMessage<<std::endl;
 	clear(bodyfd ,outfd, fileERR );
 	return 402;
 }
