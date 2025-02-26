@@ -57,8 +57,7 @@ void Server::manageEvents(enum EventsEnum events, int clientSocket)
         EV_SET(&event, clientSocket, EVFILT_WRITE, EV_CLEAR, 0, 0, NULL);
         break;
     }
-    if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
-        SendError(clientSocket);
+    kevent(kq, &event, 1, NULL, 0, NULL);
 }
 void errorMsg(std::string str, int fd)
 {
@@ -177,6 +176,8 @@ void Server::RecivData(int clientSocket)
         return;
     }
     fullData.assign(buffer, bytesRead);
+    if(!clientsRequest[clientSocket])
+        return ;
     (*clientsRequest[clientSocket]).readBuffer(fullData);
     if ((*clientsRequest[clientSocket]).requestIsDone())
     {

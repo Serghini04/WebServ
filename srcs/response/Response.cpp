@@ -3,15 +3,6 @@
 Response::Response(Conserver &conserver, RequestParse *request) : conserver(conserver), request(request)
 {
     size = 0;
-    if (!debug.is_open())
-    {
-        debug.open("/Users/mal-mora/goinfre/out.txt", std::ios::binary);
-        if (debug.fail())
-        {
-            puts("ff");
-            exit(1);
-        }
-    }
     firstCall = 1;
     statusLine = "HTTP/1.1 200 OK\r\n";
     hasErrorFile = true;
@@ -51,7 +42,6 @@ std::string Response::FileToString()
     {
         std::string buf(BUFFER_SIZE, '\0');
         file.read(&buf[0], BUFFER_SIZE);
-        debug.write(buf.c_str(), file.gcount());
         buf.resize(file.gcount());
         return buf;
     }
@@ -113,25 +103,49 @@ void Response::SendError(enum status code)
         request->SetStatusCodeMsg("403 forbidden");
     handelRequestErrors();
 }
+// void Response::ProcessUrl(std::map<std::string, std::string> location)
+// {
+//     std::string newUrl = conserver.getAttributes("root");
+//     std::string index = "";
+//     std::ostringstream oss;
 
+//     if (Utility::isDirectory(newUrl + request->URL()))
+//     {
+//         if (!location["index"].empty())
+//             oss << newUrl << location["root"] << request->URL() << "/" << location["index"];
+//         else if (location["index"].empty() &&
+//                  (location["auto_index"].empty() || location["auto_index"].find("off") != std::string::npos))
+//             SendError(eFORBIDDEN);
+//         else
+//             oss << newUrl << location["root"] + request->URL();
+//     }
+//     else
+//         oss << newUrl << location["root"] + request->URL();
+//     newUrl = oss.str();
+//     request->setUrl(newUrl);
+// }
 void Response::ProcessUrl(std::map<std::string, std::string> location)
 {
     std::string newUrl = conserver.getAttributes("root");
     std::string index = "";
     std::ostringstream oss;
 
-    if (Utility::isDirectory(newUrl + request->URL()))
+    if (location["root"].empty())
+        newUrl = newUrl + request->URL();
+    else
+        newUrl = location["root"] + request->URL();
+    if (Utility::isDirectory(request->URL()))
     {
         if (!location["index"].empty())
-            oss << newUrl << location["root"] << request->URL() << "/" << location["index"];
+            oss << "/" << location["index"];
         else if (location["index"].empty() &&
                  (location["auto_index"].empty() || location["auto_index"].find("off") != std::string::npos))
+        {
             SendError(eFORBIDDEN);
-        else
-            oss << newUrl << location["root"] + request->URL();
+            return;
+        }
     }
-    else
-        oss << newUrl << location["root"] + request->URL();
+    oss << newUrl;
     newUrl = oss.str();
     request->setUrl(newUrl);
 }
@@ -223,9 +237,10 @@ std::string Response::processResponse(int state)
                 std::string line = getCgiResponse();
                 return line;
             }
-            if (request->statusCode() == eOK && request->method() != ePOST)
+            else if (request->statusCode() == eOK && request->method() != ePOST)
             {
                 std::string str = request->URL();
+                std::cout << "URL ---> " << request->URL() << std::endl;
                 if (Utility::isDirectory(str.c_str()))
                 {
                     isDirectory = true;
@@ -247,7 +262,6 @@ std::string Response::processResponse(int state)
             }
         }
         size = getFileSize();
-        fileSize = size;
     }
     else
         return FileToString();
@@ -277,5 +291,8 @@ std::string Response::getResponse()
         else
             str = processResponse(1);
     }
+    // std::cout << "---------------------------" << std::endl;
+    // std::cout << request->URL() << std::endl;
+    // std::cout << "---------------------------" << std::endl;
     return str;
 }
