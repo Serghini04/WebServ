@@ -345,7 +345,6 @@ def printLogin():
     """)
 
 
-
 def authUser(name, password):
     if os.path.exists('user_database'):
         with open('user_database', 'rb') as f:
@@ -386,39 +385,63 @@ def handleLogin():
             # Output the cookie headers
             print("HTTP/1.1 302 Found")
             print(cookies_obj.output())
-            # print("HTTP/1.1 200 OK")
             print("Location: acc.py\r\n\r\n")
     else:
-        if os.path.exists('user_database'):
-            with open('user_database', 'rb') as f:
-                database = pickle.load(f)
-                if username in database.user_pass:
-                    printUserMsg("Username is already registered!")
-                else:
-                    database.addUser(username, password, firstname)
-                    printUserMsg("Account registered successfully!")
-        else:
-            database = UserDataBase()
-            if username in database.user_pass:
-                printUserMsg("Username is already registered!")
+        # Registration process - without username check
+        try:
+            database = None
+            if os.path.exists('user_database'):
+                with open('user_database', 'rb') as f:
+                    database = pickle.load(f)
             else:
-                database.addUser(username, password, firstname)
-                printUserMsg("Account registered successfully!")
+                database = UserDataBase()
+                
+            # Add new user without checking if username exists
+            database.addUser(username, password, firstname)
+            printUserMsg("Account registered successfully!")
+        except Exception as e:
+            # Debug output
+            print(f"Registration error: {str(e)}", file=sys.stderr)
+            printUserMsg(f"Error during registration: {str(e)}") 
 
-# Load CGI form
-form = cgi.FieldStorage()
+def main():
+    # Create sessions directory if it doesn't exist
+    if not os.path.exists('sessions'):
+        os.makedirs('sessions')
+        
+    global form
+    # Load CGI form
+    form = cgi.FieldStorage()
 
-# Load cookies from the environment
-cookies_obj = cookies.SimpleCookie()
-if 'HTTP_COOKIE' in os.environ:
-    cookies_obj.load(os.environ['HTTP_COOKIE'])
+    # Check if we're processing a login attempt
+    login_attempt = form.getvalue('username') is not None
 
-    if "SID" in cookies_obj:
-        print("Your Session ID is", cookies_obj["SID"].value, file=sys.stderr)
-        with open('sessions/session_' + cookies_obj["SID"].value, 'rb') as f:
-            sess = pickle.load(f)
-        printAccPage(sess)
-    else:
+    # If we're processing a login attempt, prioritize that over the cookie
+    if login_attempt:
         handleLogin()
-else:
-    handleLogin()
+    else:
+        # Only check for the cookie if we're not processing a login
+        cookies_obj = cookies.SimpleCookie()
+        if 'HTTP_COOKIE' in os.environ:
+            cookies_obj.load(os.environ['HTTP_COOKIE'])
+
+            if "SID" in cookies_obj:
+                sid = cookies_obj["SID"].value
+                print("Your Session ID is", sid, file=sys.stderr)
+                session_file = 'sessions/session_' + sid
+                
+                # Check if the session file exists
+                if os.path.exists(session_file):
+                    with open(session_file, 'rb') as f:
+                        sess = pickle.load(f)
+                    printAccPage(sess)
+                else:
+                    # Session file doesn't exist, handle as if no cookie
+                    handleLogin()
+            else:
+                handleLogin()
+        else:
+            handleLogin()
+
+if __name__ == "__main__":
+    main()

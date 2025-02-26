@@ -6,15 +6,15 @@ Response::Response(Conserver &conserver, RequestParse *request) : conserver(cons
     fileSize = 0;
     dataSend = 0;
     totalSend = 0;
-    if (!debug.is_open())
-    {
-        debug.open("/Users/mal-mora/goinfre/out.txt", std::ios::binary);
-        if (debug.fail())
-        {
-            puts("ff");
-            exit(1);
-        }
-    }
+    // if (!debug.is_open())
+    // {
+    //     debug.open("/Users/mal-mora/goinfre/out.txt", std::ios::binary);
+    //     if (debug.fail())
+    //     {
+    //         puts("ff");
+    //         exit(1);
+    //     }
+    // }
     firstCall = 1;
     statusLine = "HTTP/1.1 200 OK\r\n";
     hasErrorFile = true;
@@ -71,7 +71,7 @@ long long Response::getFileSize()
     file.seekg(0, std::ios::end);
     size = file.tellg();
     file.seekg(0, std::ios::beg);
-    std::cout << "size " << size << std::endl;
+    // std::cout << "size " << size << std::endl;
     return size;
 }
 

@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/02/21 17:25:34 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/26 09:53:25 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,7 @@ void Server::ConfigTheSocket(Conserver &config)
             errorMsg("nonblocking Fails", serverSocket);
         addressSocket.sin_family = AF_INET;
         addressSocket.sin_port = htons(Utility::StrToInt(address[i].second.c_str()));
-        addressSocket.sin_addr.s_addr = INADDR_ANY;
+        addressSocket.sin_addr.s_addr = htons(INADDR_ANY);
         int bindResult = bind(serverSocket, (const sockaddr *)&addressSocket, sizeof(addressSocket));
         if (bindResult == -1)
             errorMsg("bind Fails", serverSocket);
