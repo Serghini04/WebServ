@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
 /*   Updated: 2025/02/26 10:32:10 by hidriouc         ###   ########.fr       */
@@ -110,7 +110,6 @@ void Server::ResponseEnds(int clientSocket)
     if (clientsRequest[clientSocket])
     {
         puts("Response Ends ");
-        clientsRequest[clientSocket]->SetRequestIsDone(false);
         if (clientsRequest[clientSocket]->isCGI())
             clientsRequest[clientSocket]->setIsCGI(false);
         if (clientsRequest[clientSocket]->isConnectionClosed())
@@ -179,12 +178,16 @@ void Server::RecivData(int clientSocket)
     if(!clientsRequest[clientSocket])
         return ;
     (*clientsRequest[clientSocket]).readBuffer(fullData);
+    
     if ((*clientsRequest[clientSocket]).requestIsDone())
     {
         puts("Recive Data");
+        clientsRequest[clientSocket]->SetRequestIsDone(false);
         manageEvents(ADD_WRITE, clientSocket);
         if ((*clientsRequest[clientSocket]).isCGI())
+		{
             (*clientsRequest[clientSocket]).runcgiscripte();
+		}
         return;
     }
 }

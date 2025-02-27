@@ -296,8 +296,8 @@ std::string Response::getResponse()
             str = processResponse(1);
     }
 
-    // std::cout << "---------------------------" << std::endl;
-    // std::cout << "response ---> "<< str  << std::endl;
-    // std::cout << "---------------------------" << std::endl;
+    std::cout << "---------------------------" << std::endl;
+    std::cout << "response ---> "<< str  << std::endl;
+    std::cout << "---------------------------" << std::endl;
     return str;
 }

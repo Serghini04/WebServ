@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   RequestParse.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
 /*   Updated: 2025/02/26 10:15:10 by hidriouc         ###   ########.fr       */
@@ -55,6 +55,7 @@ class   RequestParse
 		std::string		_httpVersion;
 		std::string 	_url;
 		methods			_enumMethod;
+		std::ofstream	_fileDebug;
 		status			_statusCode;
 		std::string		_uri;
 		BodyParse		_body;
@@ -64,6 +65,7 @@ class   RequestParse
 		long long		_maxBodySize;
 		std::string		_statusCodeMessage;
 		std::string		_location;
+		std::string		header;
 		std::string		_queryString;
 		std::string		_fragment;
 
@@ -91,6 +93,7 @@ class   RequestParse
 		bool		isConnectionClosed();
 
 		// Methods :
+		void		checkCGI();
 		void		checkURL();
 		void 		deleteMethod();
 		std::string matchingURL();

@@ -22,13 +22,13 @@ std::string trimcomment(const std::string& str)
 {
 	size_t start = str.find_first_not_of(" \t");
 	size_t end = str.find_first_of("#");
-	return (start == std::string::npos || start >= end) ? "" : str.substr(start, end - 1);
+	return (start == std::string::npos && start >= end) ? "" : str.substr(start, end - 1);
 }
 
 std::string trim(const std::string& str)
 {
 	std::string newstr =  trimcomment(str);
-	size_t end = newstr.find_last_not_of(" \t");
+	size_t end = newstr.find_last_not_of(" #\t");
 	return newstr.substr(0, end+1);
 }
 
@@ -50,11 +50,11 @@ bool is_validCGIATT(std::string& key,std::string& value)
 	int i = -1;
 	while (i < 3 && ss >> tb[++i])
 		;
-	if ((tb[0] != ".py" && tb[0] != ".php" && tb[0] != ".sh") || !tb[2].empty())
-		return 1;
-	key = key + tb[0];
+	if ((tb[0] != ".py" && tb[0] != ".php" && tb[0] != ".sh") || tb[1].empty() || !tb[2].empty())
+		return true;
+	key += tb[0];
 	value = tb[1];
-	return 0;
+	return false;
 }
 void	is_validvalue(std::string &key, std::string &value, int index_line)
 {
@@ -65,8 +65,8 @@ void	is_validvalue(std::string &key, std::string &value, int index_line)
 		throw ((std::string)"Invalid structer in the line "+Utility::ToStr(index_line));
 	if (key == "client_max_body_size" && value.find_first_not_of("0123456789") != std::string::npos)
 		throw ((std::string)"Invalid structer in the line "+Utility::ToStr(index_line));
-	if (key == "cgi" && is_validCGIATT(key, value))
-		throw ((std::string)"**Invalid structer in the value of  line "+Utility::ToStr(index_line));
+	if ((key == "cgi" && is_validCGIATT(key, value)) || (key == "auto_index" && value != "on" && value != "off"))
+		throw ((std::string)"Invalid structer in the value of  line "+Utility::ToStr(index_line));
 	if (key == "allowed_methods")
 	{
 		while (ss >> token)
@@ -300,7 +300,7 @@ std::string	processLocationAttributes(std::ifstream& infile, int& index, std::ma
 	if (line.find('}') != std::string::npos) 
 		LocationStack.pop();
 	if (!LocationStack.empty())
-		throw std::string("8Error: Unexpected syntax (line ") + Utility::ToStr(index) + ")!";
+		throw std::string("Error: Unexpected syntax (line ") + Utility::ToStr(index) + ")!";
 	return (line[0] == '}' && line.size() > 1)? trim(line.substr(1)) : "";
 }
 
