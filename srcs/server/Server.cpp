@@ -6,7 +6,7 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/02/26 10:32:10 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/02/27 15:38:30 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,7 @@ void Server::manageEvents(enum EventsEnum events, int clientSocket)
         EV_SET(&event, clientSocket, EVFILT_WRITE, EV_CLEAR, 0, 0, NULL);
         break;
     }
-    if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
-        SendError(clientSocket);
+    kevent(kq, &event, 1, NULL, 0, NULL);
 }
 void errorMsg(std::string str, int fd)
 {
@@ -101,7 +100,6 @@ void Server::CleanUpAllocation(int clientSocket)
 
 void Server::ConnectionClosed(int clientSocket)
 {
-    puts("Connection Closed");
     CleanUpAllocation(clientSocket);
     close(clientSocket);
 }
@@ -110,8 +108,6 @@ void Server::ResponseEnds(int clientSocket)
 {
     if (clientsRequest[clientSocket])
     {
-        puts("Response Ends ");
-        clientsRequest[clientSocket]->SetRequestIsDone(false);
         if (clientsRequest[clientSocket]->isCGI())
             clientsRequest[clientSocket]->setIsCGI(false);
         if (clientsRequest[clientSocket]->isConnectionClosed())
@@ -177,12 +173,14 @@ void Server::RecivData(int clientSocket)
         return;
     }
     fullData.assign(buffer, bytesRead);
+    if(!clientsRequest[clientSocket])
+        return ;
     (*clientsRequest[clientSocket]).readBuffer(fullData);
+    
     if ((*clientsRequest[clientSocket]).requestIsDone())
     {
-        puts("Recive Data");
+        clientsRequest[clientSocket]->SetRequestIsDone(false);
         manageEvents(ADD_WRITE, clientSocket);
-        manageEvents(REMOVE_READ, clientSocket);
         if ((*clientsRequest[clientSocket]).isCGI())
 		{
             (*clientsRequest[clientSocket]).runcgiscripte();
@@ -238,7 +236,6 @@ void Server::ConnectWithClient(uintptr_t server)
     clientSocket = accept(server, (struct sockaddr *)&clientAddress, &clientAddrLen);
     if (clientSocket == -1)
         errorMsg("Cannot Connect", server);
-    puts("new connection ");
     if (make_socket_nonblocking(clientSocket) == -1)
         SendError(clientSocket);
     else

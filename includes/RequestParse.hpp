@@ -6,7 +6,7 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/26 10:15:10 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/02/27 16:24:32 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 #include <signal.h>
 #include <errno.h>
 
-# define CGI_TIMEOUT 5
+# define CGI_TIMEOUT 10
 # define SIZE_BUFFER 50
 
 enum status
@@ -55,6 +55,7 @@ class   RequestParse
 		std::string		_httpVersion;
 		std::string 	_url;
 		methods			_enumMethod;
+		std::ofstream	_fileDebug;
 		status			_statusCode;
 		std::string		_uri;
 		BodyParse		_body;
@@ -64,9 +65,10 @@ class   RequestParse
 		long long		_maxBodySize;
 		std::string		_statusCodeMessage;
 		std::string		_location;
+		std::string		header;
 		std::string		_queryString;
 		std::string		_fragment;
-
+		std::string		_outfile;
 	public :
 		RequestParse(Conserver &conserver);
 	
@@ -91,6 +93,7 @@ class   RequestParse
 		bool		isConnectionClosed();
 
 		// Methods :
+		void		checkCGI();
 		void		checkURL();
 		void 		deleteMethod();
 		std::string matchingURL();
@@ -114,8 +117,9 @@ class   RequestParse
 		int		_parseHeaders(size_t bodysize, const std::string& headers);
 		int		_forkAndExecute(int infd, int outfd, char* env[], int ERRfile);
 		int		_waitForCGIProcess(int pid);
-		int		parseCGIOutput(const char* cgiOutputFile);
+		int		parseCGIOutput();
 
+		std::string 	getCGIfile();
 		std::vector<std::string>	_buildEnvVars();
 		void						_openFileSafely(std::ifstream& file, const std::string& filename);
 		std::string					_extractHeaderValue(const std::string& line);
