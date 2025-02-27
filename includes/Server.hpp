@@ -18,7 +18,7 @@
 #include <RequestParse.hpp>
 #include <netinet/tcp.h>  
 #include <unordered_map>
-#define MAX_BUFFER 8192
+#define MAX_BUFFER 1024 * 2
 #define MAX_CLIENTS 1024 * 2
 #define PORT 1111
 class Response;
@@ -41,7 +41,7 @@ private:
     std::unordered_map<int, int > serversClients;
     std::vector<int> servers;
     struct kevent timerEvent;
-    static const int TIMEOUT_SECONDS = 2;
+    static const int TIMEOUT_SECONDS = 8;
     void            ConnectWithClient(uintptr_t server);
     void            HandelEvents(int n, struct kevent events[]);
     void            ConfigTheSocket(Conserver &config);

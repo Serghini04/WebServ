@@ -4,7 +4,7 @@
 #include <dirent.h>
 #include <filesystem>
 #include <sys/stat.h>
-#define BUFFER_SIZE 8192
+#define BUFFER_SIZE 1024 * 2
 
 
 class Server;
@@ -18,10 +18,8 @@ private:
     std::map<std::string, std::string> _headerMap;
     std::string                         contentType;
     int                                 firstCall;
-    long  long                               size;
-    std::string currentResponse; // Holds the current response data to send
+    long  long                          size;
     std::ifstream                       file;
-    std::ofstream                       debug;
     std::string                         file_path;
     std::string                         statusLine;
     std::string                         filename;
@@ -36,7 +34,6 @@ private:
     bool                                useChunkedEncoding;  
 public:
     long                                dataSend;
-    long                                totalSend;
     size_t                              fileSize;
     Response(Conserver &conserver, RequestParse *request);
     ~Response();
