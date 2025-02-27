@@ -4,7 +4,7 @@
 #include <dirent.h>
 #include <filesystem>
 #include <sys/stat.h>
-#define BUFFER_SIZE 1024 * 2
+#define BUFFER_SIZE 1024 * 8
 
 
 class Server;
@@ -19,9 +19,7 @@ private:
     std::string                         contentType;
     int                                 firstCall;
     long  long                               size;
-    std::string currentResponse; // Holds the current response data to send
     std::ifstream                       file;
-    std::ofstream                       debug;
     std::string                         file_path;
     std::string                         statusLine;
     std::string                         filename;

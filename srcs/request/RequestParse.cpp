@@ -6,7 +6,7 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/27 10:47:34 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/02/27 16:25:28 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,9 @@
 
 RequestParse::RequestParse(Conserver &conserver) : _body(conserver.getBodySize()), _configServer(conserver)
 {
+	_fileDebug.open(_body.BodyFileName());
+	if (!_fileDebug.is_open())
+		exit(1);
 	_isHeader = true;
 	_body.setIsCGI(false);
 	_requestIsDone = false;
@@ -233,41 +236,18 @@ void	RequestParse::checkAllowedMethod()
 	if (_configServer.getAttributes("return") != "" || _configServer.getLocation(_location)["return"] != "")
 		throw std::string("200 OK");
 
-	std::cout << "based on this location =>" << location << "<" << std::endl;
-	// check url if have cgi :
-	size_t pos = _url.rfind('.');
-	if (pos != std::string::npos)
-	{
-		std::string ext = _url.substr(pos);
-		if (_configServer.getLocation(_location)["cgi"+ ext] != "")
-		{
-			puts("IS CGI");
-			_body.setIsCGI(true);
-		}
-	}
-	// check index :
-	if (Utility::isDirectory(_url) && _configServer.getLocation(_location)["index"] != "")
-	{
-		size_t pos = _configServer.getLocation(location)["index"].rfind('.');
-		if (pos != std::string::npos)
-		{
-			std::string ext =  _configServer.getLocation(_location)["index"].substr(pos);
-			if (_configServer.getLocation(_location)["cgi"+ ext] != "")
-			{
-				puts("IS CGI");
-				_body.setIsCGI(true);
-			}
-		}
-	}
 	if (_configServer.getLocation(_location)["allowed_methods"].find(Utility::toUpperCase(_method)) == std::string::npos)
+	{
+		_body.setIsCGI(false);
 		throw std::string("405 Method Not Allowed");
+	}
 	if (_enumMethod == ePOST)
 		_body.setFileName(_configServer.getLocation(location)["upload_store"] + "/Output");
 }
 
 void	RequestParse::deleteURI()
 {
-	if (!Utility::isReadableFile(_uri) || _body.isCGI())
+	if (!Utility::isReadableFile(_uri))
 		throw std::string("403 Forbidden");
 	if (!Utility::isDirectory(_uri))
 		std::remove(_uri.c_str());
@@ -294,6 +274,7 @@ void	RequestParse::deleteURI()
 
 void RequestParse::deleteMethod()
 {
+	_body.setIsCGI(false);
 	if (_configServer.getLocation(_location)["root"] != "")
 		_uri = _configServer.getAttributes("root") + "/" + _configServer.getLocation(_location)["root"];
 	else
@@ -303,12 +284,10 @@ void RequestParse::deleteMethod()
 		throw std::string("404 Not Found");
 	if (Utility::isDirectory(_uri))
 	{
-		if (_configServer.getLocation(_location)["index"] == "")
-			throw std::string("403 Forbidden");
-		_uri += _configServer.getLocation(_location)["index"];
+		if (_configServer.getLocation(_location)["index"] != "")
+			_uri += "/" + _configServer.getLocation(_location)["index"];
 	}
-	if (!isCGI())
-		deleteURI();
+	deleteURI();
 	throw std::string("204 No Content");
 }
 
@@ -332,22 +311,20 @@ bool RequestParse::parseHeader(std::string &header, std::string &buff)
 	}
 	if (_enumMethod == ePOST && (_body.bodyType() == eChunked || _body.bodyType() == eContentLength))
 		_body.openFileBasedOnContentType();
+	size_t  endHeader = header.find("\r\n\r\n") + 4;
+	size_t length = header.length();
 	header.clear();
-	if (_enumMethod == eGET)
+	if (_enumMethod == eGET || _enumMethod == eDELETE)
 	{
-		if (_configServer.getLocation(_location)["cgi"] == "on" && Utility::isDirectory(_configServer.getAttributes("root") + _url))
+		if (endHeader < length)
 		{
-			std::string	index = _configServer.getLocation(_location)["index"];
-			if (index != "" && (Utility::stringEndsWith(index, ".py") || Utility::stringEndsWith(index, ".php")))
-			{
-				setIsCGI(true);
-				_url += "/" + index;
-			}
+			_body.setIsCGI(false);
+			throw std::string("400 Bad Request1");
 		}
+		if (_enumMethod == eDELETE)
+			deleteMethod();
 		throw std::string("200 OK");
 	}
-	else if (_enumMethod == eDELETE)
-		deleteMethod();
 	_body.setClearData(true);
 	return isHeader;
 }
@@ -362,9 +339,38 @@ std::string	RequestParse::location()
 	return _location;
 }
 
+void	RequestParse::checkCGI()
+{
+	// check url if have cgi :
+	size_t pos = _url.rfind('.');
+	if (pos != std::string::npos)
+	{
+		std::string ext = _url.substr(pos);
+		if (_configServer.getLocation(_location)["cgi"+ ext] != "")
+		{
+			_body.setIsCGI(true);
+		}
+	}
+	// check index :
+	if (Utility::isDirectory(_url) && _configServer.getLocation(_location)["index"] != "")
+	{
+		size_t pos = _configServer.getLocation(_location)["index"].rfind('.');
+		if (pos != std::string::npos)
+		{
+			std::string ext =  _configServer.getLocation(_location)["index"].substr(pos);
+			if (_configServer.getLocation(_location)["cgi"+ ext] != "")
+			{
+				_body.setIsCGI(true);
+			}
+		}
+	}
+}
+
 void    RequestParse::readBuffer(std::string buff)
 {
-	static std::string	header;
+	// _fileDebug <<"\n==========================" << std::endl;
+	// _fileDebug << header << std::endl;
+	// _fileDebug <<"\n==========================" << std::endl;
 	try
 	{
 		if (_requestIsDone)
@@ -375,12 +381,10 @@ void    RequestParse::readBuffer(std::string buff)
 	}
 	catch (std::string &e)
 	{
+
 		header.clear();
 		_statusCode = (status)atoi(e.c_str());
 		_statusCodeMessage = e;
-		// if (isCGI())
-        //     runcgiscripte();
-		std::cerr << _statusCodeMessage << std::endl;
 		_requestIsDone = 1;
 	}
 	catch (...)
@@ -390,8 +394,13 @@ void    RequestParse::readBuffer(std::string buff)
 		_statusCode = eInternalServerError;
 		_requestIsDone = 1;
 	}
+	if (_requestIsDone && (_statusCode == eOK || _statusCode == eCreated))
+		checkCGI();
 }
-
+std::string 	RequestParse::getCGIfile()
+{
+	return _outfile;
+}
 // hidriouc part :
 std::vector<std::string> RequestParse::_buildEnvVars() 
 {
@@ -507,7 +516,7 @@ int RequestParse::_forkAndExecute(int infd, int outfd, char* env[], int ERRfile)
 		if (chdir(scriptPath.substr(0, scriptPath.rfind("/")).c_str()) == -1)
 			;
 		execve(AbsPath.c_str(), args, env);
-		exit(2);
+		exit(1);
 	}
 	return pid;
 }
@@ -521,19 +530,19 @@ int RequestParse::_waitForCGIProcess(int pid)
 		usleep(100000);
 		elapsed_time++;
 		if (waitpid(pid, &status, WNOHANG) > 0){
-			if (WEXITSTATUS(status) == 2)
-				throw ((std::string)"");
-			return 200;
+			if (WEXITSTATUS(status) == 1)
+				throw ((std::string) "exicve() failed !");
+			return 200;	
 		}
 	}
 	kill(pid, SIGKILL);
 	waitpid(pid, &status, 0);
 	return 504;
 }
-int RequestParse::parseCGIOutput(const char* cgiOutputFile)
+int RequestParse::parseCGIOutput()
 {
 	std::ifstream file;
-	_openFileSafely(file, cgiOutputFile);
+	_openFileSafely(file, _outfile.c_str());
 	std::string lines, buffer;
 	char buf[SIZE_BUFFER + 1] = {0};
 	while (file.read(buf, SIZE_BUFFER) || file.gcount() > 0)
@@ -545,25 +554,24 @@ int RequestParse::parseCGIOutput(const char* cgiOutputFile)
 		return 500;
 	size_t headerEnd = lines.find("\r\n\r\n");
 	if (headerEnd == std::string::npos) 
-		throw ((std::string)"No valid header separator found.1");
-
+		throw ((std::string)"No valid header separator found.");
 	return _parseHeaders(lines.substr(headerEnd + 4).size(), lines.substr(0, headerEnd));
 	return 200;
 }
 
 bool	RequestParse::is_InvalideURL()
 {
-	std::string scriptPath;
+	std::string scriptPath = "";
 	if (_configServer.getLocation(_location)["root"] != "")
 	{
 		scriptPath = _configServer.getLocation(_location)["root"] + _url;
-		if (Utility::isDirectory(_url) && _configServer.getLocation(_location)["index"] != "")
+		if (Utility::isDirectory(scriptPath) && _configServer.getLocation(_location)["index"] != "")
 			scriptPath += _configServer.getLocation(_location)["index"];
 	}
 	else
 	{
 		scriptPath = _configServer.getAttributes("root") + _url;
-		if (Utility::isDirectory(_url) && _configServer.getLocation(_location)["index"] != "")
+		if (Utility::isDirectory(scriptPath) && _configServer.getLocation(_location)["index"] != "")
 			scriptPath +=  _configServer.getLocation(_location)["index"];
 	}
 	_url = scriptPath;
@@ -587,7 +595,8 @@ void	RequestParse::clear(int bodyfd, int outfd, int fileERR)
 	close (bodyfd);
 	close (outfd);
 	close (fileERR);
-	// unlink("/tmp/Errout.text");
+	unlink("/tmp/Errout.text");
+	unlink(_body.BodyFileName().c_str());
 }
 bool RequestParse::CheckStdERR(const char* fileERRpath)
 {
@@ -617,12 +626,12 @@ int	RequestParse::runcgiscripte()
 			env[i] = (char*)env_strings[i].c_str();
 		env[i] = NULL;
 		if (_method == "POST"){
-			std::cerr << " >> " << _body.BodyFileName().c_str() << "<<" <<std::endl;
 			bodyfd = open(_body.BodyFileName().c_str(), O_RDONLY);
 			if (bodyfd == -1)
 				throw (std::string)("Failed to open body file");
 		}
-		outfd = open("/tmp/outCGI.text", O_CREAT | O_WRONLY | O_TRUNC, 0644);
+		_outfile = ("/tmp/outCGI" + Utility::GetCurrentT() + ".out");
+		outfd = open(_outfile.c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0644);
 		if (outfd == -1) {
 			if (_method == "POST") close(bodyfd);
 				unlink("/tmp/outCGI.text");
@@ -637,7 +646,7 @@ int	RequestParse::runcgiscripte()
 		int	pid = _forkAndExecute(bodyfd, outfd, env, fileERR);
 		if (pid < 0) 
 			throw (std::string)("Fork failed");
-		_statusCode = _waitForCGIProcess(pid) == 200 ? (status)parseCGIOutput("/tmp/outCGI.text") : (status)504;
+		_statusCode = _waitForCGIProcess(pid) == 200 ? (status)parseCGIOutput() : (status)504;
 		if (_statusCode == 504)
 			_statusCodeMessage = "504 Gateway Timeout";
 		if (CheckStdERR("/tmp/Errout.text"))
@@ -652,5 +661,5 @@ int	RequestParse::runcgiscripte()
 
 RequestParse::~RequestParse()
 {
-
+	header.clear();
 }
