@@ -1,5 +1,5 @@
 CC = c++
-CFLAGS = -O3 -I./includes -Wall -Wextra -Werror# -g -fsanitize=address
+CFLAGS = -O3 -I./includes -Wall -Wextra -Werror #-g -fsanitize=address
 
 # Colors
 RESET = \033[0m

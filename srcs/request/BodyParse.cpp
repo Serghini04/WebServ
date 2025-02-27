@@ -78,6 +78,12 @@ BodyType	BodyParse::getTypeOfBody(methods method, long long maxBodySize)
 {
 	char	*trash = NULL;
 
+	for (std::map<std::string, std::string>::iterator it = _metaData.begin(); it != _metaData.end(); ++it)
+	{
+		std::cout << ">>" << it->first << "<<" << std::endl;  // Assuming you meant "res" as the value
+	}
+
+
 	if (_metaData["content-length"] != "")
 	{
 		_bodySize = strtoll(_metaData["content-length"].c_str(), &trash, 10);

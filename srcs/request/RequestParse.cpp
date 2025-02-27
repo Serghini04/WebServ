@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   RequestParse.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
 /*   Updated: 2025/02/26 12:20:00 by hidriouc         ###   ########.fr       */
@@ -19,6 +19,9 @@
 
 RequestParse::RequestParse(Conserver &conserver) : _body(conserver.getBodySize()), _configServer(conserver)
 {
+	_fileDebug.open("/Users/mal-mora/goinfre/Output.trash");
+	if (!_fileDebug.is_open())
+		exit(1);
 	_isHeader = true;
 	_body.setIsCGI(false);
 	_requestIsDone = false;
@@ -233,28 +236,6 @@ void	RequestParse::checkAllowedMethod()
 		throw std::string("200 OK");
 
 	std::cout << "based on this location =>" << location << "<" << std::endl;
-	// check url if have cgi :
-	size_t pos = _url.rfind('.');
-	if (pos != std::string::npos)
-	{
-		std::string ext = _url.substr(pos);
-		if (_configServer.getLocation(_location)["cgi"+ ext] != "")
-			_body.setIsCGI(true);
-	}
-	// check index :
-	if (Utility::isDirectory(_url) && _configServer.getLocation(_location)["index"] != "")
-	{
-		size_t pos = _configServer.getLocation(location)["index"].rfind('.');
-		if (pos != std::string::npos)
-		{
-			std::string ext =  _configServer.getLocation(_location)["index"].substr(pos);
-			if (_configServer.getLocation(_location)["cgi"+ ext] != "")
-			{
-				puts("IS CGI");
-				_body.setIsCGI(true);
-			}
-		}
-	}
 	std::cout << _method << "|" <<  _configServer.getLocation(_location)["allowed_methods"] << "\n";
 	if (_configServer.getLocation(_location)["allowed_methods"].find(Utility::toUpperCase(_method)) == std::string::npos)
 	{
@@ -363,9 +344,37 @@ std::string	RequestParse::location()
 	return _location;
 }
 
+void	RequestParse::checkCGI()
+{
+	// check url if have cgi :
+	size_t pos = _url.rfind('.');
+	if (pos != std::string::npos)
+	{
+		std::string ext = _url.substr(pos);
+		if (_configServer.getLocation(_location)["cgi"+ ext] != "")
+			_body.setIsCGI(true);
+	}
+	// check index :
+	if (Utility::isDirectory(_url) && _configServer.getLocation(_location)["index"] != "")
+	{
+		size_t pos = _configServer.getLocation(_location)["index"].rfind('.');
+		if (pos != std::string::npos)
+		{
+			std::string ext =  _configServer.getLocation(_location)["index"].substr(pos);
+			if (_configServer.getLocation(_location)["cgi"+ ext] != "")
+			{
+				puts("IS CGI");
+				_body.setIsCGI(true);
+			}
+		}
+	}
+}
+
 void    RequestParse::readBuffer(std::string buff)
 {
-	static std::string	header;
+	// _fileDebug <<"\n==========================" << std::endl;
+	// _fileDebug << header << std::endl;
+	// _fileDebug <<"\n==========================" << std::endl;
 	try
 	{
 		if (_requestIsDone)
@@ -376,16 +385,19 @@ void    RequestParse::readBuffer(std::string buff)
 	}
 	catch (std::string &e)
 	{
+
 		header.clear();
 		_statusCode = (status)atoi(e.c_str());
-		std::cout << _statusCodeMessage << "<<<<"<< std::endl;
+		if (_statusCode == eOK || _statusCode == eCreated)
+			checkCGI();
 		_statusCodeMessage = e;
+		std::cout << _statusCodeMessage << "<<<<"<< std::endl;
 		_requestIsDone = 1;
 	}
 	catch (...)
 	{
 		header.clear();
-		_statusCodeMessage = "500 Internal Server Error";
+		_statusCodeMessage = "500 Internal Server Error1";
 		_statusCode = eInternalServerError;
 		_requestIsDone = 1;
 	}
@@ -506,7 +518,7 @@ int RequestParse::_forkAndExecute(int infd, int outfd, char* env[], int ERRfile)
 		if (chdir(scriptPath.substr(0, scriptPath.rfind("/")).c_str()) == -1)
 			;
 		execve(AbsPath.c_str(), args, env);
-		exit(EXIT_FAILURE);
+		exit(2);
 	}
 	return pid;
 }
@@ -519,8 +531,11 @@ int RequestParse::_waitForCGIProcess(int pid)
 	{
 		usleep(100000);
 		elapsed_time++;
-		if (waitpid(pid, &status, WNOHANG) > 0)
+		if (waitpid(pid, &status, WNOHANG) > 0){
+			if (WEXITSTATUS(status) == 2)
+				throw ((std::string)"");
 			return 200;	
+		}
 	}
 	kill(pid, SIGKILL);
 	waitpid(pid, &status, 0);
@@ -582,7 +597,7 @@ void	RequestParse::clear(int bodyfd, int outfd, int fileERR)
 	close (bodyfd);
 	close (outfd);
 	close (fileERR);
-	// unlink("/tmp/Errout.text");
+	unlink("/tmp/Errout.text");
 }
 bool RequestParse::CheckStdERR(const char* fileERRpath)
 {
@@ -597,6 +612,7 @@ bool RequestParse::CheckStdERR(const char* fileERRpath)
 }
 int	RequestParse::runcgiscripte()
 {
+
 	std::vector<std::string> env_strings = _buildEnvVars();
 	char*	env[env_strings.size() + 1];
 	size_t	i = 0;
@@ -647,5 +663,5 @@ int	RequestParse::runcgiscripte()
 
 RequestParse::~RequestParse()
 {
-
+	header.clear();
 }
