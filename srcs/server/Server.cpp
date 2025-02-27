@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/02/26 09:53:25 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/26 10:03:19 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,10 @@ void Server::manageEvents(enum EventsEnum events, int clientSocket)
         EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
         break;
     case REMOVE_READ:
-        EV_SET(&event, clientSocket, EVFILT_READ, EV_DELETE, 0, 0, NULL);
+        EV_SET(&event, clientSocket, EVFILT_READ, EV_CLEAR, 0, 0, NULL);
         break;
     case REMOVE_WRITE:
-        EV_SET(&event, clientSocket, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
+        EV_SET(&event, clientSocket, EVFILT_WRITE, EV_CLEAR, 0, 0, NULL);
         break;
     }
     if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
@@ -85,15 +85,15 @@ int make_socket_nonblocking(int sockfd)
 }
 void Server::CleanUpAllocation(int clientSocket)
 {
-    manageEvents(REMOVE_READ, clientSocket);
-    manageEvents(REMOVE_WRITE, clientSocket);
     if (clientsRequest.count(clientSocket))
     {
+        manageEvents(REMOVE_READ, clientSocket);               
         delete clientsRequest[clientSocket];
         clientsRequest.erase(clientSocket);
     }
     if (clientsResponse.count(clientSocket))
     {
+        manageEvents(REMOVE_WRITE, clientSocket);
         delete clientsResponse[clientSocket];
         clientsResponse.erase(clientSocket);
     }
@@ -108,18 +108,16 @@ void Server::ConnectionClosed(int clientSocket)
 
 void Server::ResponseEnds(int clientSocket)
 {
-    if (clientsRequest.count(clientSocket))
+    if (clientsRequest[clientSocket])
     {
         puts("Response Ends ");
-        std::cout << clientSocket << std::endl;
         clientsRequest[clientSocket]->SetRequestIsDone(false);
         if (clientsRequest[clientSocket]->isCGI())
             clientsRequest[clientSocket]->setIsCGI(false);
-        // if (clientsRequest[clientSocket]->isConnectionClosed())
-        //     ConnectionClosed(clientSocket);
-        // else
+        if (clientsRequest[clientSocket]->isConnectionClosed())
+            ConnectionClosed(clientSocket);
+        else
             CleanUpAllocation(clientSocket);
-            close(clientSocket);
     }
 }
 
@@ -135,9 +133,6 @@ void Server::ConfigTheSocket(Conserver &config)
         serverSocket = socket(AF_INET, SOCK_STREAM, 0);
         if (serverSocket == -1)
             errorMsg("Socket Creation Fails", serverSocket);
-        int keepalive = 1;
-        if (setsockopt(serverSocket, SOL_SOCKET, SO_KEEPALIVE, &keepalive, sizeof(keepalive)) == -1)
-            errorMsg("Keepalive Failed", serverSocket);
         if (setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == -1)
             errorMsg("nonblocking Fails", serverSocket);
         if (setsockopt(serverSocket, SOL_SOCKET, SO_REUSEPORT, &opt, sizeof(opt)) == -1)
@@ -146,7 +141,7 @@ void Server::ConfigTheSocket(Conserver &config)
             errorMsg("nonblocking Fails", serverSocket);
         addressSocket.sin_family = AF_INET;
         addressSocket.sin_port = htons(Utility::StrToInt(address[i].second.c_str()));
-        addressSocket.sin_addr.s_addr = htons(INADDR_ANY);
+        addressSocket.sin_addr.s_addr = inet_addr(address[i].first.c_str());
         int bindResult = bind(serverSocket, (const sockaddr *)&addressSocket, sizeof(addressSocket));
         if (bindResult == -1)
             errorMsg("bind Fails", serverSocket);
@@ -174,9 +169,9 @@ void Server::RecivData(int clientSocket)
     {
         if (errno == EAGAIN || errno == EWOULDBLOCK)
             return;
-        if (errno == ECONNRESET)
+        if (errno == ECONNRESET || bytesRead == 0)
         {
-            ResponseEnds(clientSocket);
+            ConnectionClosed(clientSocket);
             return;
         }
         return;
@@ -186,17 +181,15 @@ void Server::RecivData(int clientSocket)
     if ((*clientsRequest[clientSocket]).requestIsDone())
     {
         puts("Recive Data");
-        std::cout << clientsRequest[clientSocket]->URL() << std::endl;
         manageEvents(ADD_WRITE, clientSocket);
+        manageEvents(REMOVE_READ, clientSocket);
         if ((*clientsRequest[clientSocket]).isCGI())
             (*clientsRequest[clientSocket]).runcgiscripte();
         return;
     }
 }
-
 void Server::SendData(int clientSocket)
 {
-
     long long totalSent = 0;
     long long responseSize;
     
@@ -219,7 +212,7 @@ void Server::SendData(int clientSocket)
         if (bytesSent <= 0)
         {
             if (errno == EAGAIN || errno == EWOULDBLOCK)
-                return; // Wait for the socket to be ready
+                continue;
             if (errno == EPIPE || bytesSent == 0)
             {
                 ResponseEnds(clientSocket);
@@ -229,7 +222,6 @@ void Server::SendData(int clientSocket)
             return;
         }
         totalSent += bytesSent;
-        clientsResponse[clientSocket]->dataSend += bytesSent;
     }
 }
 
@@ -245,7 +237,6 @@ void Server::ConnectWithClient(uintptr_t server)
     if (clientSocket == -1)
         errorMsg("Cannot Connect", server);
     puts("new connection ");
-    std::cout << clientSocket << std::endl;
     if (make_socket_nonblocking(clientSocket) == -1)
         SendError(clientSocket);
     else
@@ -275,15 +266,12 @@ void Server::HandelEvents(int n, struct kevent events[])
             clientSocket = events[i].ident;
             SendData(clientSocket);
         }
-        // else if (events[i].filter == EVFILT_TIMER)
-        // {
-        //     clientSocket = events[i].ident;
-        //     if (!clientsRequest.count(clientSocket))
-        //     {
-        //         puts("Closed ");
-        //         close(clientSocket);
-        //     }
-        // }
+        else if (events[i].filter == EVFILT_TIMER)
+        {
+            clientSocket = events[i].ident;
+            if(!clientsRequest.count(clientSocket))
+                close(clientSocket);
+        }
     }
 }
 
