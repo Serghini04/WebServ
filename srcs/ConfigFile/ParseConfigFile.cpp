@@ -18,18 +18,30 @@
 #include <ostream>
 #include <string>
 
-std::string trimcomment(const std::string& str)
+std::string trimSpaces(const std::string &str)
 {
-	size_t start = str.find_first_not_of(" \t");
-	size_t end = str.find_first_of("#");
-	return (start == std::string::npos && start >= end) ? "" : str.substr(start, end - 1);
-}
+	const std::string WHITESPACE = " \t\n\r\f\v\xC2\xA0";
 
+	size_t start = str.find_first_not_of(WHITESPACE);
+	if (start == std::string::npos)
+		return "";
+	size_t end = str.find_last_not_of(WHITESPACE);
+	return str.substr(start, end - start + 1);
+}
+std::string trimComment(const std::string &str)
+{
+	size_t pos = str.find('#');
+	if (pos != std::string::npos)
+		return str.substr(0, pos);
+	return (str);
+}
 std::string trim(const std::string& str)
 {
-	std::string newstr =  trimcomment(str);
-	size_t end = newstr.find_last_not_of(" #\t");
-	return newstr.substr(0, end+1);
+	std::string newstr;
+
+	newstr = trimSpaces(str);
+	newstr = trimComment(newstr);
+	return newstr;
 }
 
 bool is_valid_method(const std::string &method)
@@ -43,6 +55,7 @@ void resetListeningState(bool& sin, std::string& host, std::map<std::string, std
 	host.clear();
 	listenings["Default"].clear();
 }
+
 bool is_validCGIATT(std::string& key,std::string& value)
 {
 	std::stringstream	ss(value);
@@ -56,6 +69,7 @@ bool is_validCGIATT(std::string& key,std::string& value)
 	value = tb[1];
 	return false;
 }
+
 void	is_validvalue(std::string &key, std::string &value, int index_line)
 {
 	std::istringstream	ss(value);
@@ -164,7 +178,7 @@ void	parseKeyValue(const std::string& line_content, int &index_line, std::string
 			return ;
 		}
 	if (value.empty() || value.back() != ';')
-		throw (std::string("Error: Unexpected Syntaxe, line ") + Utility::ToStr(index_line));
+		throw (std::string("Error: 666Unexpected Syntaxe, line ") + Utility::ToStr(index_line));
 	value = trim(value.erase(value.length() - 1));
 	if (value.find(';') != std::string::npos)
 		throw (std::string("Error: Unexpected Syntaxe, line ") + Utility::ToStr(index_line));
@@ -193,9 +207,9 @@ void handleHost(std::string& value, Conserver& server, int index_line, std::map<
 	if (value.find_first_not_of("0123456789.") != std::string::npos)
 		throw (std::string("Error: Unexpected Syntaxe of host in the line ") + Utility::ToStr(index_line));
 	IsValidHostValue(value, index_line);
-	if (!host.empty() && !listenings[host + "8080"].empty())
-		std::cerr << "[Warning]: Duplicate listening << " << host << ":8080 >> ignored!" << std::endl;
-	else if (!host.empty())
+	// if (!host.empty() && !listenings[host + "8080"].empty())
+	// 	std::cerr << "[Warning]: Duplicate listening << " << host << ":8080 >> ignored!" << std::endl;
+	/*else */if (!host.empty())
 	{
 		server.addlistening(std::make_pair(host, "8080"));
 		listenings[host + "8080"] = Utility::ToStr(index_line);
@@ -212,15 +226,15 @@ void handlePort(std::string& value, Conserver& server, int index_line, std::map<
 
 	if (value.find_first_not_of("0123456789") != std::string::npos)
 		throw (std::string("Error: Unexpected Syntaxe of port in the line ") + Utility::ToStr(index_line));
-	if (!listenings[key].empty())
-	{
-		std::cerr << "[Warning]: Duplicate listening << " << current_host << ":" << value << " >> ignored!" << std::endl;
-	}
-	else
-	{
+	// if (!listenings[key].empty())
+	// {
+	// 	std::cerr << "[Warning]: Duplicate listening << " << current_host << ":" << value << " >> ignored!" << std::endl;
+	// }
+	// else
+	// {
 		server.addlistening(std::make_pair(current_host, value));
 		listenings[key] = Utility::ToStr(index_line);
-	}
+	// }
 	resetListeningState(sin, host, listenings);
 }
 
@@ -437,7 +451,7 @@ std::vector<Conserver> parseConfigFile(char *in_file)
 			Check_Intree(line, ServStack, index_line);
 			processServerBlock(infile, server, index_line, ServStack, listenings);
 			if (!ServStack.empty())
-				throw std::string("Error: Unbalanced brackets '{}', line ") + Utility::ToStr(index_line);
+				throw std::string("Error: Unbalanced brackets '{}';");
 			validateServer(server);
 			servers.push_back(server);
 		}
