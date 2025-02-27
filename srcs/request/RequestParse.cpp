@@ -6,7 +6,7 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/26 18:36:48 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/02/27 10:47:34 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <sys/wait.h>
 #include <unistd.h>
 
 RequestParse::RequestParse(Conserver &conserver) : _body(conserver.getBodySize()), _configServer(conserver)
@@ -506,7 +507,7 @@ int RequestParse::_forkAndExecute(int infd, int outfd, char* env[], int ERRfile)
 		if (chdir(scriptPath.substr(0, scriptPath.rfind("/")).c_str()) == -1)
 			;
 		execve(AbsPath.c_str(), args, env);
-		exit(EXIT_FAILURE);
+		exit(2);
 	}
 	return pid;
 }
@@ -519,8 +520,11 @@ int RequestParse::_waitForCGIProcess(int pid)
 	{
 		usleep(100000);
 		elapsed_time++;
-		if (waitpid(pid, &status, WNOHANG) > 0)
-			return 200;	
+		if (waitpid(pid, &status, WNOHANG) > 0){
+			if (WEXITSTATUS(status) == 2)
+				throw ((std::string)"");
+			return 200;
+		}
 	}
 	kill(pid, SIGKILL);
 	waitpid(pid, &status, 0);
@@ -535,15 +539,11 @@ int RequestParse::parseCGIOutput(const char* cgiOutputFile)
 	while (file.read(buf, SIZE_BUFFER) || file.gcount() > 0)
 	{
 		buf[file.gcount()] = '\0';
-		std::cout << ">>" << buf << "<<" << std::endl;
 		lines.append(buf, file.gcount());
 	}
 	if (lines.empty())
 		return 500;
 	size_t headerEnd = lines.find("\r\n\r\n");
-	std::cout <<"----------------------------------" <<std::endl;
-	std::cout << lines <<std::endl;
-	std::cout <<"----------------------------------" <<std::endl;
 	if (headerEnd == std::string::npos) 
 		throw ((std::string)"No valid header separator found.1");
 

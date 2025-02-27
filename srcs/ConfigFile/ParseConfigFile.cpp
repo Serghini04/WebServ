@@ -417,14 +417,6 @@ void validateServer(Conserver &server)
 		throw std::string("Error: Server without root");
 }
 
-// std::vector<Conserver> filterServersWithListening(std::vector<Conserver> &servers)
-// {
-// 	std::vector<Conserver> filtered_servers;
-// 	for (size_t i = 0; i < servers.size(); i++)
-// 		if (!servers[i].getlistening().empty())
-// 			filtered_servers.push_back(servers[i]);
-// 	return filtered_servers;
-// }
 std::vector<Conserver> parseConfigFile(char *in_file)
 {
 	std::ifstream infile;
