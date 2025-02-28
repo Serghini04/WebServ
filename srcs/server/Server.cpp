@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "Server.hpp"
-
 Server::Server()
 {
 }
@@ -51,10 +50,10 @@ void Server::manageEvents(enum EventsEnum events, int clientSocket)
         EV_SET(&event, clientSocket, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
         break;
     case REMOVE_READ:
-        EV_SET(&event, clientSocket, EVFILT_READ, EV_CLEAR, 0, 0, NULL);
+        EV_SET(&event, clientSocket, EVFILT_READ, EV_DELETE, 0, 0, NULL);
         break;
     case REMOVE_WRITE:
-        EV_SET(&event, clientSocket, EVFILT_WRITE, EV_CLEAR, 0, 0, NULL);
+        EV_SET(&event, clientSocket, EVFILT_WRITE, EV_DELETE, 0, 0, NULL);
         break;
     }
     kevent(kq, &event, 1, NULL, 0, NULL);
@@ -86,7 +85,7 @@ void Server::CleanUpAllocation(int clientSocket)
 {
     if (clientsRequest.count(clientSocket))
     {
-        manageEvents(REMOVE_READ, clientSocket);               
+        manageEvents(REMOVE_READ, clientSocket);
         delete clientsRequest[clientSocket];
         clientsRequest.erase(clientSocket);
     }
@@ -102,7 +101,7 @@ void Server::ConnectionClosed(int clientSocket)
 {
     puts("Connection Closed");
     CleanUpAllocation(clientSocket);
-    close(clientSocket);
+    // close(clientSocket);
 }
 
 void Server::ResponseEnds(int clientSocket)
@@ -118,7 +117,8 @@ void Server::ResponseEnds(int clientSocket)
             CleanUpAllocation(clientSocket);
     }
 }
-
+#include <netdb.h>
+#include <arpa/inet.h>
 void Server::ConfigTheSocket(Conserver &config)
 {
     int serverSocket;
@@ -162,6 +162,8 @@ void Server::RecivData(int clientSocket)
     char buffer[MAX_BUFFER];
 
     memset(buffer, 0, sizeof(buffer));
+    if (!clientsRequest[clientSocket])
+        return;
     bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
     if (bytesRead <= 0)
     {
@@ -175,19 +177,17 @@ void Server::RecivData(int clientSocket)
         return;
     }
     fullData.assign(buffer, bytesRead);
-    if(!clientsRequest[clientSocket])
-        return ;
     (*clientsRequest[clientSocket]).readBuffer(fullData);
-    
+
     if ((*clientsRequest[clientSocket]).requestIsDone())
     {
         puts("Recive Data");
         clientsRequest[clientSocket]->SetRequestIsDone(false);
         manageEvents(ADD_WRITE, clientSocket);
         if ((*clientsRequest[clientSocket]).isCGI())
-		{
+        {
             (*clientsRequest[clientSocket]).runcgiscripte();
-		}
+        }
         return;
     }
 }
@@ -195,7 +195,7 @@ void Server::SendData(int clientSocket)
 {
     long long totalSent = 0;
     long long responseSize;
-    
+
     if (!clientsResponse.count(clientSocket))
         clientsResponse[clientSocket] = new Response(*serversConfigs[serversClients[clientSocket]],
                                                      clientsRequest[clientSocket]);
@@ -227,7 +227,6 @@ void Server::SendData(int clientSocket)
         totalSent += bytesSent;
     }
 }
-
 
 void Server::ConnectWithClient(uintptr_t server)
 {
@@ -261,7 +260,11 @@ void Server::HandelEvents(int n, struct kevent events[])
         {
             clientSocket = events[i].ident;
             if (!clientsRequest.count(clientSocket))
-                clientsRequest[clientSocket] = new RequestParse(*serversConfigs[serversClients[clientSocket]]);
+            {
+                
+                clientsRequest[clientSocket] = new RequestParse(
+                    *serversConfigs[serversClients[clientSocket]]);
+            }
             RecivData(clientSocket);
         }
         else if (events[i].filter == EVFILT_WRITE)
@@ -272,7 +275,7 @@ void Server::HandelEvents(int n, struct kevent events[])
         else if (events[i].filter == EVFILT_TIMER)
         {
             clientSocket = events[i].ident;
-            if(!clientsRequest.count(clientSocket))
+            if (!clientsRequest.count(clientSocket))
                 close(clientSocket);
         }
     }

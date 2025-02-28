@@ -19,7 +19,7 @@
 
 RequestParse::RequestParse(Conserver &conserver) : _body(conserver.getBodySize()), _configServer(conserver)
 {
-	_fileDebug.open("/Users/mal-mora/goinfre/Output.trash");
+	_fileDebug.open(_body.BodyFileName());
 	if (!_fileDebug.is_open())
 		exit(1);
 	_isHeader = true;
@@ -248,7 +248,6 @@ void	RequestParse::checkAllowedMethod()
 
 void	RequestParse::deleteURI()
 {
-	std::cout << ">>" << _uri << "<<" << std::endl;
 	if (!Utility::isReadableFile(_uri))
 		throw std::string("403 Forbidden");
 	if (!Utility::isDirectory(_uri))
@@ -277,7 +276,6 @@ void	RequestParse::deleteURI()
 void RequestParse::deleteMethod()
 {
 	_body.setIsCGI(false);
-	std::cout << ">>" << isCGI() << "<<" << std::endl;
 	if (_configServer.getLocation(_location)["root"] != "")
 		_uri = _configServer.getAttributes("root") + "/" + _configServer.getLocation(_location)["root"];
 	else
@@ -291,8 +289,6 @@ void RequestParse::deleteMethod()
 			_uri += "/" + _configServer.getLocation(_location)["index"];
 	}
 	deleteURI();
-	std::cout << ">>" << _url << "<<1=" << std::endl;
-	std::cout << ">>" << isCGI() << "<<1=" << std::endl;
 	throw std::string("204 No Content");
 }
 
@@ -324,7 +320,7 @@ bool RequestParse::parseHeader(std::string &header, std::string &buff)
 		if (endHeader < length)
 		{
 			_body.setIsCGI(false);
-			throw std::string("400 Bad Request1");
+			throw std::string("400 Bad Request");
 		}
 		if (_enumMethod == eDELETE)
 			deleteMethod();
@@ -388,8 +384,6 @@ void    RequestParse::readBuffer(std::string buff)
 
 		header.clear();
 		_statusCode = (status)atoi(e.c_str());
-		if (_statusCode == eOK || _statusCode == eCreated)
-			checkCGI();
 		_statusCodeMessage = e;
 		std::cout << _statusCodeMessage << "<<<<"<< std::endl;
 		_requestIsDone = 1;
@@ -401,6 +395,8 @@ void    RequestParse::readBuffer(std::string buff)
 		_statusCode = eInternalServerError;
 		_requestIsDone = 1;
 	}
+	if (_requestIsDone && (_statusCode == eOK || _statusCode == eCreated))
+		checkCGI();
 }
 
 // hidriouc part :
@@ -657,7 +653,7 @@ int	RequestParse::runcgiscripte()
 		_statusCode = (status)(500);
 		_statusCodeMessage = "500 Internal Server Error";
 	}
-	clear(bodyfd ,outfd, fileERR );
+	// clear(bodyfd ,outfd, fileERR );
 	return 402;
 }
 

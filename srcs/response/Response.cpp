@@ -290,14 +290,15 @@ std::string Response::getResponse()
     // exit(0);
     if (request)
     {
+        puts("2 ");
         if (request->statusCode() != eOK && request->statusCode() != eCreated)
             str = processResponse(0);
         else
             str = processResponse(1);
     }
 
-    std::cout << "---------------------------" << std::endl;
-    std::cout << "response ---> "<< str  << std::endl;
-    std::cout << "---------------------------" << std::endl;
+    // std::cout << "---------------------------" << std::endl;
+    // std::cout << "response ---> "<< str  << std::endl;
+    // std::cout << "---------------------------" << std::endl;
     return str;
 }
