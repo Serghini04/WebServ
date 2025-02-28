@@ -49,11 +49,10 @@ bool is_valid_method(const std::string &method)
 	return method == "GET" || method == "POST" || method == "DELETE";
 }
 
-void resetListeningState(bool& sin, std::string& host, std::map<std::string, std::string>& listenings)
+void resetListeningState(bool& sin, std::string& host)
 {
 	sin = false;
 	host.clear();
-	listenings["Default"].clear();
 }
 
 bool is_validCGIATT(std::string& key,std::string& value)
@@ -178,7 +177,7 @@ void	parseKeyValue(const std::string& line_content, int &index_line, std::string
 			return ;
 		}
 	if (value.empty() || value.back() != ';')
-		throw (std::string("Error: 666Unexpected Syntaxe, line ") + Utility::ToStr(index_line));
+		throw (std::string("Error: Unexpected Syntaxe, line ") + Utility::ToStr(index_line));
 	value = trim(value.erase(value.length() - 1));
 	if (value.find(';') != std::string::npos)
 		throw (std::string("Error: Unexpected Syntaxe, line ") + Utility::ToStr(index_line));
@@ -202,63 +201,52 @@ void	IsValidHostValue(std::string value, int index)
 	}
 }
 
-void handleHost(std::string& value, Conserver& server, int index_line, std::map<std::string, std::string>& listenings, bool& sin, std::string& host)
+void handleHost(std::string& value, Conserver& server, int index_line, bool& sin, std::string& host)
 {
 	if (value.find_first_not_of("0123456789.") != std::string::npos)
 		throw (std::string("Error: Unexpected Syntaxe of host in the line ") + Utility::ToStr(index_line));
 	IsValidHostValue(value, index_line);
-	// if (!host.empty() && !listenings[host + "8080"].empty())
-	// 	std::cerr << "[Warning]: Duplicate listening << " << host << ":8080 >> ignored!" << std::endl;
-	/*else */if (!host.empty())
-	{
-		server.addlistening(std::make_pair(host, "8080"));
-		listenings[host + "8080"] = Utility::ToStr(index_line);
-	}
+	if (!host.empty())
+		server.addlistening(std::pair<std::string, std::string>(host, "8080"));
 	host = value;
 	sin = true;
-	listenings["Default"] = host;
 }
 
-void handlePort(std::string& value, Conserver& server, int index_line, std::map<std::string, std::string>& listenings, bool& sin, std::string& host)
+void handlePort(std::string& value, Conserver& server, int index_line, bool& sin, std::string& host)
 {
 	std::string current_host = sin ? host : "0.0.0.0";
-	std::string key = current_host + value;
 
 	if (value.find_first_not_of("0123456789") != std::string::npos)
-		throw (std::string("Error: Unexpected Syntaxe of port in the line ") + Utility::ToStr(index_line));
-	// if (!listenings[key].empty())
-	// {
-	// 	std::cerr << "[Warning]: Duplicate listening << " << current_host << ":" << value << " >> ignored!" << std::endl;
-	// }
-	// else
-	// {
-		server.addlistening(std::make_pair(current_host, value));
-		listenings[key] = Utility::ToStr(index_line);
-	// }
-	resetListeningState(sin, host, listenings);
+		throw (std::string("++Error: Unexpected Syntaxe of port in the line ") + Utility::ToStr(index_line));
+		server.addlistening(std::pair<std::string, std::string>(current_host, value));
+	resetListeningState(sin, host);
 }
 
-void saveAttribute(const std::string& line, Conserver& server, int index, std::map<std::string, std::string>& listenings)
+void saveAttribute(const std::string& line, Conserver& server, int index)
 {
 	static bool sin = false;
 	static std::string host;
 	std::string key, value;
+	std::string defport = "8080";
 
 	if (line.empty() || line == "}")
-		return;
+	return;
 	parseKeyValue(line, index, key, value);
 	if (value.empty())
-		throw ((std::string)"Error: Unexpected Syntaxe, line "+ Utility::ToStr(index));
-	if (key == "host") 
-		handleHost(value, server, index, listenings, sin, host);
-	else if (key == "port")
-		handlePort(value, server, index, listenings, sin, host);
-	else if (key == "client_max_body_size")
-		server.addBodySize(value);
-	else
-	{
-		is_validAttServer(key, value, index);
-		server.addAttribute(key, value);
+	throw ((std::string)"Error: Unexpected Syntaxe, line "+ Utility::ToStr(index));
+	if (key == "host") {
+		handleHost(value, server, index, sin, host);
+		return ;
+	}else if (key == "port") {
+		handlePort(value, server, index, sin, host);
+		return;
+	}else if (!host.empty())
+		handlePort(defport, server, index, sin, host);
+	if (key == "client_max_body_size")
+			server.addBodySize(value);
+	else{
+			is_validAttServer(key, value, index);
+			server.addAttribute(key, value);
 	}
 }
 
@@ -324,11 +312,11 @@ void validateLocationBlock(std::map<std::string, std::string>& location_map, int
 		throw std::string("Error: Invalid location block at line ") + Utility::ToStr(index);
 
 	if (location_map["allowed_methods"].find("POST") != std::string::npos &&
-		(location_map["upload_store"].empty() || location_map["upload_store"][0] == '\0'))
+		(location_map["upload_store"].empty()))
 		throw std::string("'"+location_map["PATH"] +"': The location requires an 'upload_store' attribute!");
 }
 
-void	handleLineAbackup(Conserver& server, std::ifstream& infile, std::string backupline, int& index, std::stack<char>& ServStack, std::map<std::string, std::string>& lis)
+void	handleLineAbackup(Conserver& server, std::ifstream& infile, std::string backupline, int& index, std::stack<char>& ServStack)
 {
 	if (backupline.empty())
 		return;
@@ -337,12 +325,12 @@ void	handleLineAbackup(Conserver& server, std::ifstream& infile, std::string bac
 	if (ServStack.empty())
 			return ;
 	if (isValidLocation(backupline))
-		parseLocation(backupline, server, infile, index, ServStack, lis);
+		parseLocation(backupline, server, infile, index, ServStack);
 	else
-		saveAttribute(backupline, server, index, lis);
+		saveAttribute(backupline, server, index);
 }
 
-void parseLocation(const std::string& confline, Conserver& server, std::ifstream& infile, int& index, std::stack<char>& ServStack, std::map<std::string, std::string>& lis)
+void parseLocation(const std::string& confline, Conserver& server, std::ifstream& infile, int& index, std::stack<char>& ServStack)
 {
 	std::map<std::string, std::string> location_map;
 	std::string Key, Value;
@@ -350,7 +338,6 @@ void parseLocation(const std::string& confline, Conserver& server, std::ifstream
 	std::stack<char> LocationStack;
 
 	parseKeyValue(confline, index, Key, Value);
-	Value = trim(Value);
 	if (Value.empty())
 		throw std::string("Empty location path in line ") + Utility::ToStr(index) + "!";
 	location_map["PATH"] = checklocationPath(Value);
@@ -360,7 +347,7 @@ void parseLocation(const std::string& confline, Conserver& server, std::ifstream
 	validateLocationBlock(location_map, index);
 	server.addLocation(location_map);
 	index++;
-	handleLineAbackup(server, infile, backupline, index, ServStack, lis);
+	handleLineAbackup(server, infile, backupline, index, ServStack);
 }
 
 void validateServerOpening(std::string& line, bool& signe, std::stack<char>& SStack, int index)
@@ -377,29 +364,24 @@ void validateServerOpening(std::string& line, bool& signe, std::stack<char>& SSt
 
 }
 
-void processServerAttributes(const std::string& line, Conserver& server, std::ifstream& inf, int& index, std::stack<char>& SStack, std::map<std::string, std::string>& lis_gs)
+void processServerAttributes(const std::string& line, Conserver& server, std::ifstream& inf, int& index, std::stack<char>& SStack)
 {
 	if (isValidLocation(line))
-		parseLocation(line, server, inf, index, SStack, lis_gs);
+		parseLocation(line, server, inf, index, SStack);
 	else
-		saveAttribute(line, server, index, lis_gs);
+		saveAttribute(line, server, index);
 }
 
-void finalizeServerBlock(Conserver& server, std::map<std::string, std::string>& lis_gs, int index)
+void finalizeServerBlock(Conserver& server)
 {
 	if (server.getAttributes("client_max_body_size").empty())
 		server.addBodySize("");
 
-	if (!lis_gs["Default"].empty())
-	{
-		server.addlistening(std::make_pair(lis_gs["Default"], "8080"));
-		lis_gs[lis_gs["Default"] + "8080"] = Utility::ToStr(index);
-	}
 	if (server.getLocation("/").empty())
 		throw std::string("Server without root location!");
 }
 
-void processServerBlock(std::ifstream& inf, Conserver& server, int& index, std::stack<char>& SStack, std::map<std::string, std::string>& lis_gs)
+void processServerBlock(std::ifstream& inf, Conserver& server, int& index, std::stack<char>& SStack)
 {
 	std::string line;
 	bool signe = false;
@@ -411,11 +393,11 @@ void processServerBlock(std::ifstream& inf, Conserver& server, int& index, std::
 		validateServerOpening(line, signe, SStack, index);
 		if (line == "}" && SStack.size() > 0)
 			SStack.pop();
-		processServerAttributes(line, server, inf, index, SStack, lis_gs);
+		processServerAttributes(line, server, inf, index, SStack);
 		if (!SStack.size())
 			break;
 	}
-	finalizeServerBlock(server, lis_gs, index);
+	finalizeServerBlock(server);
 }
 
 void openConfigFile(char *in_file, std::ifstream &infile)
@@ -436,7 +418,6 @@ std::vector<Conserver> parseConfigFile(char *in_file)
 	std::ifstream infile;
 	std::vector<Conserver> servers;
 	std::stack<char> ServStack;
-	std::map<std::string, std::string> listenings;
 	int index_line = 0;
 
 	try 
@@ -449,7 +430,7 @@ std::vector<Conserver> parseConfigFile(char *in_file)
 			if ((line = trim(line)).empty())
 				continue;
 			Check_Intree(line, ServStack, index_line);
-			processServerBlock(infile, server, index_line, ServStack, listenings);
+			processServerBlock(infile, server, index_line, ServStack);
 			if (!ServStack.empty())
 				throw std::string("Error: Unbalanced brackets '{}';");
 			validateServer(server);
