@@ -18,7 +18,6 @@ int main(int ac, char **av)
 	(void)ac;
 	std::signal(SIGPIPE, SIG_IGN);
 	std::vector<Conserver>	servers = parseConfigFile(av[1]);
-	
 	if (servers.size())
 	{
 		Server ser;
