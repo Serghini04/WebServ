@@ -28,6 +28,7 @@ std::string trimSpaces(const std::string &str)
 	size_t end = str.find_last_not_of(WHITESPACE);
 	return str.substr(start, end - start + 1);
 }
+
 std::string trimComment(const std::string &str)
 {
 	size_t pos = str.find('#');
@@ -35,6 +36,7 @@ std::string trimComment(const std::string &str)
 		return str.substr(0, pos);
 	return (str);
 }
+
 std::string trim(const std::string& str)
 {
 	std::string newstr;
@@ -63,10 +65,10 @@ bool is_validCGIATT(std::string& key,std::string& value)
 	while (i < 3 && ss >> tb[++i])
 		;
 	if ((tb[0] != ".py" && tb[0] != ".php" && tb[0] != ".sh") || tb[1].empty() || !tb[2].empty())
-		return true;
+		return false;
 	key += tb[0];
 	value = tb[1];
-	return false;
+	return true;
 }
 
 void	is_validvalue(std::string &key, std::string &value, int index_line)
@@ -78,13 +80,13 @@ void	is_validvalue(std::string &key, std::string &value, int index_line)
 		throw ((std::string)"Invalid structer in the line "+Utility::ToStr(index_line));
 	if (key == "client_max_body_size" && value.find_first_not_of("0123456789") != std::string::npos)
 		throw ((std::string)"Invalid structer in the line "+Utility::ToStr(index_line));
-	if ((key == "cgi" && is_validCGIATT(key, value)) || (key == "auto_index" && value != "on" && value != "off"))
+	if ((key == "cgi" && !is_validCGIATT(key, value)) || (key == "auto_index" && value != "on" && value != "off"))
 		throw ((std::string)"Invalid structer in the value of  line "+Utility::ToStr(index_line));
 	if (key == "allowed_methods")
 	{
 		while (ss >> token)
-			if (!is_valid_method(token))
-				throw std::string("Invalid method at line " + Utility::ToStr(index_line));
+			if (!is_valid_method(token) || value.find_first_of(token[0]) != value.find_last_of(token[0]))
+				throw std::string("Invalid methods at line " + Utility::ToStr(index_line));
 	}
 	if (key == "return")
 	{
@@ -116,25 +118,25 @@ void	is_validAttServer(std::string &key,std::string &value, int index)
 		return ;
 	}
 	else{
-	for (size_t i = 0; i < validATT.size(); i++)
-	{
-		if (validATT[i] == key)
+		for (size_t i = 0; i < validATT.size(); i++)
 		{
-			if (key != "error_page" && value.find(' ') != std::string::npos)
-				throw ((std::string)("Error: Unexpected Syntaxe, line ")+ Utility::ToStr(index));
-			if (key == "error_page")
+			if (validATT[i] == key)
 			{
-				std::stringstream ss(value);
-				for (int i = 0; i < 3 && ss >> tb[i]; i++)
-					;
-				if (tb[0].find_first_not_of("0123456789") != std::string::npos || tb[1].empty() || !tb[2].empty())
+				if (key != "error_page" && value.find(' ') != std::string::npos)
 					throw ((std::string)("Error: Unexpected Syntaxe, line ")+ Utility::ToStr(index));
-				key += "_";
-				key += Utility::ToStr(index);
+				if (key == "error_page")
+				{
+					std::stringstream ss(value);
+					for (int i = 0; i < 3 && ss >> tb[i]; i++)
+						;
+					if (tb[0].find_first_not_of("0123456789") != std::string::npos || tb[1].empty() || !tb[2].empty())
+						throw ((std::string)("Error: Unexpected Syntaxe, line ")+ Utility::ToStr(index));
+					key += "_";
+					key += Utility::ToStr(index);
+				}
+				return;
 			}
-			return;
 		}
-	}
 	}
 	throw ((std::string)"Error: Unexpected Syntaxe, line "+ Utility::ToStr(index));
 }
@@ -191,18 +193,19 @@ void	parseKeyValue(const std::string& line_content, int &index_line, std::string
 
 void	IsValidHostValue(std::string value, int index)
 {
-	std::istringstream ss(value);
-	std::vector<std::string> tokens;
-	std::string token;
-	int tokenint;
-	int i = -1;
+	std::istringstream	ss(value);
+	std::string	token;
+	int			dot_count = 0;
+	int			tokenint;
 
+	for (std::size_t i = 0; i < value.length(); ++i)
+		if (value[i] == '.')
+			++dot_count;
 	while (std::getline(ss, token, '.'))
 	{
 		tokenint = Utility::stringToInt(token);
-		if (tokenint > 255 || tokenint < 0 || ++i > 3)
+		if (tokenint > 255 || tokenint < 0 || dot_count != 3)
 			throw (std::string("Error: Invalid host, line ") + Utility::ToStr(index));
-		tokens.push_back(token);
 	}
 }
 
@@ -222,7 +225,7 @@ void handlePort(std::string& value, Conserver& server, int index_line, bool& sin
 	std::string current_host = sin ? host : "0.0.0.0";
 
 	if (value.find_first_not_of("0123456789") != std::string::npos)
-		throw (std::string("++Error: Unexpected Syntaxe of port in the line ") + Utility::ToStr(index_line));
+		throw (std::string("Error: Unexpected Syntaxe of port in the line ") + Utility::ToStr(index_line));
 		server.addlistening(std::pair<std::string, std::string>(current_host, value));
 	resetListeningState(sin, host);
 }
@@ -387,7 +390,7 @@ void finalizeServerBlock(Conserver& server)
 		throw std::string("Server without root location!");
 }
 
-void processServerBlock(std::ifstream& inf, Conserver& server, int& index, std::stack<char>& SStack)
+void	processServerBlock(std::ifstream& inf, Conserver& server, int& index, std::stack<char>& SStack)
 {
 	std::string line;
 	bool signe = false;
