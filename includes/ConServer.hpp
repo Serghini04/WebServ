@@ -9,6 +9,8 @@
 /*   Updated: 2025/02/27 18:51:16 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+#ifndef CONSERVER_HPP
+#define CONSERVER_HPP
 
 #include <map>
 #include <list>
@@ -48,3 +50,5 @@ class Conserver {
 
 std::vector<Conserver> parseConfigFile(char* );
 void parseLocation(const std::string& confline, Conserver& server, std::ifstream& infile, int& index, std::stack<char>& ServStack);
+
+#endif
