@@ -12,11 +12,6 @@
 
 #include "ConServer.hpp"
 #include <Utility.hpp>
-#include <cctype>
-#include <cstddef>
-#include <cstdlib>
-#include <ostream>
-#include <string>
 
 std::string trimSpaces(const std::string &str)
 {
