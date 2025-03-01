@@ -6,9 +6,10 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 16:02:15 by hidriouc          #+#    #+#             */
-/*   Updated: 2025/02/27 18:51:16 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/03/01 14:31:42 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #ifndef CONSERVER_HPP
 #define CONSERVER_HPP
 
@@ -23,7 +24,7 @@
 #include <utility>
 #include <vector>
 #include <sstream>
-#include <ostream>
+
 
 class Conserver {
 	private:
