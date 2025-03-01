@@ -11,26 +11,21 @@
 /* ************************************************************************** */
 
 # include <Server.hpp>
-#include <algorithm>
-#include <chrono>
-#include <cstddef>
-#include <cstdlib>
-#include <string>
-#include <sys/socket.h>
-#include <sys/syslimits.h>
-#include <limits>
+
 
 void	Conserver::addAttribute(const std::string& key, const std::string& value)
 {
 	if (!serv_attributes[key].empty())
-		std::cerr << "[Warning] : Duplicate server_name '" << value << " has ignored'"<< std::endl;
+		std::cerr << "[Warning] : Duplicate server_name '" << value << "' has ignored'"<< std::endl;
 	else
 		serv_attributes[key] = value;
 }
+
 void	Conserver::addLocation(const std::map<std::string, std::string> loc_attribute)
 {
 	location_list.push_back(loc_attribute);
 }
+
 void Conserver::addPath(std::string path)
 {
 	std::vector <std::string>::iterator it = AllPaths.begin();
@@ -60,10 +55,12 @@ void Conserver::addlistening(std::pair<std::string, std::string > lsn)
 	}
 	listening.push_back(lsn);
 }
+
 long long	Conserver::getBodySize()
 {
 	return client_max_body_size;
 }
+
 void	Conserver::addBodySize(std::string value)
 {
 	client_max_body_size = 0;
@@ -78,6 +75,7 @@ void	Conserver::addBodySize(std::string value)
 	if (value.empty())
 		client_max_body_size = -1;
 }
+
 std::pair<std::string, std::string>	Conserver::getreturnof(std::string path)
 {	std::string value;
 	std::pair <std::string, std::string > retpair("","");
@@ -92,10 +90,12 @@ std::pair<std::string, std::string>	Conserver::getreturnof(std::string path)
 	}
 	return retpair;
 }
+
 std::vector<std::string> Conserver::getphats()
 {
 	return AllPaths;
 }
+
 std::string	Conserver::getAttributes(std::string att) 
 {
 	std::map<std::string, std::string>::iterator It_map;
@@ -106,12 +106,13 @@ std::string	Conserver::getAttributes(std::string att)
 	}
 	return "";
 }
+
 std::list<std::map<std::string, std::string> >	Conserver::getlist() 
 {
 	return  location_list;
 }
 
-std::string  Conserver::getErrorPage(int ERRNumber)
+std::string	Conserver::getErrorPage(int ERRNumber)
 {
 	std::map<std::string, std::string>::iterator It_map;
 	for (It_map = serv_attributes.begin(); It_map != serv_attributes.end(); ++It_map)
@@ -142,3 +143,7 @@ std::map<std::string, std::string> Conserver::getLocation(std::string valueToFin
 	return std::map<std::string, std::string>();
 }
 
+
+Conserver::~Conserver ()
+{
+}

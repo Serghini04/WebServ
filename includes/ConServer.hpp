@@ -38,6 +38,7 @@ class Conserver {
 		void	addBodySize(std::string value);
 		void	addLocation(const std::map<std::string, std::string> loc_attribute);
 		void	addlistening(std::pair<std::string, std::string> listen);
+		~Conserver ();
 		long long	getBodySize();
 		std::pair<std::string, std::string>	getreturnof(std::string path);
 		std::string	getAttributes(std::string att);

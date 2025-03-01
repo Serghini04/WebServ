@@ -104,6 +104,7 @@ void	is_validvalue(std::string &key, std::string &value, int index_line)
 
 void	is_validAttServer(std::string &key,std::string &value, int index)
 {
+	std::string tb[3];
 	value.erase(value.end());
 	std::vector<std::string> validATT;
 	validATT.push_back("server_name");
@@ -123,6 +124,11 @@ void	is_validAttServer(std::string &key,std::string &value, int index)
 				throw ((std::string)("Error: Unexpected Syntaxe, line ")+ Utility::ToStr(index));
 			if (key == "error_page")
 			{
+				std::stringstream ss(value);
+				for (int i = 0; i < 3 && ss >> tb[i]; i++)
+					;
+				if (tb[0].find_first_not_of("0123456789") != std::string::npos || tb[1].empty() || !tb[2].empty())
+					throw ((std::string)("Error: Unexpected Syntaxe, line ")+ Utility::ToStr(index));
 				key += "_";
 				key += Utility::ToStr(index);
 			}
@@ -171,7 +177,7 @@ void	parseKeyValue(const std::string& line_content, int &index_line, std::string
 		throw (std::string("Error: Malformed key in line "));
 	std::getline(line_stream, value);
 	value = trim(value);
-	if (!key.find("location"))
+	if (key.find("location") != std::string::npos)
 		if (value[value.length() - 1] == '{'){
 			value = trim(value.substr(0,value.find_last_of("{")));
 			return ;
@@ -181,7 +187,6 @@ void	parseKeyValue(const std::string& line_content, int &index_line, std::string
 	value = trim(value.erase(value.length() - 1));
 	if (value.find(';') != std::string::npos)
 		throw (std::string("Error: Unexpected Syntaxe, line ") + Utility::ToStr(index_line));
-		return ;
 }
 
 void	IsValidHostValue(std::string value, int index)
@@ -230,10 +235,10 @@ void saveAttribute(const std::string& line, Conserver& server, int index)
 	std::string defport = "8080";
 
 	if (line.empty() || line == "}")
-	return;
+		return;
 	parseKeyValue(line, index, key, value);
 	if (value.empty())
-	throw ((std::string)"Error: Unexpected Syntaxe, line "+ Utility::ToStr(index));
+		throw ((std::string)"Error: Unexpected Syntaxe, line "+ Utility::ToStr(index));
 	if (key == "host") {
 		handleHost(value, server, index, sin, host);
 		return ;
@@ -273,13 +278,13 @@ std::string	checklocationPath(std::string value)
 bool	isValidLocation(std::string line)
 {
 	std::stringstream strs(line);
-	std::string word[4];
+	std::string words[4];
 	int i = -1;
 
-	while (strs >> word[++i] && i < 3)
+	while (strs >> words[++i] && i < 3)
 		;
-	if (word[0] == "location"&& word[3].empty())
-		if ((!word[1].empty() && word[2] == "{") || word[1][word[1].length() - 1] == '{')
+	if (words[0] == "location"&& words[3].empty())
+		if ((!words[1].empty() && words[2] == "{") || words[1][words[1].length() - 1] == '{')
 			return true;
 	return false;
 }
@@ -347,7 +352,8 @@ void parseLocation(const std::string& confline, Conserver& server, std::ifstream
 	validateLocationBlock(location_map, index);
 	server.addLocation(location_map);
 	index++;
-	handleLineAbackup(server, infile, backupline, index, ServStack);
+	if (!backupline.empty())
+		handleLineAbackup(server, infile, backupline, index, ServStack);
 }
 
 void validateServerOpening(std::string& line, bool& signe, std::stack<char>& SStack, int index)
