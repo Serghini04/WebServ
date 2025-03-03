@@ -39,7 +39,7 @@ private:
     std::unordered_map<int, Response* > clientsResponse;
     std::vector<int> servers;
     struct kevent timerEvent;
-    static const int TIMEOUT_SECONDS = 5;
+    static const int TIMEOUT_SECONDS = 20;
     void            ConnectWithClient(uintptr_t server);
     void            HandelEvents(int n, struct kevent events[]);
     void            ConfigTheSocket(Conserver &config);

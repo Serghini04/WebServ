@@ -42,6 +42,12 @@ std::string	BodyParse::BodyFileName()
 void	BodyParse::setMaxBodySize(long long size)
 {
 	_maxBodySize = size;
+	if (_metaData["content-length"] != "")
+	{
+		std::cout << ">>" << _bodySize << "<<<\n";
+		if (_maxBodySize >= 0 && _bodySize > _maxBodySize)
+			throw std::string("413 Content Too Large");
+	}
 }
 
 BodyParse::BodyParse()
@@ -81,14 +87,17 @@ bool	BodyParse::parseBody(std::string &buff)
 BodyType	BodyParse::getTypeOfBody(methods method, long long maxBodySize)
 {
 	char	*trash = NULL;
+	(void)maxBodySize;
 
 	if (_metaData["content-length"] != "")
 	{
 		_bodySize = strtoll(_metaData["content-length"].c_str(), &trash, 10);
+		std::cout <<"Body Size :"<< _bodySize << "\n";
 		if (trash == _metaData["content-length"].c_str() || *trash != '\0' || errno == ERANGE || _bodySize < 0)
 			throw std::string("400 Bad Request");
-		if (maxBodySize >= 0 && _bodySize > maxBodySize)
-			throw std::string("413 Content Too Large");
+		// std::cout << ":>>" << maxBodySize << "<<\n";
+		// if (maxBodySize >= 0 && _bodySize > maxBodySize)
+		// 	throw std::string("413 Content Too Large1");
 	}
     if (_metaData["transfer-encoding"] == "chunked" && _metaData["content-type"].find("multipart/form-data; boundary=") != std::string::npos)
 		return eChunkedBoundary;
@@ -107,7 +116,7 @@ BodyType	BodyParse::getTypeOfBody(methods method, long long maxBodySize)
 		return eContentLength;
 	}
 	if (method == ePOST)
-		throw std::length_error("411 Length Required");
+		throw std::string("411 Length Required");
 	return eNone;
 }
 
@@ -450,6 +459,8 @@ bool BodyParse::ContentLengthParse(std::string &buff)
 	if (_bodySize <= 0)
 		return true;
 	size_t bytesToProcess = buff.size();
+	// std::cout << "READ >>" << buff.size() << "\n";
+	checkContentTooLarge(buff.size());
 	_fileOutput.write(buff.data(), bytesToProcess);
 	_bodySize -= bytesToProcess;
 	if (_bodySize <= 0)

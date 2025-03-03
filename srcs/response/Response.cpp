@@ -31,6 +31,7 @@ std::string Response::FileToString()
 
     if (!hasErrorFile)
     {
+        
         hasErrorFile = !hasErrorFile;
         return errMsg;
     }
@@ -88,11 +89,27 @@ std::string Response::getHeader()
 
 void Response::handelRequestErrors()
 {
-    statusLine = "HTTP/1.1 " + request->statusCodeMessage() + "\r\n";
-    file.open(conserver.getErrorPage(request->statusCode()));
-    if (file.fail())
+    if (conserver.getErrorPage(request->statusCode()) != "")
+    {
+        std::string path = conserver.getAttributes("root") + "/" + conserver.getErrorPage(request->statusCode());
+        statusLine = "HTTP/1.1 " + request->statusCodeMessage() + "\r\n";
+        file.open(path);
+        if (file.fail())
+        {
+            hasErrorFile = false;
+            this->contentType = Utility::getExtensions("", ".html");
+            return ;
+        }
+        size_t pos = path.find(".");
+        if (pos != std::string::npos)
+            this->contentType = Utility::getExtensions("", path.substr(pos));
+    }
+    else
+    {
         hasErrorFile = false;
-    this->contentType = Utility::getExtensions("", ".html");
+        statusLine = "HTTP/1.1 " + request->statusCodeMessage() + "\r\n";
+        this->contentType = Utility::getExtensions("", ".html");
+    }
 }
 
 void Response::SendError(enum status code)
@@ -104,6 +121,7 @@ void Response::SendError(enum status code)
         request->SetStatusCodeMsg("403 forbidden");
     handelRequestErrors();
 }
+
 // void Response::ProcessUrl(std::map<std::string, std::string> location)
 // {
 //     std::string newUrl = conserver.getAttributes("root");
@@ -125,6 +143,7 @@ void Response::SendError(enum status code)
 //     newUrl = oss.str();
 //     request->setUrl(newUrl);
 // }
+
 void Response::ProcessUrl(std::map<std::string, std::string> location)
 {
     std::string newUrl = conserver.getAttributes("root");
@@ -138,7 +157,7 @@ void Response::ProcessUrl(std::map<std::string, std::string> location)
     if (Utility::isDirectory(request->URL()))
     {
         if (!location["index"].empty())
-            oss << "/" << location["index"];
+            oss << newUrl << location["index"];
         else if (location["index"].empty() &&
                  (location["auto_index"].empty() || location["auto_index"].find("off") != std::string::npos))
         {
@@ -146,7 +165,8 @@ void Response::ProcessUrl(std::map<std::string, std::string> location)
             return;
         }
     }
-    oss << newUrl;
+    else
+        oss << newUrl;
     newUrl = oss.str();
     request->setUrl(newUrl);
 }
@@ -213,6 +233,8 @@ std::string Response::handelRedirection(std::string redirect_code, std::string r
                        "Content-Length: 0\r\n"
                        "Connection: close\r\n"
                        "\r\n";
+    httpResponse += "<html>\n<head><title>"+ redirect_code + "Redirect</title></head>\n<body>\n<center><h1>" + 
+                redirect_code + "Redirect</h1></center>\n<hr><center>WebServ/1.27.3</center>\n</body>\n</html>";
     this->endResponse = true;
     return httpResponse;
 }
@@ -241,7 +263,6 @@ std::string Response::processResponse(int state)
             else if (request->statusCode() == eOK && request->method() != ePOST)
             {
                 std::string str = request->URL();
-                std::cout << "URL ---> " << request->URL() << std::endl;
                 if (Utility::isDirectory(str.c_str()))
                 {
                     isDirectory = true;

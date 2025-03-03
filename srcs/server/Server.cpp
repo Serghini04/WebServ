@@ -141,6 +141,7 @@ void Server::ConfigTheSocket(Conserver &config)
     int opt = 1;
     bool isEnd = false;
     int found = 0;
+
     std::vector<std::pair<std::string, std::string> > address = config.getlistening();
     for (size_t i = 0; i < address.size(); i++)
     {
@@ -175,7 +176,7 @@ void Server::ConfigTheSocket(Conserver &config)
         addressSocket.sin_family = AF_INET;
         addressSocket.sin_port = htons(Utility::StrToInt(address[i].second.c_str()));
         addressSocket.sin_addr.s_addr = inet_addr(address[i].first.c_str());
-        std::cout << "lesting " << address[i].first.c_str() << " " << address[i].second.c_str() << std::endl;
+        std::cout << "lesting " << address[i].first.c_str() << ":" << address[i].second.c_str() << std::endl;
         int bindResult = bind(serverSocket, (const sockaddr *)&addressSocket, sizeof(addressSocket));
         if (bindResult == -1)
             errorMsg("bind Fails", serverSocket);
@@ -205,7 +206,7 @@ void Server::RecivData(int clientSocket)
             return;
         if (errno == ECONNRESET || bytesRead == 0)
         {
-            ConnectionClosed(clientSocket);
+            ResponseEnds(clientSocket);
             return;
         }
         return;
