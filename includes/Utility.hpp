@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Utility.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 18:36:13 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/21 11:56:40 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/27 15:58:33 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 # include <sys/stat.h>
 # include <sys/stat.h>
 # include <dirent.h>
+#include <ctime>
+#include <sys/time.h> 
 
 class Utility
 {
@@ -42,6 +44,22 @@ class Utility
 			std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", now);
 			return std::string(buffer);
 		}
+		static std::string GetCurrentT()
+{
+				struct timeval tv;
+    gettimeofday(&tv, NULL);
+
+    std::time_t t = tv.tv_sec;
+    std::tm *now = std::localtime(&t);
+    
+    char buffer[80];
+    std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", now);
+
+    std::ostringstream oss;
+    oss << buffer << "." << (tv.tv_usec / 1000); // Convert microseconds to milliseconds
+
+    return oss.str();
+}
 
 		static void Debug(std::string str)
 		{

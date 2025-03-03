@@ -55,9 +55,10 @@ class BodyParse
 		std::map<std::string, std::string>	_metaData;
 		
 	public:
-		BodyParse(long long maxBodySize);
+		BodyParse();
 
 		// Set :
+		void	setMaxBodySize(long long size);
 		void	setBodyFileName(std::string name);
 		void	setIsCGI(bool s);
 		void	setBoundary(std::string boundary);

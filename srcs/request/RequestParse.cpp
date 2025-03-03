@@ -6,19 +6,17 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/26 12:20:00 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/02/27 16:25:28 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <RequestParse.hpp>
-#include <cstddef>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <unistd.h>
+# include <Server.hpp>
 
-RequestParse::RequestParse(Conserver &conserver) : _body(conserver.getBodySize()), _configServer(conserver)
+
+RequestParse::RequestParse(int clientSocket, Server &server): server(server)
 {
+	_clientSocket = clientSocket;
 	_fileDebug.open(_body.BodyFileName());
 	if (!_fileDebug.is_open())
 		exit(1);
@@ -175,6 +173,23 @@ void	RequestParse::parseMetaData(std::string header)
 	throw std::string("400 Bad Request");
 }
 
+void RequestParse::getConfigFile()
+{
+    for (size_t i = 0; i < server.serversConfigs[server.serversClients[_clientSocket]].size(); i++)
+    {
+        std::string address = _metaData.find("host")->second;
+        size_t pos = address.find(':');
+        std::string hostname;
+        if (pos != std::string::npos)
+            hostname = address.substr(0, pos);
+        if (server.serversConfigs[server.serversClients[_clientSocket]][i]->getAttributes("server_name") == hostname)
+		{
+            _configServer = *server.serversConfigs[server.serversClients[_clientSocket]][i];
+			return ;
+		}
+    }
+    _configServer = *server.serversConfigs[server.serversClients[_clientSocket]][0];
+}
 bool	RequestParse::parseHeader(std::string &header)
 {
 	int firstLine = 1;
@@ -199,6 +214,10 @@ bool	RequestParse::parseHeader(std::string &header)
 		}
 	}
 	_body.setMetaData(_metaData);
+	getConfigFile();
+	_body.setMaxBodySize(_configServer.getBodySize());
+	// std::cout << _metaData["host"] << "<<<" << std::endl;
+	// exit(1);
 	return false;
 }
 
@@ -235,8 +254,6 @@ void	RequestParse::checkAllowedMethod()
 	if (_configServer.getAttributes("return") != "" || _configServer.getLocation(_location)["return"] != "")
 		throw std::string("200 OK");
 
-	std::cout << "based on this location =>" << location << "<" << std::endl;
-	std::cout << _method << "|" <<  _configServer.getLocation(_location)["allowed_methods"] << "\n";
 	if (_configServer.getLocation(_location)["allowed_methods"].find(Utility::toUpperCase(_method)) == std::string::npos)
 	{
 		_body.setIsCGI(false);
@@ -320,7 +337,7 @@ bool RequestParse::parseHeader(std::string &header, std::string &buff)
 		if (endHeader < length)
 		{
 			_body.setIsCGI(false);
-			throw std::string("400 Bad Request");
+			throw std::string("400 Bad Request1");
 		}
 		if (_enumMethod == eDELETE)
 			deleteMethod();
@@ -348,7 +365,9 @@ void	RequestParse::checkCGI()
 	{
 		std::string ext = _url.substr(pos);
 		if (_configServer.getLocation(_location)["cgi"+ ext] != "")
+		{
 			_body.setIsCGI(true);
+		}
 	}
 	// check index :
 	if (Utility::isDirectory(_url) && _configServer.getLocation(_location)["index"] != "")
@@ -359,7 +378,6 @@ void	RequestParse::checkCGI()
 			std::string ext =  _configServer.getLocation(_location)["index"].substr(pos);
 			if (_configServer.getLocation(_location)["cgi"+ ext] != "")
 			{
-				puts("IS CGI");
 				_body.setIsCGI(true);
 			}
 		}
@@ -385,7 +403,6 @@ void    RequestParse::readBuffer(std::string buff)
 		header.clear();
 		_statusCode = (status)atoi(e.c_str());
 		_statusCodeMessage = e;
-		std::cout << _statusCodeMessage << "<<<<"<< std::endl;
 		_requestIsDone = 1;
 	}
 	catch (...)
@@ -398,7 +415,10 @@ void    RequestParse::readBuffer(std::string buff)
 	if (_requestIsDone && (_statusCode == eOK || _statusCode == eCreated))
 		checkCGI();
 }
-
+std::string 	RequestParse::getCGIfile()
+{
+	return _outfile;
+}
 // hidriouc part :
 std::vector<std::string> RequestParse::_buildEnvVars() 
 {
@@ -514,7 +534,7 @@ int RequestParse::_forkAndExecute(int infd, int outfd, char* env[], int ERRfile)
 		if (chdir(scriptPath.substr(0, scriptPath.rfind("/")).c_str()) == -1)
 			;
 		execve(AbsPath.c_str(), args, env);
-		exit(2);
+		exit(1);
 	}
 	return pid;
 }
@@ -528,8 +548,8 @@ int RequestParse::_waitForCGIProcess(int pid)
 		usleep(100000);
 		elapsed_time++;
 		if (waitpid(pid, &status, WNOHANG) > 0){
-			if (WEXITSTATUS(status) == 2)
-				throw ((std::string)"");
+			if (WEXITSTATUS(status) == 1)
+				throw ((std::string) "exicve() failed !");
 			return 200;	
 		}
 	}
@@ -537,10 +557,10 @@ int RequestParse::_waitForCGIProcess(int pid)
 	waitpid(pid, &status, 0);
 	return 504;
 }
-int RequestParse::parseCGIOutput(const char* cgiOutputFile)
+int RequestParse::parseCGIOutput()
 {
 	std::ifstream file;
-	_openFileSafely(file, cgiOutputFile);
+	_openFileSafely(file, _outfile.c_str());
 	std::string lines, buffer;
 	char buf[SIZE_BUFFER + 1] = {0};
 	while (file.read(buf, SIZE_BUFFER) || file.gcount() > 0)
@@ -594,6 +614,7 @@ void	RequestParse::clear(int bodyfd, int outfd, int fileERR)
 	close (outfd);
 	close (fileERR);
 	unlink("/tmp/Errout.text");
+	unlink(_body.BodyFileName().c_str());
 }
 bool RequestParse::CheckStdERR(const char* fileERRpath)
 {
@@ -608,7 +629,6 @@ bool RequestParse::CheckStdERR(const char* fileERRpath)
 }
 int	RequestParse::runcgiscripte()
 {
-
 	std::vector<std::string> env_strings = _buildEnvVars();
 	char*	env[env_strings.size() + 1];
 	size_t	i = 0;
@@ -624,12 +644,12 @@ int	RequestParse::runcgiscripte()
 			env[i] = (char*)env_strings[i].c_str();
 		env[i] = NULL;
 		if (_method == "POST"){
-			std::cerr << " >> " << _body.BodyFileName().c_str() << "<<" <<std::endl;
 			bodyfd = open(_body.BodyFileName().c_str(), O_RDONLY);
 			if (bodyfd == -1)
 				throw (std::string)("Failed to open body file");
 		}
-		outfd = open("/tmp/outCGI.text", O_CREAT | O_WRONLY | O_TRUNC, 0644);
+		_outfile = ("/tmp/outCGI" + Utility::GetCurrentT() + ".out");
+		outfd = open(_outfile.c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0644);
 		if (outfd == -1) {
 			if (_method == "POST") close(bodyfd);
 				unlink("/tmp/outCGI.text");
@@ -644,7 +664,7 @@ int	RequestParse::runcgiscripte()
 		int	pid = _forkAndExecute(bodyfd, outfd, env, fileERR);
 		if (pid < 0) 
 			throw (std::string)("Fork failed");
-		_statusCode = _waitForCGIProcess(pid) == 200 ? (status)parseCGIOutput("/tmp/outCGI.text") : (status)504;
+		_statusCode = _waitForCGIProcess(pid) == 200 ? (status)parseCGIOutput() : (status)504;
 		if (_statusCode == 504)
 			_statusCodeMessage = "504 Gateway Timeout";
 		if (CheckStdERR("/tmp/Errout.text"))
@@ -653,7 +673,7 @@ int	RequestParse::runcgiscripte()
 		_statusCode = (status)(500);
 		_statusCodeMessage = "500 Internal Server Error";
 	}
-	// clear(bodyfd ,outfd, fileERR );
+	clear(bodyfd ,outfd, fileERR );
 	return 402;
 }
 

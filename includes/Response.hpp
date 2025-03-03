@@ -1,5 +1,4 @@
 #pragma once
-#include "Server.hpp"
 #include "RequestParse.hpp"
 #include <dirent.h>
 #include <filesystem>
