@@ -42,7 +42,7 @@ std::string	BodyParse::BodyFileName()
 BodyParse::BodyParse(long long maxBodySize)
 {
 	_maxBodySize = maxBodySize;
-	_bodyFileName = "/Users/meserghi/Desktop/WebServ/Output.trash";
+	_bodyFileName = "/Users/mal-mora/goinfre/Output.trash";
 	_isCGI = false;
     _type = eNone;
 	_bodySize = 0;
@@ -77,6 +77,12 @@ bool	BodyParse::parseBody(std::string &buff)
 BodyType	BodyParse::getTypeOfBody(methods method, long long maxBodySize)
 {
 	char	*trash = NULL;
+
+	for (std::map<std::string, std::string>::iterator it = _metaData.begin(); it != _metaData.end(); ++it)
+	{
+		std::cout << ">>" << it->first << "<<" << std::endl;  // Assuming you meant "res" as the value
+	}
+
 
 	if (_metaData["content-length"] != "")
 	{

@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 18:36:13 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/21 11:56:40 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/27 11:59:31 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ class Utility
 		static void ShowErrorExit(std::string const &errorMsg)
 		{
 			std::cout << errorMsg << std::endl;
-			exit(1);
+			// exit(1);
 		}
 
 		static std::string GetCurrentTime()

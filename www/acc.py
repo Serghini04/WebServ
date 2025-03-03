@@ -117,6 +117,11 @@ def printAccPage(session):
             <div class="message-box success">
                 <p>Your Session ID: {session.getSid()}</p>
             </div>
+            <form id="upload" enctype="multipart/form-data" method="POST" action="/upload">
+                <input id="fileupload" name="myfile" type="file" multiple="multiple"/>
+                <br>
+                <input type="submit" value="Upload" id="submit"/>
+            </form>
             <a href="login.html" class="btn-primary">Return to Homepage</a>
         </div>
     </body>
@@ -369,7 +374,7 @@ def handleLogin():
         if session is None:
             printUserMsg("Failed To Login, Username or Password is wrong!")
         else:
-            print("Correct Credentials :D", file=sys.stderr)
+            # print("Correct Credentials :D", file=sys.stderr)
 
             # Initialize or reset the cookies
             cookies_obj = cookies.SimpleCookie()
@@ -385,6 +390,7 @@ def handleLogin():
             # Output the cookie headers
             print("HTTP/1.1 302 Found")
             print(cookies_obj.output())
+            print("Content-Type: text/html")
             print("Location: acc.py\r\n\r\n")
     else:
         # Registration process - without username check
