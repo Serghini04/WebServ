@@ -3,15 +3,6 @@
 Response::Response(Conserver &conserver, RequestParse *request) : conserver(conserver), request(request)
 {
     size = 0;
-    // if (!debug.is_open())
-    // {
-    //     debug.open("/Users/mal-mora/goinfre/out.txt", std::ios::binary);
-    //     if (debug.fail())
-    //     {
-    //         puts("ff");
-    //         exit(1);
-    //     }
-    // }
     firstCall = 1;
     statusLine = "HTTP/1.1 200 OK\r\n";
     hasErrorFile = true;
@@ -23,6 +14,7 @@ Response::~Response()
 {
     file.clear();
     file.close();
+	// unlink("/tmp/outCGI.text");
 }
 int Response::GetErrorFromStrSize()
 {
@@ -51,7 +43,6 @@ std::string Response::FileToString()
     {
         std::string buf(BUFFER_SIZE, '\0');
         file.read(&buf[0], BUFFER_SIZE);
-        debug.write(buf.c_str(), file.gcount());
         buf.resize(file.gcount());
         return buf;
     }
@@ -113,7 +104,6 @@ void Response::SendError(enum status code)
         request->SetStatusCodeMsg("403 forbidden");
     handelRequestErrors();
 }
-
 void Response::ProcessUrl(std::map<std::string, std::string> location)
 {
     std::string newUrl = conserver.getAttributes("root");
@@ -135,6 +125,31 @@ void Response::ProcessUrl(std::map<std::string, std::string> location)
     newUrl = oss.str();
     request->setUrl(newUrl);
 }
+// void Response::ProcessUrl(std::map<std::string, std::string> location)
+// {
+//     std::string newUrl = conserver.getAttributes("root");
+//     std::string index = "";
+//     std::ostringstream oss;
+
+//     if (location["root"].empty())
+//         newUrl = newUrl + request->URL();
+//     else
+//         newUrl = location["root"] + request->URL();
+//     if (Utility::isDirectory(request->URL()))
+//     {
+//         if (!location["index"].empty())
+//             oss << "/" << location["index"];
+//         else if (location["index"].empty() &&
+//                  (location["auto_index"].empty() || location["auto_index"].find("off") != std::string::npos))
+//         {
+//             SendError(eFORBIDDEN);
+//             return;
+//         }
+//     }
+//     oss << newUrl;
+//     newUrl = oss.str();
+//     request->setUrl(newUrl);
+// }
 
 std::string getFileTime(struct stat &fileInfo, const std::string &file)
 {
@@ -223,9 +238,10 @@ std::string Response::processResponse(int state)
                 std::string line = getCgiResponse();
                 return line;
             }
-            if (request->statusCode() == eOK && request->method() != ePOST)
+            else if (request->statusCode() == eOK && request->method() != ePOST)
             {
                 std::string str = request->URL();
+                std::cout << "URL ---> " << request->URL() << std::endl;
                 if (Utility::isDirectory(str.c_str()))
                 {
                     isDirectory = true;
@@ -244,10 +260,11 @@ std::string Response::processResponse(int state)
             {
                 file.open("www/error_pages/post.json");
                 this->contentType = Utility::getExtensions("", ".json");
+                if (!file.is_open())
+                    SendError(eInternalServerError);
             }
         }
         size = getFileSize();
-        fileSize = size;
     }
     else
         return FileToString();
@@ -270,6 +287,7 @@ std::string Response::getResponse()
 {
     std::string str = "";
 
+    // exit(0);
     if (request)
     {
         if (request->statusCode() != eOK && request->statusCode() != eCreated)
@@ -277,5 +295,9 @@ std::string Response::getResponse()
         else
             str = processResponse(1);
     }
+
+    // std::cout << "---------------------------" << std::endl;
+    // std::cout << "response ---> "<< str  << std::endl;
+    // std::cout << "---------------------------" << std::endl;
     return str;
 }

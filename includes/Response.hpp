@@ -4,7 +4,7 @@
 #include <dirent.h>
 #include <filesystem>
 #include <sys/stat.h>
-#define BUFFER_SIZE 1024 * 2
+#define BUFFER_SIZE 1024 * 8
 
 
 class Server;
