@@ -19,7 +19,7 @@ RequestParse::RequestParse(int clientSocket, Server &server): server(server)
 	_clientSocket = clientSocket;
 	_fileDebug.open(_body.BodyFileName());
 	if (!_fileDebug.is_open())
-		exit(1);
+		throw std::string("500 Internal Server Error");
 	_isHeader = true;
 	_body.setIsCGI(false);
 	_requestIsDone = false;
@@ -399,7 +399,7 @@ void    RequestParse::readBuffer(std::string buff)
 	}
 	catch (std::string &e)
 	{
-
+		std::cout << ">>" << e << std::endl;
 		header.clear();
 		_statusCode = (status)atoi(e.c_str());
 		_statusCodeMessage = e;
@@ -408,7 +408,7 @@ void    RequestParse::readBuffer(std::string buff)
 	catch (...)
 	{
 		header.clear();
-		_statusCodeMessage = "500 Internal Server Error1";
+		_statusCodeMessage = "500 Internal Server Error";
 		_statusCode = eInternalServerError;
 		_requestIsDone = 1;
 	}

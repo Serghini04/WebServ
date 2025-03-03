@@ -105,6 +105,7 @@ void	is_validAttServer(std::string &key,std::string &value, int index)
 	value.erase(value.end());
 	std::vector<std::string> validATT;
 	validATT.push_back("server_name");
+	validATT.push_back("client_max_body_size");
 	validATT.push_back("error_page");
 	validATT.push_back("index");
 	validATT.push_back("root");
@@ -247,10 +248,8 @@ void saveAttribute(const std::string& line, Conserver& server, int index)
 		handlePort(defport, server, index, sin, host);
 	if (key == "client_max_body_size")
 			server.addBodySize(value);
-	else{
-			is_validAttServer(key, value, index);
-			server.addAttribute(key, value);
-	}
+	is_validAttServer(key, value, index);
+	server.addAttribute(key, value);
 }
 
 std::string	checklocationPath(std::string value)
