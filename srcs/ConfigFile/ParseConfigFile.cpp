@@ -12,11 +12,6 @@
 
 #include "ConServer.hpp"
 #include <Utility.hpp>
-#include <cctype>
-#include <cstddef>
-#include <cstdlib>
-#include <ostream>
-#include <string>
 
 std::string trimSpaces(const std::string &str)
 {
@@ -28,6 +23,7 @@ std::string trimSpaces(const std::string &str)
 	size_t end = str.find_last_not_of(WHITESPACE);
 	return str.substr(start, end - start + 1);
 }
+
 std::string trimComment(const std::string &str)
 {
 	size_t pos = str.find('#');
@@ -35,6 +31,7 @@ std::string trimComment(const std::string &str)
 		return str.substr(0, pos);
 	return (str);
 }
+
 std::string trim(const std::string& str)
 {
 	std::string newstr;
@@ -49,11 +46,10 @@ bool is_valid_method(const std::string &method)
 	return method == "GET" || method == "POST" || method == "DELETE";
 }
 
-void resetListeningState(bool& sin, std::string& host, std::map<std::string, std::string>& listenings)
+void resetListeningState(bool& sin, std::string& host)
 {
 	sin = false;
 	host.clear();
-	listenings["Default"].clear();
 }
 
 bool is_validCGIATT(std::string& key,std::string& value)
@@ -64,10 +60,10 @@ bool is_validCGIATT(std::string& key,std::string& value)
 	while (i < 3 && ss >> tb[++i])
 		;
 	if ((tb[0] != ".py" && tb[0] != ".php" && tb[0] != ".sh") || tb[1].empty() || !tb[2].empty())
-		return true;
+		return false;
 	key += tb[0];
 	value = tb[1];
-	return false;
+	return true;
 }
 
 void	is_validvalue(std::string &key, std::string &value, int index_line)
@@ -79,13 +75,13 @@ void	is_validvalue(std::string &key, std::string &value, int index_line)
 		throw ((std::string)"Invalid structer in the line "+Utility::ToStr(index_line));
 	if (key == "client_max_body_size" && value.find_first_not_of("0123456789") != std::string::npos)
 		throw ((std::string)"Invalid structer in the line "+Utility::ToStr(index_line));
-	if ((key == "cgi" && is_validCGIATT(key, value)) || (key == "auto_index" && value != "on" && value != "off"))
+	if ((key == "cgi" && !is_validCGIATT(key, value)) || (key == "auto_index" && value != "on" && value != "off"))
 		throw ((std::string)"Invalid structer in the value of  line "+Utility::ToStr(index_line));
 	if (key == "allowed_methods")
 	{
 		while (ss >> token)
-			if (!is_valid_method(token))
-				throw std::string("Invalid method at line " + Utility::ToStr(index_line));
+			if (!is_valid_method(token) || value.find_first_of(token[0]) != value.find_last_of(token[0]))
+				throw std::string("Invalid methods at line " + Utility::ToStr(index_line));
 	}
 	if (key == "return")
 	{
@@ -105,6 +101,7 @@ void	is_validvalue(std::string &key, std::string &value, int index_line)
 
 void	is_validAttServer(std::string &key,std::string &value, int index)
 {
+	std::string tb[3];
 	value.erase(value.end());
 	std::vector<std::string> validATT;
 	validATT.push_back("server_name");
@@ -116,20 +113,25 @@ void	is_validAttServer(std::string &key,std::string &value, int index)
 		return ;
 	}
 	else{
-	for (size_t i = 0; i < validATT.size(); i++)
-	{
-		if (validATT[i] == key)
+		for (size_t i = 0; i < validATT.size(); i++)
 		{
-			if (key != "error_page" && value.find(' ') != std::string::npos)
-				throw ((std::string)("Error: Unexpected Syntaxe, line ")+ Utility::ToStr(index));
-			if (key == "error_page")
+			if (validATT[i] == key)
 			{
-				key += "_";
-				key += Utility::ToStr(index);
+				if (key != "error_page" && value.find(' ') != std::string::npos)
+					throw ((std::string)("Error: Unexpected Syntaxe, line ")+ Utility::ToStr(index));
+				if (key == "error_page")
+				{
+					std::stringstream ss(value);
+					for (int i = 0; i < 3 && ss >> tb[i]; i++)
+						;
+					if (tb[0].find_first_not_of("0123456789") != std::string::npos || tb[1].empty() || !tb[2].empty())
+						throw ((std::string)("Error: Unexpected Syntaxe, line ")+ Utility::ToStr(index));
+					key += "_";
+					key += Utility::ToStr(index);
+				}
+				return;
 			}
-			return;
 		}
-	}
 	}
 	throw ((std::string)"Error: Unexpected Syntaxe, line "+ Utility::ToStr(index));
 }
@@ -172,93 +174,82 @@ void	parseKeyValue(const std::string& line_content, int &index_line, std::string
 		throw (std::string("Error: Malformed key in line "));
 	std::getline(line_stream, value);
 	value = trim(value);
-	if (!key.find("location"))
+	if (key.find("location") != std::string::npos)
 		if (value[value.length() - 1] == '{'){
 			value = trim(value.substr(0,value.find_last_of("{")));
 			return ;
 		}
 	if (value.empty() || value.back() != ';')
-		throw (std::string("Error: 666Unexpected Syntaxe, line ") + Utility::ToStr(index_line));
+		throw (std::string("Error: Unexpected Syntaxe, line ") + Utility::ToStr(index_line));
 	value = trim(value.erase(value.length() - 1));
 	if (value.find(';') != std::string::npos)
 		throw (std::string("Error: Unexpected Syntaxe, line ") + Utility::ToStr(index_line));
-		return ;
 }
 
 void	IsValidHostValue(std::string value, int index)
 {
-	std::istringstream ss(value);
-	std::vector<std::string> tokens;
-	std::string token;
-	int tokenint;
-	int i = -1;
+	std::istringstream	ss(value);
+	std::string	token;
+	int			dot_count = 0;
+	int			tokenint;
 
+	for (std::size_t i = 0; i < value.length(); ++i)
+		if (value[i] == '.')
+			++dot_count;
 	while (std::getline(ss, token, '.'))
 	{
 		tokenint = Utility::stringToInt(token);
-		if (tokenint > 255 || tokenint < 0 || ++i > 3)
+		if (tokenint > 255 || tokenint < 0 || dot_count != 3)
 			throw (std::string("Error: Invalid host, line ") + Utility::ToStr(index));
-		tokens.push_back(token);
 	}
 }
 
-void handleHost(std::string& value, Conserver& server, int index_line, std::map<std::string, std::string>& listenings, bool& sin, std::string& host)
+void handleHost(std::string& value, Conserver& server, int index_line, bool& sin, std::string& host)
 {
 	if (value.find_first_not_of("0123456789.") != std::string::npos)
 		throw (std::string("Error: Unexpected Syntaxe of host in the line ") + Utility::ToStr(index_line));
 	IsValidHostValue(value, index_line);
-	// if (!host.empty() && !listenings[host + "8080"].empty())
-	// 	std::cerr << "[Warning]: Duplicate listening << " << host << ":8080 >> ignored!" << std::endl;
-	/*else */if (!host.empty())
-	{
-		server.addlistening(std::make_pair(host, "8080"));
-		listenings[host + "8080"] = Utility::ToStr(index_line);
-	}
+	if (!host.empty())
+		server.addlistening(std::pair<std::string, std::string>(host, "8080"));
 	host = value;
 	sin = true;
-	listenings["Default"] = host;
 }
 
-void handlePort(std::string& value, Conserver& server, int index_line, std::map<std::string, std::string>& listenings, bool& sin, std::string& host)
+void handlePort(std::string& value, Conserver& server, int index_line, bool& sin, std::string& host)
 {
 	std::string current_host = sin ? host : "0.0.0.0";
-	std::string key = current_host + value;
 
 	if (value.find_first_not_of("0123456789") != std::string::npos)
 		throw (std::string("Error: Unexpected Syntaxe of port in the line ") + Utility::ToStr(index_line));
-	// if (!listenings[key].empty())
-	// {
-	// 	std::cerr << "[Warning]: Duplicate listening << " << current_host << ":" << value << " >> ignored!" << std::endl;
-	// }
-	// else
-	// {
-		server.addlistening(std::make_pair(current_host, value));
-		listenings[key] = Utility::ToStr(index_line);
-	// }
-	resetListeningState(sin, host, listenings);
+		server.addlistening(std::pair<std::string, std::string>(current_host, value));
+	resetListeningState(sin, host);
 }
 
-void saveAttribute(const std::string& line, Conserver& server, int index, std::map<std::string, std::string>& listenings)
+void saveAttribute(const std::string& line, Conserver& server, int index)
 {
 	static bool sin = false;
 	static std::string host;
 	std::string key, value;
+	std::string defport = "8080";
 
 	if (line.empty() || line == "}")
 		return;
 	parseKeyValue(line, index, key, value);
 	if (value.empty())
 		throw ((std::string)"Error: Unexpected Syntaxe, line "+ Utility::ToStr(index));
-	if (key == "host") 
-		handleHost(value, server, index, listenings, sin, host);
-	else if (key == "port")
-		handlePort(value, server, index, listenings, sin, host);
-	else if (key == "client_max_body_size")
-		server.addBodySize(value);
-	else
-	{
-		is_validAttServer(key, value, index);
-		server.addAttribute(key, value);
+	if (key == "host") {
+		handleHost(value, server, index, sin, host);
+		return ;
+	}else if (key == "port") {
+		handlePort(value, server, index, sin, host);
+		return;
+	}else if (!host.empty())
+		handlePort(defport, server, index, sin, host);
+	if (key == "client_max_body_size")
+			server.addBodySize(value);
+	else{
+			is_validAttServer(key, value, index);
+			server.addAttribute(key, value);
 	}
 }
 
@@ -285,13 +276,13 @@ std::string	checklocationPath(std::string value)
 bool	isValidLocation(std::string line)
 {
 	std::stringstream strs(line);
-	std::string word[4];
+	std::string words[4];
 	int i = -1;
 
-	while (strs >> word[++i] && i < 3)
+	while (strs >> words[++i] && i < 3)
 		;
-	if (word[0] == "location"&& word[3].empty())
-		if ((!word[1].empty() && word[2] == "{") || word[1][word[1].length() - 1] == '{')
+	if (words[0] == "location"&& words[3].empty())
+		if ((!words[1].empty() && words[2] == "{") || words[1][words[1].length() - 1] == '{')
 			return true;
 	return false;
 }
@@ -324,11 +315,11 @@ void validateLocationBlock(std::map<std::string, std::string>& location_map, int
 		throw std::string("Error: Invalid location block at line ") + Utility::ToStr(index);
 
 	if (location_map["allowed_methods"].find("POST") != std::string::npos &&
-		(location_map["upload_store"].empty() || location_map["upload_store"][0] == '\0'))
+		(location_map["upload_store"].empty()))
 		throw std::string("'"+location_map["PATH"] +"': The location requires an 'upload_store' attribute!");
 }
 
-void	handleLineAbackup(Conserver& server, std::ifstream& infile, std::string backupline, int& index, std::stack<char>& ServStack, std::map<std::string, std::string>& lis)
+void	handleLineAbackup(Conserver& server, std::ifstream& infile, std::string backupline, int& index, std::stack<char>& ServStack)
 {
 	if (backupline.empty())
 		return;
@@ -337,12 +328,12 @@ void	handleLineAbackup(Conserver& server, std::ifstream& infile, std::string bac
 	if (ServStack.empty())
 			return ;
 	if (isValidLocation(backupline))
-		parseLocation(backupline, server, infile, index, ServStack, lis);
+		parseLocation(backupline, server, infile, index, ServStack);
 	else
-		saveAttribute(backupline, server, index, lis);
+		saveAttribute(backupline, server, index);
 }
 
-void parseLocation(const std::string& confline, Conserver& server, std::ifstream& infile, int& index, std::stack<char>& ServStack, std::map<std::string, std::string>& lis)
+void parseLocation(const std::string& confline, Conserver& server, std::ifstream& infile, int& index, std::stack<char>& ServStack)
 {
 	std::map<std::string, std::string> location_map;
 	std::string Key, Value;
@@ -350,7 +341,6 @@ void parseLocation(const std::string& confline, Conserver& server, std::ifstream
 	std::stack<char> LocationStack;
 
 	parseKeyValue(confline, index, Key, Value);
-	Value = trim(Value);
 	if (Value.empty())
 		throw std::string("Empty location path in line ") + Utility::ToStr(index) + "!";
 	location_map["PATH"] = checklocationPath(Value);
@@ -360,7 +350,8 @@ void parseLocation(const std::string& confline, Conserver& server, std::ifstream
 	validateLocationBlock(location_map, index);
 	server.addLocation(location_map);
 	index++;
-	handleLineAbackup(server, infile, backupline, index, ServStack, lis);
+	if (!backupline.empty())
+		handleLineAbackup(server, infile, backupline, index, ServStack);
 }
 
 void validateServerOpening(std::string& line, bool& signe, std::stack<char>& SStack, int index)
@@ -377,29 +368,24 @@ void validateServerOpening(std::string& line, bool& signe, std::stack<char>& SSt
 
 }
 
-void processServerAttributes(const std::string& line, Conserver& server, std::ifstream& inf, int& index, std::stack<char>& SStack, std::map<std::string, std::string>& lis_gs)
+void processServerAttributes(const std::string& line, Conserver& server, std::ifstream& inf, int& index, std::stack<char>& SStack)
 {
 	if (isValidLocation(line))
-		parseLocation(line, server, inf, index, SStack, lis_gs);
+		parseLocation(line, server, inf, index, SStack);
 	else
-		saveAttribute(line, server, index, lis_gs);
+		saveAttribute(line, server, index);
 }
 
-void finalizeServerBlock(Conserver& server, std::map<std::string, std::string>& lis_gs, int index)
+void finalizeServerBlock(Conserver& server)
 {
 	if (server.getAttributes("client_max_body_size").empty())
 		server.addBodySize("");
 
-	if (!lis_gs["Default"].empty())
-	{
-		server.addlistening(std::make_pair(lis_gs["Default"], "8080"));
-		lis_gs[lis_gs["Default"] + "8080"] = Utility::ToStr(index);
-	}
 	if (server.getLocation("/").empty())
 		throw std::string("Server without root location!");
 }
 
-void processServerBlock(std::ifstream& inf, Conserver& server, int& index, std::stack<char>& SStack, std::map<std::string, std::string>& lis_gs)
+void	processServerBlock(std::ifstream& inf, Conserver& server, int& index, std::stack<char>& SStack)
 {
 	std::string line;
 	bool signe = false;
@@ -411,11 +397,11 @@ void processServerBlock(std::ifstream& inf, Conserver& server, int& index, std::
 		validateServerOpening(line, signe, SStack, index);
 		if (line == "}" && SStack.size() > 0)
 			SStack.pop();
-		processServerAttributes(line, server, inf, index, SStack, lis_gs);
+		processServerAttributes(line, server, inf, index, SStack);
 		if (!SStack.size())
 			break;
 	}
-	finalizeServerBlock(server, lis_gs, index);
+	finalizeServerBlock(server);
 }
 
 void openConfigFile(char *in_file, std::ifstream &infile)
@@ -436,7 +422,6 @@ std::vector<Conserver> parseConfigFile(char *in_file)
 	std::ifstream infile;
 	std::vector<Conserver> servers;
 	std::stack<char> ServStack;
-	std::map<std::string, std::string> listenings;
 	int index_line = 0;
 
 	try 
@@ -449,7 +434,7 @@ std::vector<Conserver> parseConfigFile(char *in_file)
 			if ((line = trim(line)).empty())
 				continue;
 			Check_Intree(line, ServStack, index_line);
-			processServerBlock(infile, server, index_line, ServStack, listenings);
+			processServerBlock(infile, server, index_line, ServStack);
 			if (!ServStack.empty())
 				throw std::string("Error: Unbalanced brackets '{}';");
 			validateServer(server);
