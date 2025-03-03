@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BodyParse.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:38:49 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/20 17:12:38 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/27 15:39:44 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,13 @@ std::string	BodyParse::BodyFileName()
 	return _bodyFileName;
 }
 
-BodyParse::BodyParse(long long maxBodySize)
+void	BodyParse::setMaxBodySize(long long size)
 {
-	_maxBodySize = maxBodySize;
+	_maxBodySize = size;
+}
+
+BodyParse::BodyParse()
+{
 	_bodyFileName = "/tmp/Output.trash";
 	_isCGI = false;
     _type = eNone;
@@ -136,7 +140,6 @@ void BodyParse::openFileBasedOnContentType()
 	if (_isCGI)
 		_bodyFileName = namefile;
 	else
-		std::cout <<"Create File :>>" << namefile << "<<\n";
 	_indexFile++;
 }
 
@@ -296,7 +299,6 @@ void	BodyParse::openFileOfBoundary(std::string buff)
 	}
 	else
 		oss << _fileName << _indexFile << ".txt";
-	// std::cout <<"Create File :>>" << oss.str() << "<<\n";
 	_fileOutput.open(oss.str(), std::ios::binary);
 	if (_fileOutput.fail())
 		throw std::string("500 Internal Server Error");

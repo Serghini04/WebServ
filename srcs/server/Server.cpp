@@ -6,7 +6,7 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/02/26 10:32:10 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/02/27 15:38:30 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,14 @@ void Server::setupConnectionTimer(int clientSocket)
 }
 Server::~Server()
 {
-    for (std::unordered_map<int, Conserver *>::const_iterator
+    for (std::unordered_map<int, std::vector<Conserver *> >::const_iterator
              it = serversConfigs.begin();
          it != serversConfigs.end(); it++)
     {
-        delete it->second;
+        for (size_t i = 0; i < it->second.size(); i++)
+        {
+            delete it->second[i];
+        }
     }
 }
 
@@ -99,16 +102,14 @@ void Server::CleanUpAllocation(int clientSocket)
 
 void Server::ConnectionClosed(int clientSocket)
 {
-    puts("Connection Closed");
     CleanUpAllocation(clientSocket);
-    // close(clientSocket);
+    close(clientSocket);
 }
 
 void Server::ResponseEnds(int clientSocket)
 {
     if (clientsRequest[clientSocket])
     {
-        puts("Response Ends ");
         if (clientsRequest[clientSocket]->isCGI())
             clientsRequest[clientSocket]->setIsCGI(false);
         if (clientsRequest[clientSocket]->isConnectionClosed())
@@ -117,12 +118,29 @@ void Server::ResponseEnds(int clientSocket)
             CleanUpAllocation(clientSocket);
     }
 }
-#include <netdb.h>
-#include <arpa/inet.h>
+bool checkConfigExist(int &found,std::unordered_map<int, std::vector<Conserver *> >::iterator it, std::string str)
+{
+    for (size_t k = 0; k < it->second.size(); k++)
+    {
+        for (size_t j = 0; j < it->second[k]->getlistening().size(); j++)
+        {
+            if (it->second[k]->getlistening()[j].second == str)
+            {
+                if(found == 2)
+                    return true;
+                found++;
+            }
+        }
+    }
+    return false;
+}
+
 void Server::ConfigTheSocket(Conserver &config)
 {
     int serverSocket;
     int opt = 1;
+    bool isEnd = false;
+    int found = 0;
     std::vector<std::pair<std::string, std::string> > address = config.getlistening();
     for (size_t i = 0; i < address.size(); i++)
     {
@@ -131,6 +149,23 @@ void Server::ConfigTheSocket(Conserver &config)
         serverSocket = socket(AF_INET, SOCK_STREAM, 0);
         if (serverSocket == -1)
             errorMsg("Socket Creation Fails", serverSocket);
+        for (std::unordered_map<int, std::vector<Conserver *> >::iterator
+                 it = serversConfigs.begin();
+             it != serversConfigs.end(); ++it)
+        {
+            isEnd = checkConfigExist(found,it, address[i].second);
+            if (isEnd)
+            {
+                it->second.push_back(&config);
+                break ;
+            }
+        }
+        found = 0;
+        if(isEnd)
+        {
+            isEnd = false;
+            continue;
+        }
         if (setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == -1)
             errorMsg("nonblocking Fails", serverSocket);
         if (setsockopt(serverSocket, SOL_SOCKET, SO_REUSEPORT, &opt, sizeof(opt)) == -1)
@@ -140,12 +175,13 @@ void Server::ConfigTheSocket(Conserver &config)
         addressSocket.sin_family = AF_INET;
         addressSocket.sin_port = htons(Utility::StrToInt(address[i].second.c_str()));
         addressSocket.sin_addr.s_addr = inet_addr(address[i].first.c_str());
+        std::cout << "lesting " << address[i].first.c_str() << " " << address[i].second.c_str() << std::endl;
         int bindResult = bind(serverSocket, (const sockaddr *)&addressSocket, sizeof(addressSocket));
         if (bindResult == -1)
             errorMsg("bind Fails", serverSocket);
         if (listen(serverSocket, 128) == -1)
             errorMsg("listen Fails", serverSocket);
-        this->serversConfigs[serverSocket] = &config;
+        this->serversConfigs[serverSocket].push_back(&config);
         if (serverSocket == -1)
             errorMsg("Socket Creation Fails", serverSocket);
         EV_SET(&event, serverSocket, EVFILT_READ, EV_ADD, 0, 0, NULL);
@@ -162,8 +198,6 @@ void Server::RecivData(int clientSocket)
     char buffer[MAX_BUFFER];
 
     memset(buffer, 0, sizeof(buffer));
-    if (!clientsRequest[clientSocket])
-        return;
     bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
     if (bytesRead <= 0)
     {
@@ -176,18 +210,18 @@ void Server::RecivData(int clientSocket)
         }
         return;
     }
+    if (!clientsRequest.count(clientSocket))
+        clientsRequest[clientSocket] = new RequestParse(clientSocket, *this);
+    else if (!clientsRequest[clientSocket])
+        return;
     fullData.assign(buffer, bytesRead);
     (*clientsRequest[clientSocket]).readBuffer(fullData);
-
     if ((*clientsRequest[clientSocket]).requestIsDone())
     {
-        puts("Recive Data");
         clientsRequest[clientSocket]->SetRequestIsDone(false);
         manageEvents(ADD_WRITE, clientSocket);
         if ((*clientsRequest[clientSocket]).isCGI())
-        {
             (*clientsRequest[clientSocket]).runcgiscripte();
-        }
         return;
     }
 }
@@ -197,7 +231,7 @@ void Server::SendData(int clientSocket)
     long long responseSize;
 
     if (!clientsResponse.count(clientSocket))
-        clientsResponse[clientSocket] = new Response(*serversConfigs[serversClients[clientSocket]],
+        clientsResponse[clientSocket] = new Response(clientsRequest[clientSocket]->_configServer,
                                                      clientsRequest[clientSocket]);
     std::string response = clientsResponse[clientSocket]->getResponse();
     responseSize = response.size();
@@ -238,7 +272,6 @@ void Server::ConnectWithClient(uintptr_t server)
     clientSocket = accept(server, (struct sockaddr *)&clientAddress, &clientAddrLen);
     if (clientSocket == -1)
         errorMsg("Cannot Connect", server);
-    puts("new connection ");
     if (make_socket_nonblocking(clientSocket) == -1)
         SendError(clientSocket);
     else
@@ -248,6 +281,7 @@ void Server::ConnectWithClient(uintptr_t server)
         manageEvents(ADD_READ, clientSocket);
     }
 }
+
 
 void Server::HandelEvents(int n, struct kevent events[])
 {
@@ -259,12 +293,6 @@ void Server::HandelEvents(int n, struct kevent events[])
         else if (events[i].filter == EVFILT_READ)
         {
             clientSocket = events[i].ident;
-            if (!clientsRequest.count(clientSocket))
-            {
-                
-                clientsRequest[clientSocket] = new RequestParse(
-                    *serversConfigs[serversClients[clientSocket]]);
-            }
             RecivData(clientSocket);
         }
         else if (events[i].filter == EVFILT_WRITE)
@@ -283,19 +311,18 @@ void Server::HandelEvents(int n, struct kevent events[])
 
 int Server::CreateServer(std::vector<Conserver> &config)
 {
-    int serverSocket = 0;
     struct kevent events[MAX_CLIENTS];
 
     kq = kqueue();
     if (kq == -1)
-        errorMsg("kqueue creation failed", serverSocket);
+        errorMsg("kqueue creation failed", -1);
     for (size_t i = 0; i < config.size(); i++)
         ConfigTheSocket(config[i]);
     while (true)
     {
         int n = kevent(kq, NULL, 0, events, MAX_CLIENTS, NULL);
         if (n == -1)
-            errorMsg("kevent Fails", serverSocket);
+            errorMsg("kevent Fails", -1);
         HandelEvents(n, events);
     }
     close(kq);
