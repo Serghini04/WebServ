@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/30 11:33:58 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/20 16:36:19 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/02/27 18:42:35 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,11 @@ int main(int ac, char **av)
 	(void)ac;
 	std::signal(SIGPIPE, SIG_IGN);
 	std::vector<Conserver>	servers = parseConfigFile(av[1]);
-	
+	// std::vector<std::pair<std::string, std::string> > lss = servers[0].getlistening();
+	// for (size_t i = 0; i < lss.size() ; i++)
+	// {
+	// 	std::cout <<"|"<<lss[i].first <<":"<<lss[i].second<<"|"<<std::endl;
+	// }
 	if (servers.size())
 	{
 		Server ser;

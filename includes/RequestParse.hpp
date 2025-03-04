@@ -1,3 +1,4 @@
+
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
@@ -6,7 +7,7 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/26 10:15:10 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/02/27 16:24:32 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +21,16 @@
 #include <unistd.h>
 #include <signal.h>
 #include <errno.h>
-
+#include <cstddef>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <sys/wait.h>
+#include <unistd.h>
 # define CGI_TIMEOUT 10
 # define SIZE_BUFFER 50
 
+class Server;
 enum status
 {
 	eOK = 200,
@@ -50,39 +57,41 @@ enum status
 class   RequestParse
 {
 	private :
+		bool								_requestIsDone;
+		bool								_isHeader;
+		int									_clientSocket;
+		Server								&server;
+		methods								_enumMethod;
+		status								_statusCode;
+		BodyParse							_body;
+		std::string 						_url;
+		std::string 						_method;
+		std::string							_httpVersion;
+		std::string							_uri;
+		std::string							_statusCodeMessage;
+		std::string							_location;
+		std::string							_header;
+		std::string							_queryString;
+		std::string							_fragment;
+		std::string							_outfile;
+		std::ofstream						_fileDebug;
 		std::map<std::string, std::string>  _metaData;
-		std::string 	_method;
-		std::string		_httpVersion;
-		std::string 	_url;
-		methods			_enumMethod;
-		std::ofstream	_fileDebug;
-		status			_statusCode;
-		std::string		_uri;
-		BodyParse		_body;
-		bool			_requestIsDone;
-		bool			_isHeader;
-		Conserver		&_configServer;
-		long long		_maxBodySize;
-		std::string		_statusCodeMessage;
-		std::string		_location;
-		std::string		header;
-		std::string		_queryString;
-		std::string		_fragment;
 
 	public :
-		RequestParse(Conserver &conserver);
+		Conserver		_configServer;
+		RequestParse(int clientSocket, Server &server);
 	
 		// Get :
 		std::string	location();
 		std::map<std::string, std::string>	&getMetaData();
-		status		statusCode();
-		std::string	statusCodeMessage();
-		bool		requestIsDone();
-		bool		isHeader();
-		std::string	URL();
-		bool		isCGI();
-		methods		method();
-
+		status								statusCode();
+		std::string							statusCodeMessage();
+		bool								requestIsDone();
+		bool								isHeader();
+		std::string							URL();
+		bool								isCGI();
+		methods								method();
+		void								getConfigFile();
 		// set :
 		void		setIsCGI(bool s);
 		void		setUrl(std::string s);
@@ -106,19 +115,20 @@ class   RequestParse
 		void		deleteURI();
 
 		// Execution of CGI by hidriouc
-		int		runcgiscripte();
-		bool	is_InvalideURL();
-		bool	CheckStdERR(const char* fileERR);
-		void	_dupfd(int infd, int outfd, int ERRfile);
-		void	clear(int bodyfd, int outfd, int fileERR);
-		void	_validateContentLength(const std::string& contentLength, size_t bodysize);
-		void	_validateContentType(const std::string& contentType);
-		void	_parseHeaderLine(const std::string& line, std::string lines[]);
-		int		_parseHeaders(size_t bodysize, const std::string& headers);
-		int		_forkAndExecute(int infd, int outfd, char* env[], int ERRfile);
-		int		_waitForCGIProcess(int pid);
-		int		parseCGIOutput(const char* cgiOutputFile);
+		int			runcgiscripte();
+		bool		is_InvalideURL();
+		bool		CheckStdERR(const char* fileERR);
+		void		_dupfd(int infd, int outfd, int ERRfile);
+		void		clear(int bodyfd, int outfd, int fileERR);
+		void		_validateContentLength(const std::string& contentLength, size_t bodysize);
+		void		_validateContentType(const std::string& contentType);
+		void		_parseHeaderLine(const std::string& line, std::string lines[]);
+		int			_parseHeaders(size_t bodysize, const std::string& headers);
+		int			_forkAndExecute(int infd, int outfd, char* env[], int ERRfile);
+		int			_waitForCGIProcess(int pid);
+		int			parseCGIOutput();
 
+		std::string 	getCGIfile();
 		std::vector<std::string>	_buildEnvVars();
 		void						_openFileSafely(std::ifstream& file, const std::string& filename);
 		std::string					_extractHeaderValue(const std::string& line);

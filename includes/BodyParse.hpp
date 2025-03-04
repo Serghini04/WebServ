@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:36:14 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/21 11:58:02 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/03/03 21:33:59 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,10 @@ class BodyParse
 		std::map<std::string, std::string>	_metaData;
 		
 	public:
-		BodyParse(long long maxBodySize);
+		BodyParse();
 
 		// Set :
+		void	setMaxBodySize(long long size);
 		void	setBodyFileName(std::string name);
 		void	setIsCGI(bool s);
 		void	setBoundary(std::string boundary);
@@ -71,7 +72,7 @@ class BodyParse
 		BodyType	bodyType();
 		long long	sizeRead();
 		std::string	BodyFileName();
-		BodyType	getTypeOfBody(methods method, long long maxBodySize);
+		BodyType	getTypeOfBody(methods method);
 		
 		// Methods :
 		void		handleCGI(std::string &buff);

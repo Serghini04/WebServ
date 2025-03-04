@@ -21,8 +21,8 @@
 #define MAX_BUFFER 1024 * 2
 #define MAX_CLIENTS 1024 * 2
 #define PORT 1111
+
 class Response;
-class RequestParse;
 
 class Server
 {
@@ -37,11 +37,9 @@ private:
     struct kevent event;
     std::unordered_map<int, RequestParse* > clientsRequest;
     std::unordered_map<int, Response* > clientsResponse;
-    std::unordered_map<int, Conserver*> serversConfigs;
-    std::unordered_map<int, int > serversClients;
     std::vector<int> servers;
     struct kevent timerEvent;
-    static const int TIMEOUT_SECONDS = 12;
+    static const int TIMEOUT_SECONDS = 20;
     void            ConnectWithClient(uintptr_t server);
     void            HandelEvents(int n, struct kevent events[]);
     void            ConfigTheSocket(Conserver &config);
@@ -54,6 +52,8 @@ private:
     void            setupConnectionTimer(int clientSocket);
     void            manageEvents(enum EventsEnum events,int clientSocket);
 public:
+    std::unordered_map<int, std::vector<Conserver*> > serversConfigs;
+    std::unordered_map<int, int > serversClients;
     Server();
     ~Server();
     int CreateServer(std::vector<Conserver> &config);
