@@ -63,13 +63,13 @@ void Server::manageEvents(enum EventsEnum events, int clientSocket)
 }
 void errorMsg(std::string str, int fd)
 {
-    std::cout << str << strerror(errno) << std::endl;
-    close(fd);
+    std::cerr << str << strerror(errno) << std::endl;
+    if(fd != -1)
+        close(fd);
 }
 
 void Server::SendError(int fd)
 {
-    std::cout << "Internal Error" << std::endl;
     this->clientsRequest[fd]->SetStatusCode(eInternalServerError);
     this->clientsRequest[fd]->SetStatusCodeMsg("500 Internal Error");
     SendData(fd);
@@ -118,15 +118,15 @@ void Server::ResponseEnds(int clientSocket)
             CleanUpAllocation(clientSocket);
     }
 }
-bool checkConfigExist(int &found,std::unordered_map<int, std::vector<Conserver *> >::iterator it, std::string str)
+bool checkConfigExist(int &found, std::unordered_map<int, std::vector<Conserver *> >::iterator it, std::string str)
 {
     for (size_t k = 0; k < it->second.size(); k++)
     {
         for (size_t j = 0; j < it->second[k]->getlistening().size(); j++)
         {
-            if (it->second[k]->getlistening()[j].second == str)
+            if (it->second[k]->getlistening()[j].second == str )
             {
-                if(found == 2)
+                if (found == 2)
                     return true;
                 found++;
             }
@@ -154,15 +154,15 @@ void Server::ConfigTheSocket(Conserver &config)
                  it = serversConfigs.begin();
              it != serversConfigs.end(); ++it)
         {
-            isEnd = checkConfigExist(found,it, address[i].second);
+            isEnd = checkConfigExist(found, it, address[i].second);
             if (isEnd)
             {
                 it->second.push_back(&config);
-                break ;
+                break;
             }
         }
         found = 0;
-        if(isEnd)
+        if (isEnd)
         {
             isEnd = false;
             continue;
@@ -180,14 +180,12 @@ void Server::ConfigTheSocket(Conserver &config)
         int bindResult = bind(serverSocket, (const sockaddr *)&addressSocket, sizeof(addressSocket));
         if (bindResult == -1)
             errorMsg("bind Fails", serverSocket);
-        if (listen(serverSocket, 128) == -1)
+        if (listen(serverSocket, 1024) == -1)
             errorMsg("listen Fails", serverSocket);
         this->serversConfigs[serverSocket].push_back(&config);
         if (serverSocket == -1)
             errorMsg("Socket Creation Fails", serverSocket);
-        EV_SET(&event, serverSocket, EVFILT_READ, EV_ADD, 0, 0, NULL);
-        if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
-            errorMsg("kqueue registration failed", serverSocket);
+        manageEvents(ADD_READ, serverSocket);
         servers.push_back(serverSocket);
     }
 }
@@ -202,13 +200,7 @@ void Server::RecivData(int clientSocket)
     bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
     if (bytesRead <= 0)
     {
-        if (errno == EAGAIN || errno == EWOULDBLOCK)
-            return;
-        if (errno == ECONNRESET || bytesRead == 0)
-        {
-            ResponseEnds(clientSocket);
-            return;
-        }
+        ConnectionClosed(clientSocket);
         return;
     }
     if (!clientsRequest.count(clientSocket))
@@ -223,7 +215,6 @@ void Server::RecivData(int clientSocket)
         manageEvents(ADD_WRITE, clientSocket);
         if ((*clientsRequest[clientSocket]).isCGI())
             (*clientsRequest[clientSocket]).runcgiscripte();
-        return;
     }
 }
 void Server::SendData(int clientSocket)
@@ -236,7 +227,7 @@ void Server::SendData(int clientSocket)
                                                      clientsRequest[clientSocket]);
     std::string response = clientsResponse[clientSocket]->getResponse();
     responseSize = response.size();
-    if (response.empty())
+    if (responseSize == 0)
     {
         ResponseEnds(clientSocket);
         return;
@@ -247,26 +238,21 @@ void Server::SendData(int clientSocket)
                                  response.c_str() + totalSent,
                                  responseSize - totalSent,
                                  0);
-        if (bytesSent <= 0)
+        if (bytesSent < 0)
+            return ConnectionClosed(clientSocket);
+        if (bytesSent == 0)
         {
-            if (errno == EAGAIN || errno == EWOULDBLOCK)
-                continue;
-            if (errno == EPIPE || bytesSent == 0)
-            {
-                ResponseEnds(clientSocket);
-                return;
-            }
-            SendError(clientSocket);
+            ResponseEnds(clientSocket);
             return;
         }
         totalSent += bytesSent;
     }
 }
 
-void Server::ConnectWithClient(uintptr_t server)
+void Server::ConnectWithClient(int server)
 {
-    sockaddr_in clientAddress;
-    socklen_t clientAddrLen;
+    sockaddr_in     clientAddress;
+    socklen_t   clientAddrLen;
     int clientSocket;
 
     clientAddrLen = sizeof(clientAddress);
@@ -277,33 +263,26 @@ void Server::ConnectWithClient(uintptr_t server)
         SendError(clientSocket);
     else
     {
-        serversClients[clientSocket] = (int)server;
+        serversClients[clientSocket] = server;
         setupConnectionTimer(clientSocket);
         manageEvents(ADD_READ, clientSocket);
     }
 }
-
 
 void Server::HandelEvents(int n, struct kevent events[])
 {
     int clientSocket;
     for (int i = 0; i < n; i++)
     {
-        if (std::find(servers.begin(), servers.end(), (intptr_t)events[i].ident) != servers.end())
-            ConnectWithClient(events[i].ident);
+        clientSocket = events[i].ident;
+        if (std::find(servers.begin(), servers.end(), clientSocket) != servers.end())
+            ConnectWithClient(clientSocket);
         else if (events[i].filter == EVFILT_READ)
-        {
-            clientSocket = events[i].ident;
             RecivData(clientSocket);
-        }
         else if (events[i].filter == EVFILT_WRITE)
-        {
-            clientSocket = events[i].ident;
             SendData(clientSocket);
-        }
         else if (events[i].filter == EVFILT_TIMER)
         {
-            clientSocket = events[i].ident;
             if (!clientsRequest.count(clientSocket))
                 close(clientSocket);
         }
@@ -312,7 +291,7 @@ void Server::HandelEvents(int n, struct kevent events[])
 
 int Server::CreateServer(std::vector<Conserver> &config)
 {
-    struct kevent events[MAX_CLIENTS];
+    struct kevent events[MAX_EVENTS];
 
     kq = kqueue();
     if (kq == -1)
@@ -321,7 +300,7 @@ int Server::CreateServer(std::vector<Conserver> &config)
         ConfigTheSocket(config[i]);
     while (true)
     {
-        int n = kevent(kq, NULL, 0, events, MAX_CLIENTS, NULL);
+        int n = kevent(kq, NULL, 0, events, MAX_EVENTS, NULL);
         if (n == -1)
             errorMsg("kevent Fails", -1);
         HandelEvents(n, events);

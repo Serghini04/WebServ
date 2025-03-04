@@ -14,7 +14,7 @@ Response::~Response()
 {
     file.clear();
     file.close();
-	unlink("/tmp/outCGI.text");
+	unlink(request->getCGIfile().c_str());
 }
 int Response::GetErrorFromStrSize()
 {
@@ -28,10 +28,8 @@ int Response::GetErrorFromStrSize()
 
 std::string Response::FileToString()
 {
-
     if (!hasErrorFile)
     {
-        
         hasErrorFile = !hasErrorFile;
         return errMsg;
     }
@@ -89,10 +87,10 @@ std::string Response::getHeader()
 
 void Response::handelRequestErrors()
 {
+    statusLine = "HTTP/1.1 " + request->statusCodeMessage() + "\r\n";
     if (conserver.getErrorPage(request->statusCode()) != "")
     {
         std::string path = conserver.getAttributes("root") + "/" + conserver.getErrorPage(request->statusCode());
-        statusLine = "HTTP/1.1 " + request->statusCodeMessage() + "\r\n";
         file.open(path);
         if (file.fail())
         {
@@ -107,7 +105,6 @@ void Response::handelRequestErrors()
     else
     {
         hasErrorFile = false;
-        statusLine = "HTTP/1.1 " + request->statusCodeMessage() + "\r\n";
         this->contentType = Utility::getExtensions("", ".html");
     }
 }
@@ -121,28 +118,6 @@ void Response::SendError(enum status code)
         request->SetStatusCodeMsg("403 forbidden");
     handelRequestErrors();
 }
-
-// void Response::ProcessUrl(std::map<std::string, std::string> location)
-// {
-//     std::string newUrl = conserver.getAttributes("root");
-//     std::string index = "";
-//     std::ostringstream oss;
-
-//     if (Utility::isDirectory(newUrl + request->URL()))
-//     {
-//         if (!location["index"].empty())
-//             oss << newUrl << location["root"] << request->URL() << "/" << location["index"];
-//         else if (location["index"].empty() &&
-//                  (location["auto_index"].empty() || location["auto_index"].find("off") != std::string::npos))
-//             SendError(eFORBIDDEN);
-//         else
-//             oss << newUrl << location["root"] + request->URL();
-//     }
-//     else
-//         oss << newUrl << location["root"] + request->URL();
-//     newUrl = oss.str();
-//     request->setUrl(newUrl);
-// }
 
 void Response::ProcessUrl(std::map<std::string, std::string> location)
 {
@@ -194,12 +169,12 @@ int Response::processDirectory(std::string &path)
     html << "<pre>\n";
     html << "<a href=\"../\">../</a>\n";
     DIR *dir = opendir(path.c_str());
-    if (dir == nullptr)
+    if (dir == NULL)
     {
         std::cerr << "Error opening directory: " << strerror(errno) << std::endl;
         return -1;
     }
-    while ((entry = readdir(dir)) != nullptr)
+    while ((entry = readdir(dir)) != NULL)
     {
         std::string filename = entry->d_name;
         std::string lasmodifies = getFileTime(fileInfo, filename);
@@ -308,7 +283,6 @@ std::string Response::getResponse()
 {
     std::string str = "";
 
-    // exit(0);
     if (request)
     {
         if (request->statusCode() != eOK && request->statusCode() != eCreated)
@@ -316,9 +290,5 @@ std::string Response::getResponse()
         else
             str = processResponse(1);
     }
-
-    // std::cout << "---------------------------" << std::endl;
-    // std::cout << "response ---> "<< str  << std::endl;
-    // std::cout << "---------------------------" << std::endl;
     return str;
 }

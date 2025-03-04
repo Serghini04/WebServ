@@ -19,8 +19,8 @@
 #include <netinet/tcp.h>  
 #include <unordered_map>
 #define MAX_BUFFER 1024 * 2
-#define MAX_CLIENTS 1024 * 2
-#define PORT 1111
+#define MAX_CLIENTS 1024
+#define MAX_EVENTS (MAX_CLIENTS * 2)
 
 class Response;
 
@@ -39,8 +39,8 @@ private:
     std::unordered_map<int, Response* > clientsResponse;
     std::vector<int> servers;
     struct kevent timerEvent;
-    static const int TIMEOUT_SECONDS = 20;
-    void            ConnectWithClient(uintptr_t server);
+    static const int TIMEOUT_SECONDS = 10;
+    void            ConnectWithClient(int server);
     void            HandelEvents(int n, struct kevent events[]);
     void            ConfigTheSocket(Conserver &config);
     void            SendData(int clientSocket);

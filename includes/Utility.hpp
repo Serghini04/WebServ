@@ -44,7 +44,7 @@ class Utility
 			std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", now);
 			return std::string(buffer);
 		}
-		static std::string GetCurrentT()
+static std::string GetCurrentT()
 {
 				struct timeval tv;
     gettimeofday(&tv, NULL);
@@ -294,7 +294,7 @@ class Utility
 			}
 			closedir(currentDir);
 		}
-
+		
 		static bool stringEndsWith(const std::string& str, const std::string& suffix)
 		{
 			if (suffix.size() > str.size())
