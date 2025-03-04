@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:38:49 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/27 10:06:06 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/03/04 00:52:24 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,14 @@ std::string	BodyParse::BodyFileName()
 	return _bodyFileName;
 }
 
-BodyParse::BodyParse(long long maxBodySize)
+void	BodyParse::setMaxBodySize(long long size)
 {
-	_maxBodySize = maxBodySize;
-	_bodyFileName = "/Users/mal-mora/goinfre/Output.trash";
+	_maxBodySize = size;
+}
+
+BodyParse::BodyParse()
+{
+	_bodyFileName = "/tmp/Output.trash";
 	_isCGI = false;
     _type = eNone;
 	_bodySize = 0;
@@ -74,22 +78,16 @@ bool	BodyParse::parseBody(std::string &buff)
 	return false;
 }
 
-BodyType	BodyParse::getTypeOfBody(methods method, long long maxBodySize)
+BodyType	BodyParse::getTypeOfBody(methods method)
 {
 	char	*trash = NULL;
-
-	for (std::map<std::string, std::string>::iterator it = _metaData.begin(); it != _metaData.end(); ++it)
-	{
-		std::cout << ">>" << it->first << "<<" << std::endl;  // Assuming you meant "res" as the value
-	}
-
 
 	if (_metaData["content-length"] != "")
 	{
 		_bodySize = strtoll(_metaData["content-length"].c_str(), &trash, 10);
 		if (trash == _metaData["content-length"].c_str() || *trash != '\0' || errno == ERANGE || _bodySize < 0)
 			throw std::string("400 Bad Request");
-		if (maxBodySize >= 0 && _bodySize > maxBodySize)
+		if (_maxBodySize >= 0 && _bodySize > _maxBodySize)
 			throw std::string("413 Content Too Large");
 	}
     if (_metaData["transfer-encoding"] == "chunked" && _metaData["content-type"].find("multipart/form-data; boundary=") != std::string::npos)
@@ -109,7 +107,7 @@ BodyType	BodyParse::getTypeOfBody(methods method, long long maxBodySize)
 		return eContentLength;
 	}
 	if (method == ePOST)
-		throw std::length_error("411 Length Required");
+		throw std::string("411 Length Required");
 	return eNone;
 }
 
@@ -139,10 +137,7 @@ void BodyParse::openFileBasedOnContentType()
 	_fileOutput.open(namefile.c_str(), std::ios::binary);
 	if (_fileOutput.fail())
 		throw std::string("500 Internal Server Error");
-	if (_isCGI)
-		_bodyFileName = namefile;
-	else
-		std::cout <<"Create File :>>" << namefile << "<<\n";
+	_bodyFileName = namefile;
 	_indexFile++;
 }
 
@@ -302,7 +297,6 @@ void	BodyParse::openFileOfBoundary(std::string buff)
 	}
 	else
 		oss << _fileName << _indexFile << ".txt";
-	// std::cout <<"Create File :>>" << oss.str() << "<<\n";
 	_fileOutput.open(oss.str(), std::ios::binary);
 	if (_fileOutput.fail())
 		throw std::string("500 Internal Server Error");
@@ -385,8 +379,6 @@ void	BodyParse::checkContentTooLarge(size_t length)
 	else
 	{
 		_bodySize += length;
-		std::cout << "Body size = " << _bodySize << std::endl;
-		std::cout << "Max body size = " << _maxBodySize << std::endl;
 		if (_maxBodySize >= 0 && _bodySize > _maxBodySize)
 			throw std::string("413 Content Too Large");
 	}	
@@ -454,6 +446,8 @@ bool BodyParse::ContentLengthParse(std::string &buff)
 	if (_bodySize <= 0)
 		return true;
 	size_t bytesToProcess = buff.size();
+	// std::cout << "READ >>" << buff.size() << "\n";
+	checkContentTooLarge(buff.size());
 	_fileOutput.write(buff.data(), bytesToProcess);
 	_bodySize -= bytesToProcess;
 	if (_bodySize <= 0)

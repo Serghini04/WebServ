@@ -6,9 +6,12 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 16:02:15 by hidriouc          #+#    #+#             */
-/*   Updated: 2025/02/19 10:49:13 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/03/01 14:31:42 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#ifndef CONSERVER_HPP
+#define CONSERVER_HPP
 
 #include <map>
 #include <list>
@@ -21,7 +24,7 @@
 #include <utility>
 #include <vector>
 #include <sstream>
-#include <ostream>
+
 
 class Conserver {
 	private:
@@ -36,6 +39,7 @@ class Conserver {
 		void	addBodySize(std::string value);
 		void	addLocation(const std::map<std::string, std::string> loc_attribute);
 		void	addlistening(std::pair<std::string, std::string> listen);
+		~Conserver ();
 		long long	getBodySize();
 		std::pair<std::string, std::string>	getreturnof(std::string path);
 		std::string	getAttributes(std::string att);
@@ -47,4 +51,6 @@ class Conserver {
 };
 
 std::vector<Conserver> parseConfigFile(char* );
-void parseLocation(const std::string& confline, Conserver& server, std::ifstream& infile, int& index, std::stack<char>& ServStack, std::map<std::string, std::string>& lis);
+void parseLocation(const std::string& confline, Conserver& server, std::ifstream& infile, int& index, std::stack<char>& ServStack);
+
+#endif
