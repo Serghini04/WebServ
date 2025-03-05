@@ -92,6 +92,7 @@ class   RequestParse
 		bool								isCGI();
 		methods								method();
 		void								getConfigFile();
+	
 		// set :
 		void		setIsCGI(bool s);
 		void		setUrl(std::string s);
@@ -113,8 +114,6 @@ class   RequestParse
 		void		parseFirstLine(std::string  header);
 		void		parseMetaData(std::string header);
 		void		deleteURI();
-
-		// Execution of CGI by hidriouc
 		int			runcgiscripte();
 		bool		is_InvalideURL();
 		bool		CheckStdERR(const char* fileERR);
@@ -128,10 +127,9 @@ class   RequestParse
 		int			_waitForCGIProcess(int pid);
 		int			parseCGIOutput();
 
-		std::string 	getCGIfile();
+		std::string 				getCGIfile();
 		std::vector<std::string>	_buildEnvVars();
 		void						_openFileSafely(std::ifstream& file, const std::string& filename);
 		std::string					_extractHeaderValue(const std::string& line);
-
 		~RequestParse();
 };

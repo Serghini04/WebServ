@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/02 19:54:16 by mal-mora          #+#    #+#             */
-/*   Updated: 2025/03/04 01:55:11 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/03/05 02:15:30 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,14 +182,12 @@ void Server::ConfigTheSocket(Conserver &config)
         int bindResult = bind(serverSocket, (const sockaddr *)&addressSocket, sizeof(addressSocket));
         if (bindResult == -1)
             errorMsg("bind Fails", serverSocket);
-        if (listen(serverSocket, 1024) == -1)
+        if (listen(serverSocket, 128) == -1)
             errorMsg("listen Fails", serverSocket);
         this->serversConfigs[serverSocket].push_back(&config);
         if (serverSocket == -1)
             errorMsg("Socket Creation Fails", serverSocket);
-        EV_SET(&event, serverSocket, EVFILT_READ, EV_ADD, 0, 0, NULL);
-        if (kevent(kq, &event, 1, NULL, 0, NULL) == -1)
-            errorMsg("kqueue registration failed", serverSocket);
+        manageEvents(ADD_READ, serverSocket);
         servers.push_back(serverSocket);
     }
 }
