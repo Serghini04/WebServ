@@ -6,17 +6,11 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/27 16:25:28 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/03/05 13:30:34 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <RequestParse.hpp>
-#include <cstddef>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <sys/wait.h>
-#include <unistd.h>
 
 RequestParse::RequestParse(Conserver &conserver) : _body(conserver.getBodySize()), _configServer(conserver)
 {
@@ -352,7 +346,7 @@ void	RequestParse::checkCGI()
 		}
 	}
 	// check index :
-	if (Utility::isDirectory(_url) && _configServer.getLocation(_location)["index"] != "")
+	if (_configServer.getLocation(_location)["index"] != "")
 	{
 		size_t pos = _configServer.getLocation(_location)["index"].rfind('.');
 		if (pos != std::string::npos)
@@ -368,9 +362,6 @@ void	RequestParse::checkCGI()
 
 void    RequestParse::readBuffer(std::string buff)
 {
-	// _fileDebug <<"\n==========================" << std::endl;
-	// _fileDebug << header << std::endl;
-	// _fileDebug <<"\n==========================" << std::endl;
 	try
 	{
 		if (_requestIsDone)
@@ -442,45 +433,27 @@ std::string RequestParse::_extractHeaderValue(const std::string& line)
 	return value;
 }
 
-void	RequestParse::_validateContentLength(const std::string& contentLength, size_t bodysize)
-{
-	if (contentLength.empty() || contentLength.find_first_not_of("0123456789") != std::string::npos ||
-		(int)bodysize != Utility::StrToInt(contentLength))
-		throw (std::string)("ERROR: Unexpected Content-Length!");
-}
-
 void RequestParse::_validateContentType(const std::string& contentType)
 {
 	if (contentType.empty() || !(contentType == "Content-Type: text/html" || contentType == "Content-Type: text/json"))
-		throw (std::string)("ERROR: Unexpected Content-Type!");
+		throw (std::string)("ERROR: Unexpected Content-Type !");
 }
 
 void RequestParse::_parseHeaderLine(const std::string& line, std::string lines[])
 {
-	if (line.find("HTTP/") != std::string::npos && lines[0].empty()){
-		if (!lines[0].empty())
-			throw((std::string)"Deplucate Start header !");
-		lines[0] = line;
-	}
-	else if (line.find("Content-Length:") != std::string::npos){
-		if (!lines[1].empty())
-			throw((std::string)"Content-Length !");
-		lines[1] = _extractHeaderValue(line);
-	}
 	 if (line.find("Content-Type:") != std::string::npos){
 		if (!lines[2].empty())
-			throw((std::string)"Content-Type!");
+			throw((std::string)"Invalid Content-Type!");
 		lines[2] = _extractHeaderValue(line);
 	}
 }
 
-int	RequestParse::_parseHeaders(size_t bodysize, const std::string& headers)
+int	RequestParse::_parseHeaders(const std::string& headers)
 {
 	std::stringstream ss(headers);
 	std::string line;
 
-	(void)bodysize;
-	while (std::getline(ss, line) && line.find ("Content-Typ") == std::string::npos)
+	while (std::getline(ss, line) && line.find ("Content-Type") == std::string::npos)
 		;
 	_validateContentType(line);
 	return 200;
@@ -514,7 +487,7 @@ int RequestParse::_forkAndExecute(int infd, int outfd, char* env[], int ERRfile)
 		std::string AbsPath = _configServer.getLocation(_location)[exte].substr(_configServer.getLocation(_location)[exte].find(' ')+ 1) ;
 		char* args[] = {(char*)AbsPath.c_str(), (char*)scriptPath.c_str(), NULL};
 		if (chdir(scriptPath.substr(0, scriptPath.rfind("/")).c_str()) == -1)
-			;
+			exit(1);
 		execve(AbsPath.c_str(), args, env);
 		exit(1);
 	}
@@ -555,8 +528,7 @@ int RequestParse::parseCGIOutput()
 	size_t headerEnd = lines.find("\r\n\r\n");
 	if (headerEnd == std::string::npos) 
 		throw ((std::string)"No valid header separator found.");
-	return _parseHeaders(lines.substr(headerEnd + 4).size(), lines.substr(0, headerEnd));
-	return 200;
+	return _parseHeaders(lines.substr(0, headerEnd));
 }
 
 bool	RequestParse::is_InvalideURL()
@@ -609,7 +581,7 @@ bool RequestParse::CheckStdERR(const char* fileERRpath)
 	return close(fileERR), 0;
 
 }
-int	RequestParse::runcgiscripte()
+void	RequestParse::runcgiscripte()
 {
 	std::vector<std::string> env_strings = _buildEnvVars();
 	char*	env[env_strings.size() + 1];
@@ -619,7 +591,7 @@ int	RequestParse::runcgiscripte()
 	int		fileERR;
 
 	if (is_InvalideURL())
-		return 1;
+		return ;
 	try 
 	{
 		for (; i < env_strings.size(); ++i)
@@ -656,7 +628,6 @@ int	RequestParse::runcgiscripte()
 		_statusCodeMessage = "500 Internal Server Error";
 	}
 	clear(bodyfd ,outfd, fileERR );
-	return 402;
 }
 
 RequestParse::~RequestParse()

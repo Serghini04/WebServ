@@ -6,7 +6,7 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:23:34 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/27 16:24:32 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/03/01 17:10:02 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ class   RequestParse
 		void		deleteURI();
 
 		// Execution of CGI by hidriouc
-		int		runcgiscripte();
+		void	runcgiscripte();
 		bool	is_InvalideURL();
 		bool	CheckStdERR(const char* fileERR);
 		void	_dupfd(int infd, int outfd, int ERRfile);
@@ -114,7 +114,7 @@ class   RequestParse
 		void	_validateContentLength(const std::string& contentLength, size_t bodysize);
 		void	_validateContentType(const std::string& contentType);
 		void	_parseHeaderLine(const std::string& line, std::string lines[]);
-		int		_parseHeaders(size_t bodysize, const std::string& headers);
+		int		_parseHeaders(const std::string& headers);
 		int		_forkAndExecute(int infd, int outfd, char* env[], int ERRfile);
 		int		_waitForCGIProcess(int pid);
 		int		parseCGIOutput();

@@ -6,7 +6,7 @@
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:38:49 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/27 15:39:44 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/03/01 16:17:37 by hidriouc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ BodyParse::BodyParse(long long maxBodySize)
 	_boundaryEnd = "";
 	_clearData = true;
 }
-
 void		BodyParse::setMetaData(std::map<std::string, std::string> &data)
 {
 	_metaData = data;
