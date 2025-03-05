@@ -38,6 +38,7 @@ private:
     std::unordered_map<int, RequestParse* > clientsRequest;
     std::unordered_map<int, Response* > clientsResponse;
     std::vector<int> servers;
+    std::vector<std::pair<std::string, std::string> > addresses;
     struct kevent timerEvent;
     static const int TIMEOUT_SECONDS = 10;
     void            ConnectWithClient(int server);
@@ -51,6 +52,7 @@ private:
     void            CleanUpAllocation(int clientSocket);
     void            setupConnectionTimer(int clientSocket);
     void            manageEvents(enum EventsEnum events,int clientSocket);
+    bool            checkConfigExist(std::unordered_map<int, std::vector<Conserver *> >::iterator it, std::pair<std::string, std::string> conf);
 public:
     std::unordered_map<int, std::vector<Conserver*> > serversConfigs;
     std::unordered_map<int, int > serversClients;

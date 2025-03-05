@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BodyParse.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:38:49 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/27 15:39:44 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/03/04 00:52:24 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,6 @@ std::string	BodyParse::BodyFileName()
 void	BodyParse::setMaxBodySize(long long size)
 {
 	_maxBodySize = size;
-	if (_metaData["content-length"] != "")
-	{
-		std::cout << ">>" << _bodySize << "<<<\n";
-		if (_maxBodySize >= 0 && _bodySize > _maxBodySize)
-			throw std::string("413 Content Too Large");
-	}
 }
 
 BodyParse::BodyParse()
@@ -84,20 +78,17 @@ bool	BodyParse::parseBody(std::string &buff)
 	return false;
 }
 
-BodyType	BodyParse::getTypeOfBody(methods method, long long maxBodySize)
+BodyType	BodyParse::getTypeOfBody(methods method)
 {
 	char	*trash = NULL;
-	(void)maxBodySize;
 
 	if (_metaData["content-length"] != "")
 	{
 		_bodySize = strtoll(_metaData["content-length"].c_str(), &trash, 10);
-		std::cout <<"Body Size :"<< _bodySize << "\n";
 		if (trash == _metaData["content-length"].c_str() || *trash != '\0' || errno == ERANGE || _bodySize < 0)
 			throw std::string("400 Bad Request");
-		// std::cout << ":>>" << maxBodySize << "<<\n";
-		// if (maxBodySize >= 0 && _bodySize > maxBodySize)
-		// 	throw std::string("413 Content Too Large1");
+		if (_maxBodySize >= 0 && _bodySize > _maxBodySize)
+			throw std::string("413 Content Too Large");
 	}
     if (_metaData["transfer-encoding"] == "chunked" && _metaData["content-type"].find("multipart/form-data; boundary=") != std::string::npos)
 		return eChunkedBoundary;
@@ -146,9 +137,7 @@ void BodyParse::openFileBasedOnContentType()
 	_fileOutput.open(namefile.c_str(), std::ios::binary);
 	if (_fileOutput.fail())
 		throw std::string("500 Internal Server Error");
-	if (_isCGI)
-		_bodyFileName = namefile;
-	else
+	_bodyFileName = namefile;
 	_indexFile++;
 }
 
@@ -390,8 +379,6 @@ void	BodyParse::checkContentTooLarge(size_t length)
 	else
 	{
 		_bodySize += length;
-		std::cout << "Body size = " << _bodySize << std::endl;
-		std::cout << "Max body size = " << _maxBodySize << std::endl;
 		if (_maxBodySize >= 0 && _bodySize > _maxBodySize)
 			throw std::string("413 Content Too Large");
 	}	

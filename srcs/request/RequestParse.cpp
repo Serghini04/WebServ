@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   RequestParse.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/27 16:25:28 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/03/04 01:11:28 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ RequestParse::RequestParse(int clientSocket, Server &server): server(server)
 	_requestIsDone = false;
 	_statusCode = eOK;
 	_statusCodeMessage = "200 OK";
-	_maxBodySize = _configServer.getBodySize();
 }
 
 bool	isDuplicate(char a, char b)
@@ -110,6 +109,7 @@ void	RequestParse::parseFirstLine(std::string  header)
 		_enumMethod = ePOST;
 	else
 		_enumMethod = eDELETE;
+	std::cout << "URl =>>" << _url << "<<" << std::endl;
 }
 
 std::map<std::string, std::string>	&RequestParse::getMetaData()
@@ -216,8 +216,6 @@ bool	RequestParse::parseHeader(std::string &header)
 	_body.setMetaData(_metaData);
 	getConfigFile();
 	_body.setMaxBodySize(_configServer.getBodySize());
-	// std::cout << _metaData["host"] << "<<<" << std::endl;
-	// exit(1);
 	return false;
 }
 
@@ -294,7 +292,7 @@ void RequestParse::deleteMethod()
 {
 	_body.setIsCGI(false);
 	if (_configServer.getLocation(_location)["root"] != "")
-		_uri = _configServer.getAttributes("root") + "/" + _configServer.getLocation(_location)["root"];
+		_uri = _configServer.getLocation(_location)["root"];
 	else
 		_uri = _configServer.getAttributes("root");
 	_uri +=  "/" + _url;
@@ -319,7 +317,7 @@ bool RequestParse::parseHeader(std::string &header, std::string &buff)
 		return isHeader;
 	isHeader = parseHeader(header);
 	buff = header.substr(pos + 4);
-	_body.setbodyType(_body.getTypeOfBody(_enumMethod, _maxBodySize));
+	_body.setbodyType(_body.getTypeOfBody(_enumMethod));
 	checkAllowedMethod();
 	if (_body.bodyType() == eBoundary || _body.bodyType() == eChunkedBoundary)
 	{
@@ -329,16 +327,16 @@ bool RequestParse::parseHeader(std::string &header, std::string &buff)
 	}
 	if (_enumMethod == ePOST && (_body.bodyType() == eChunked || _body.bodyType() == eContentLength))
 		_body.openFileBasedOnContentType();
-	size_t  endHeader = header.find("\r\n\r\n") + 4;
-	size_t length = header.length();
+	// size_t  endHeader = header.find("\r\n\r\n") + 4;
+	// size_t length = header.length();
+	// std::cout << "================================"<< std::endl;
+	// std::cout << header << std::endl;
+	// std::cout << "================================"<< std::endl;
 	header.clear();
+	if (_enumMethod != eDELETE)
+		checkCGI();
 	if (_enumMethod == eGET || _enumMethod == eDELETE)
 	{
-		if (endHeader < length)
-		{
-			_body.setIsCGI(false);
-			throw std::string("400 Bad Request1");
-		}
 		if (_enumMethod == eDELETE)
 			deleteMethod();
 		throw std::string("200 OK");
@@ -386,34 +384,34 @@ void	RequestParse::checkCGI()
 
 void    RequestParse::readBuffer(std::string buff)
 {
-	// _fileDebug <<"\n==========================" << std::endl;
-	// _fileDebug << header << std::endl;
-	// _fileDebug <<"\n==========================" << std::endl;
+	// std::cout <<"\n==========================" << std::endl;
+	// std::cout << buff << std::endl;
+	// std::cout <<"\n==========================" << std::endl;
 	try
 	{
 		if (_requestIsDone)
 			return ;
 		if (isHeader())
-			setIsHeader(parseHeader(header, buff));
+			setIsHeader(parseHeader(_header, buff));
 		_requestIsDone = _body.parseBody(buff);
 	}
 	catch (std::string &e)
 	{
 		std::cout << ">>" << e << std::endl;
-		header.clear();
+		_header.clear();
 		_statusCode = (status)atoi(e.c_str());
 		_statusCodeMessage = e;
 		_requestIsDone = 1;
 	}
 	catch (...)
 	{
-		header.clear();
+		_header.clear();
 		_statusCodeMessage = "500 Internal Server Error";
 		_statusCode = eInternalServerError;
 		_requestIsDone = 1;
 	}
-	if (_requestIsDone && (_statusCode == eOK || _statusCode == eCreated))
-		checkCGI();
+	// if (_requestIsDone && _enumMethod != eDELETE && (_statusCode == eOK || _statusCode == eCreated))
+	// 	checkCGI();
 }
 std::string 	RequestParse::getCGIfile()
 {
@@ -629,6 +627,7 @@ bool RequestParse::CheckStdERR(const char* fileERRpath)
 }
 int	RequestParse::runcgiscripte()
 {
+	puts("FUCK");
 	std::vector<std::string> env_strings = _buildEnvVars();
 	char*	env[env_strings.size() + 1];
 	size_t	i = 0;
@@ -679,5 +678,5 @@ int	RequestParse::runcgiscripte()
 
 RequestParse::~RequestParse()
 {
-	header.clear();
+	_header.clear();
 }

@@ -374,7 +374,6 @@ def handleLogin():
         if session is None:
             printUserMsg("Failed To Login, Username or Password is wrong!")
         else:
-            # print("Correct Credentials :D", file=sys.stderr)
 
             # Initialize or reset the cookies
             cookies_obj = cookies.SimpleCookie()
@@ -393,7 +392,7 @@ def handleLogin():
             print("Content-Type: text/html")
             print("Location: acc.py\r\n\r\n")
     else:
-        # Registration process
+        # Registration process - without username check
         try:
             database = None
             if os.path.exists('user_database'):
@@ -402,47 +401,50 @@ def handleLogin():
             else:
                 database = UserDataBase()
                 
-            # Check if username exists in database
-            if username in database.user_pass:
-                printUserMsg("Username is already registered!")
-            else:
-                # Add new user
-                database.addUser(username, password, firstname)
-                printUserMsg("Account registered successfully!")
+            # Add new user without checking if username exists
+            database.addUser(username, password, firstname)
+            printUserMsg("Account registered successfully!")
         except Exception as e:
             # Debug output
-            # print(f"Registration error: {str(e)}", file=sys.stderr)
-            printUserMsg(f"Error during registration: {str(e)}")
+            printUserMsg(f"Error during registration: {str(e)}") 
 
-# Load CGI form
-form = cgi.FieldStorage()
+def main():
+    # Create sessions directory if it doesn't exist
+    if not os.path.exists('sessions'):
+        os.makedirs('sessions')
+        
+    global form
+    # Load CGI form
+    form = cgi.FieldStorage()
 
-# Check if we're processing a login attempt
-login_attempt = form.getvalue('username') is not None
+    # Check if we're processing a login attempt
+    login_attempt = form.getvalue('username') is not None
 
-# If we're processing a login attempt, prioritize that over the cookie
-if login_attempt:
-    handleLogin()
-else:
-    # Only check for the cookie if we're not processing a login
-    cookies_obj = cookies.SimpleCookie()
-    if 'HTTP_COOKIE' in os.environ:
-        cookies_obj.load(os.environ['HTTP_COOKIE'])
+    # If we're processing a login attempt, prioritize that over the cookie
+    if login_attempt:
+        handleLogin()
+    else:
+        # Only check for the cookie if we're not processing a login
+        cookies_obj = cookies.SimpleCookie()
+        if 'HTTP_COOKIE' in os.environ:
+            cookies_obj.load(os.environ['HTTP_COOKIE'])
 
-        if "SID" in cookies_obj:
-            sid = cookies_obj["SID"].value
-            # print("Your Session ID is", sid, file=sys.stderr)
-            session_file = 'sessions/session_' + sid
-            
-            # Check if the session file exists
-            if os.path.exists(session_file):
-                with open(session_file, 'rb') as f:
-                    sess = pickle.load(f)
-                printAccPage(sess)
+            if "SID" in cookies_obj:
+                sid = cookies_obj["SID"].value
+                session_file = 'sessions/session_' + sid
+                
+                # Check if the session file exists
+                if os.path.exists(session_file):
+                    with open(session_file, 'rb') as f:
+                        sess = pickle.load(f)
+                    printAccPage(sess)
+                else:
+                    # Session file doesn't exist, handle as if no cookie
+                    handleLogin()
             else:
-                # Session file doesn't exist, handle as if no cookie
                 handleLogin()
         else:
             handleLogin()
-    else:
-        handleLogin()
+
+if __name__ == "__main__":
+    main()

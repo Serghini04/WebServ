@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Utility.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/08 18:36:13 by meserghi          #+#    #+#             */
-/*   Updated: 2025/02/27 15:58:33 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/03/03 21:21:42 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ class Utility
 		static void ShowErrorExit(std::string const &errorMsg)
 		{
 			std::cout << errorMsg << std::endl;
-			exit(1);
+			// exit(1);
 		}
 
 		static std::string GetCurrentTime()

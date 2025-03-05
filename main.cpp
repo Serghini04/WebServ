@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   main.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -18,7 +18,7 @@ int main(int ac, char **av)
 	(void)ac;
 	std::signal(SIGPIPE, SIG_IGN);
 	std::vector<Conserver>	servers = parseConfigFile(av[1]);
-	// std::vector<std::pair<std::string, std::string> > lss = servers[1].getlistening();
+	// std::vector<std::pair<std::string, std::string> > lss = servers[0].getlistening();
 	// for (size_t i = 0; i < lss.size() ; i++)
 	// {
 	// 	std::cout <<"|"<<lss[i].first <<":"<<lss[i].second<<"|"<<std::endl;

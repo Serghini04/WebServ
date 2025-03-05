@@ -17,7 +17,7 @@ private:
     std::map<std::string, std::string> _headerMap;
     std::string                         contentType;
     int                                 firstCall;
-    long  long                               size;
+    long  long                          size;
     std::ifstream                       file;
     std::string                         file_path;
     std::string                         statusLine;

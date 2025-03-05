@@ -139,6 +139,8 @@ void Response::ProcessUrl(std::map<std::string, std::string> location)
             SendError(eFORBIDDEN);
             return;
         }
+        else
+            oss << newUrl;
     }
     else
         oss << newUrl;
@@ -193,29 +195,29 @@ int Response::processDirectory(std::string &path)
     return directoryContent.length();
 }
 
-// priority: 1 (redirection)
+
 std::string Response::handelRedirection(std::string redirect_code, std::string redirect_url)
 {
-    if (redirect_url.find("http://") != 0 && redirect_url.find("https://") != 0)
-    {
-        redirect_url = "http://" + redirect_url;
-    }
+    std::string body = "<html>\n<head><title>"+ redirect_code + "Redirect</title></head>\n<body>\n<center><h1>" + 
+                redirect_code + "Redirect</h1></center>\n<hr><center>WebServ/1.27.3</center>\n</body>\n</html>";
     std::string httpResponse =
         "HTTP/1.1 " + redirect_code + " Moved Permanently\r\n"
                                       "Location: " +
         redirect_url + "\r\n"
                        "Content-Type: text/html; charset=UTF-8\r\n"
-                       "Content-Length: 0\r\n"
+                       "Content-Length: " +
+                        std::to_string(body.length()) + "\r\n"
                        "Connection: close\r\n"
                        "\r\n";
-    httpResponse += "<html>\n<head><title>"+ redirect_code + "Redirect</title></head>\n<body>\n<center><h1>" + 
-                redirect_code + "Redirect</h1></center>\n<hr><center>WebServ/1.27.3</center>\n</body>\n</html>";
+    httpResponse += body;
     this->endResponse = true;
     return httpResponse;
 }
 
 std::string Response::processResponse(int state)
 {
+    if(endResponse)
+        return "";
     std::map<std::string, std::string> location = conserver.getLocation(request->location());
     if (firstCall)
     {

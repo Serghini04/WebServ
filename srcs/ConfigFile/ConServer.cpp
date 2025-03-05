@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ConServer.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hidriouc <hidriouc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 16:54:05 by hidriouc          #+#    #+#             */
-/*   Updated: 2025/03/01 14:27:01 by hidriouc         ###   ########.fr       */
+/*   Updated: 2025/03/04 01:28:15 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,9 @@
 
 void	Conserver::addAttribute(const std::string& key, const std::string& value)
 {
-	if (!serv_attributes[key].empty())
-		std::cerr << "[Warning] : Duplicate server_name '" << value << "' has ignored'"<< std::endl;
+	if (!serv_attributes[key].empty()){
+		std::cerr << "[Warning] : Duplicate " << key <<" :'" << value << "' has ignored"<< std::endl;
+	}
 	else
 		serv_attributes[key] = value;
 }
@@ -48,8 +49,8 @@ void Conserver::addlistening(std::pair<std::string, std::string > lsn)
 	{
 		if (it->second == lsn.second && it->first == lsn.first)
 		{
-			std::cerr << "[Warning]: Duplicate listening << " << lsn.first << ":" <<lsn.second<< " >> ignored!" << std::endl;
-			return;
+			std::cerr << "Error :Duplicate listening << " << lsn.first << ":" <<lsn.second<< " >> ignored!" << std::endl;
+			exit(EXIT_FAILURE);
 		}
 		it++;
 	}
