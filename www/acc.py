@@ -117,6 +117,7 @@ def printAccPage(session):
             <div class="message-box success">
                 <p>Your Session ID: {session.getSid()}</p>
             </div>
+            <h1> Upload Something : </h1>
             <form id="upload" enctype="multipart/form-data" method="POST" action="/upload">
                 <input id="fileupload" name="myfile" type="file" multiple="multiple"/>
                 <br>
@@ -374,8 +375,6 @@ def handleLogin():
         if session is None:
             printUserMsg("Failed To Login, Username or Password is wrong!")
         else:
-            # print("Correct Credentials :D", file=sys.stderr)
-
             # Initialize or reset the cookies
             cookies_obj = cookies.SimpleCookie()
 
@@ -407,7 +406,6 @@ def handleLogin():
             printUserMsg("Account registered successfully!")
         except Exception as e:
             # Debug output
-            print(f"Registration error: {str(e)}", file=sys.stderr)
             printUserMsg(f"Error during registration: {str(e)}") 
 
 def main():
@@ -433,7 +431,6 @@ def main():
 
             if "SID" in cookies_obj:
                 sid = cookies_obj["SID"].value
-                print("Your Session ID is", sid, file=sys.stderr)
                 session_file = 'sessions/session_' + sid
                 
                 # Check if the session file exists

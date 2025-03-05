@@ -6,7 +6,7 @@
 /*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 18:35:29 by meserghi          #+#    #+#             */
-/*   Updated: 2025/03/04 01:11:28 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/03/04 21:33:24 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -327,11 +327,6 @@ bool RequestParse::parseHeader(std::string &header, std::string &buff)
 	}
 	if (_enumMethod == ePOST && (_body.bodyType() == eChunked || _body.bodyType() == eContentLength))
 		_body.openFileBasedOnContentType();
-	// size_t  endHeader = header.find("\r\n\r\n") + 4;
-	// size_t length = header.length();
-	// std::cout << "================================"<< std::endl;
-	// std::cout << header << std::endl;
-	// std::cout << "================================"<< std::endl;
 	header.clear();
 	if (_enumMethod != eDELETE)
 		checkCGI();
@@ -384,9 +379,6 @@ void	RequestParse::checkCGI()
 
 void    RequestParse::readBuffer(std::string buff)
 {
-	// std::cout <<"\n==========================" << std::endl;
-	// std::cout << buff << std::endl;
-	// std::cout <<"\n==========================" << std::endl;
 	try
 	{
 		if (_requestIsDone)
@@ -410,8 +402,6 @@ void    RequestParse::readBuffer(std::string buff)
 		_statusCode = eInternalServerError;
 		_requestIsDone = 1;
 	}
-	// if (_requestIsDone && _enumMethod != eDELETE && (_statusCode == eOK || _statusCode == eCreated))
-	// 	checkCGI();
 }
 std::string 	RequestParse::getCGIfile()
 {
@@ -627,7 +617,6 @@ bool RequestParse::CheckStdERR(const char* fileERRpath)
 }
 int	RequestParse::runcgiscripte()
 {
-	puts("FUCK");
 	std::vector<std::string> env_strings = _buildEnvVars();
 	char*	env[env_strings.size() + 1];
 	size_t	i = 0;
@@ -669,6 +658,7 @@ int	RequestParse::runcgiscripte()
 		if (CheckStdERR("/tmp/Errout.text"))
 			throw (std::string("500 Internal Server Error"));
 	}catch(std::string err){
+		std::cout << ">>>" << err << "\n";
 		_statusCode = (status)(500);
 		_statusCodeMessage = "500 Internal Server Error";
 	}
