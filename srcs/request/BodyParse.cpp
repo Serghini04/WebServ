@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BodyParse.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: meserghi <meserghi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: meserghi <meserghi@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/31 13:38:49 by meserghi          #+#    #+#             */
-/*   Updated: 2025/03/04 00:52:24 by meserghi         ###   ########.fr       */
+/*   Updated: 2025/04/14 08:37:43 by meserghi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -446,8 +446,6 @@ bool BodyParse::ContentLengthParse(std::string &buff)
 	if (_bodySize <= 0)
 		return true;
 	size_t bytesToProcess = buff.size();
-	// std::cout << "READ >>" << buff.size() << "\n";
-	checkContentTooLarge(buff.size());
 	_fileOutput.write(buff.data(), bytesToProcess);
 	_bodySize -= bytesToProcess;
 	if (_bodySize <= 0)
