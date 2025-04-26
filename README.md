@@ -1,7 +1,7 @@
 # 🚀 WebServ - Your Lightweight HTTP Server
 
 <div align="center">
-  <img src="https://github.com/Serghini04/WebServ/assets/webserv-banner.png" alt="WebServ Banner" width="800">
+  <img src="https://github.com/Serghini04/WebServ/assets/intro.png" alt="WebServ Banner" width="800">
 
   ### *Power and simplicity in one elegant package*
   
@@ -281,7 +281,7 @@ Browse to:
 This masterpiece is licensed under the **MIT License** — giving you full freedom to create, adapt, and share!
 
 <div align="center">
-  <img src="https://github.com/Serghini04/WebServ/assets/webserv-footer.png" alt="WebServ Footer" width="800">
+  <img src="https://github.com/Serghini04/WebServ/assets/end.png" alt="WebServ Footer" width="800">
   
   ### Made with ❤️ and countless cups of ☕ by Mehdi Serghini & team
 </div>
