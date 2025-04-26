@@ -18,6 +18,10 @@
 
 ## 🔍 Project Overview
 
+<div align="center">
+  <img src="assets/whatIsHTTP.png" alt="WebServ Architecture" width="600">
+</div>
+
 WebServ implements the HTTP/1.1 protocol, mimicking the behavior of industry giants like **Nginx** and **Apache**, but with a focus on **simplicity**, **education**, and **clean architecture**.
 
 Built with a modular, **SOLID principles**-driven design, WebServ offers:
@@ -29,9 +33,6 @@ Built with a modular, **SOLID principles**-driven design, WebServ offers:
 
 It respects RFC standards and offers a minimal, robust, and extendable architecture — all without threading, using event-driven I/O with `select()`.
 
-<div align="center">
-  <img src="https://github.com/Serghini04/WebServ/assets/webserv-architecture.png" alt="WebServ Architecture" width="600">
-</div>
 
 ---
 
@@ -95,10 +96,6 @@ WebServ follows a **modular architecture** adhering strictly to **SOLID principl
 - **Session Manager**: Maintains login/auth state
 - **Static File Manager**: Secure file serving and uploads
 
-<div align="center">
-  <img src="https://github.com/Serghini04/WebServ/assets/webserv-flow.png" alt="WebServ Data Flow" width="700">
-</div>
-
 ---
 
 ## 🛠️ Technologies
@@ -127,6 +124,20 @@ make
 # Launch the server
 ./webserv
 ```
+
+---
+
+## 📸 Screenshots
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/Serghini04/WebServ/main/assets/screenshot1.png" alt="WebServ Screenshot 1" width="600" />
+  <br><br>
+  <img src="https://raw.githubusercontent.com/Serghini04/WebServ/main/assets/screenshot2.png" alt="WebServ Screenshot 2" width="600" />
+  <br><br>
+  <img src="https://raw.githubusercontent.com/Serghini04/WebServ/main/assets/screenshot3.png" alt="WebServ Screenshot 3" width="600" />
+  <br><br>
+  <img src="https://raw.githubusercontent.com/Serghini04/WebServ/main/assets/screenshot4.png" alt="WebServ Screenshot 4" width="600" />
+</div>
 
 ---
 
@@ -173,28 +184,6 @@ server {
   - `auto_index` control
   - `upload_store` directories
 - **📦 Redirection handling**
-
-<div align="center">
-  <img src="https://github.com/Serghini04/WebServ/assets/webserv-config.png" alt="WebServ Config" width="600">
-</div>
-
----
-
-## 🚦 Usage
-
-Start the server with:
-
-```bash
-./webserv path/to/your/config.conf
-```
-
-Default ports: **8080** and **4444**
-
-Browse to:
-- `/` — Landing page
-- `/register.html` — Registration form
-- `/upload` — Upload files
-- `/profile` — User profiles
 
 ---
 
