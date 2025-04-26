@@ -12,27 +12,26 @@
 
 ## ✨ Welcome to WebServ
 
-**WebServ** is not just another HTTP server — it’s a journey into the heart of web protocols, meticulously handcrafted in C++98. Designed from scratch, this lightweight yet powerful server delivers everything from static content to dynamic applications with efficiency and elegance.
+**WebServ** is not just another HTTP server — it’s a deep dive into the heart of web protocols, meticulously handcrafted in **C++98**.  
+Built from scratch, this lightweight yet powerful server delivers everything from static websites to dynamic web applications with efficiency and elegance.
 
 ---
 
 ## 🔍 Project Overview
 
 <div align="center">
-  <img src="assets/whatIsHTTP.png" alt="WebServ Architecture" width="600">
+  <img src="assets/whatIsHTTP.jpg" alt="WebServ Architecture" width="600">
 </div>
 
-WebServ implements the HTTP/1.1 protocol, mimicking the behavior of industry giants like **Nginx** and **Apache**, but with a focus on **simplicity**, **education**, and **clean architecture**.
+WebServ implements the **HTTP/1.1** protocol, mimicking behavior from industry giants like **Nginx** and **Apache**, with a strong focus on **simplicity**, **education**, and **clean architecture**.
 
-Built with a modular, **SOLID principles**-driven design, WebServ offers:
-- Multi-server support
-- User authentication systems
-- File uploads and downloads
-- Dynamic content generation through **CGI (PHP + Python)** 
-- Full HTTP status code management
-
-It respects RFC standards and offers a minimal, robust, and extendable architecture — all without threading, using event-driven I/O with `select()`.
-
+Key highlights:
+- Fully modular, **SOLID principles**-driven design
+- Event-driven server (using `select()`)
+- Multi-server hosting
+- Authentication systems with **session cookies**
+- File uploads/downloads
+- Dynamic content execution via **CGI** (**PHP + Python**)
 
 ---
 
@@ -53,75 +52,75 @@ It respects RFC standards and offers a minimal, robust, and extendable architect
 ## ✨ Features
 
 ### 🌐 Core Capabilities
-- **🔄 Multi-server hosting**: Listen on multiple ports, serve different roots
-- **📊 Efficient non-blocking I/O**: Lightning-fast responses
-- **🔒 Session management**: Secure authentication flows
-- **📁 File operations**: Robust upload and download system
-- **⚡ Dynamic content**: **CGI support** for **PHP** and **Python** scripts
+- **🔄 Multi-server hosting**: Listen on multiple ports, serve multiple roots
+- **📊 Efficient non-blocking I/O**: Fast and scalable
+- **🔒 Session management**: Secure authentication with **cookies**
+- **📁 File operations**: Robust file upload and download system
+- **⚡ Dynamic content**: **CGI support** for **PHP** and **Python**
 - **🛡️ Access control**: Restrict allowed HTTP methods
-- **📑 Directory listing**: Beautiful, configurable auto-indexing
+- **📑 Directory listing**: Customizable auto-indexing
+- **🔀 URL Redirection**: Easy redirects using HTTP 301/302
 
 ### 🚦 HTTP Protocol Support
 - **GET**: 📥 Fetch resources
-- **POST**: 📤 Submit forms or upload files
+- **POST**: 📤 Submit data or upload files
 - **DELETE**: 🗑️ Remove resources
 - **Status Codes**: ✅ Full HTTP status code management (2xx, 3xx, 4xx, 5xx)
-- **URL Redirection**: 🔀 Simple redirects with HTTP status codes like 301, 302
+- **Cookies**: 🍪 Manage sessions and authentication securely
 
 ### 📦 Content Processing
 - **🧩 MIME type handling**
-- **📏 Content-Length** validation
+- **📏 Content-Length validation**
 - **🔄 Chunked transfer encoding**
-- **📂 Multipart/form-data** support
+- **📂 Multipart/form-data support**
 - **🗂️ URL encoding and decoding**
 
 ---
 
 ## 🧩 Architecture
 
-WebServ follows a **modular architecture** adhering strictly to **SOLID principles**:
+WebServ follows a clean **modular architecture** respecting **SOLID principles**:
 
-- **Single Responsibility**: Each class has one purpose (e.g., RequestParser, ResponseBuilder, ServerManager)
-- **Open/Closed**: Extend behavior without modifying existing code
-- **Liskov Substitution**: Interfaces are replaceable
-- **Interface Segregation**: Only depend on what you use
-- **Dependency Inversion**: Abstract high-level and low-level modules
+- **Single Responsibility**: Each class does exactly one thing
+- **Open/Closed**: Extend features without modifying existing code
+- **Liskov Substitution**: Flexible interfaces
+- **Interface Segregation**: No bloated dependencies
+- **Dependency Inversion**: High-level and low-level modules decoupled
 
 **Core Components**:
-- **Event-Driven Server Core**: Using `select()` for multiplexed I/O
-- **Request Parser**: Handles fragmented HTTP messages
-- **Response Generator**: Produces status lines, headers, and bodies
-- **Configuration Manager**: Loads and validates server settings
-- **CGI Handler**: Executes **Python** and **PHP** scripts
-- **Session Manager**: Maintains login/auth state
-- **Static File Manager**: Secure file serving and uploads
+- **Event-driven Core**: Multiplexed I/O with `select()`
+- **Request Parser**: Handles fragmented HTTP messages robustly
+- **Response Builder**: Crafts perfect HTTP responses
+- **Configuration Manager**: Validates and loads server settings
+- **CGI Handler**: Runs **PHP** and **Python** scripts dynamically
+- **Session Manager**: Login/session tracking with **cookies**
+- **File Manager**: Secure static file serving and uploads
 
 ---
 
 ## 🛠️ Technologies
 
-- **C++98**: Full server logic
-- **Socket Programming**: No external dependencies
-- **Event-driven I/O**: `select()` based
-- **POSIX APIs**: System interaction
-- **Python / PHP**: For CGI scripts
-- **HTTP/1.1 RFCs**: Protocol compliance
+- **C++98**: All core logic
+- **POSIX APIs**: Low-level system interaction
+- **Socket Programming**: No external libraries
+- **Python / PHP**: For dynamic CGI scripts
+- **HTTP/1.1 Compliance**: Fully respect protocol specifications
 
 ---
 
 ## ⚙️ Installation
 
 ```bash
-# Clone the project
+# Clone the repo
 git clone https://github.com/Serghini04/WebServ.git
 
-# Enter project directory
+# Enter the directory
 cd WebServ
 
-# Build the server
+# Build the project
 make
 
-# Launch the server
+# Run the server
 ./webserv
 ```
 
@@ -129,21 +128,31 @@ make
 
 ## 📸 Screenshots
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/Serghini04/WebServ/main/assets/screenshot1.png" alt="WebServ Screenshot 1" width="600" />
-  <br><br>
-  <img src="https://raw.githubusercontent.com/Serghini04/WebServ/main/assets/screenshot2.png" alt="WebServ Screenshot 2" width="600" />
-  <br><br>
-  <img src="https://raw.githubusercontent.com/Serghini04/WebServ/main/assets/screenshot3.png" alt="WebServ Screenshot 3" width="600" />
-  <br><br>
-  <img src="https://raw.githubusercontent.com/Serghini04/WebServ/main/assets/screenshot4.png" alt="WebServ Screenshot 4" width="600" />
-</div>
+<p align="center"><strong>1. Connect to localhost:8888 to see the Welcome page</strong></p>
+<p align="center">
+  <img src="assets/screenshot1.png" alt="WebServ Screenshot 1" width="600" />
+</p>
 
+<p align="center"><strong>2. Register through the signup form</strong></p>
+<p align="center">
+  <img src="assets/screenshot2.png" alt="WebServ Screenshot 2" width="600" />
+</p>
+
+<p align="center"><strong>3. Successfully registered</strong></p>
+<p align="center">
+  <img src="assets/screenshot3.png" alt="WebServ Screenshot 3" width="600" />
+</p>
+
+<p align="center"><strong>4. Login using the registered credentials</strong></p>
+<p align="center">
+  <img src="assets/screenshot4.png" alt="WebServ Screenshot 4" width="600" />
+</p>
 ---
 
 ## 📝 Configuration
 
-The server is configured via a custom `.conf` file (`Configfile.conf`).  
+WebServ is fully configurable via a `.conf` file (`Configfile.conf`).
+
 Example:
 
 ```conf
@@ -173,42 +182,45 @@ server {
 }
 ```
 
-### ⚡ Configuration Options
-- **🏷️ server_name**: Human-friendly server name
-- **🌐 host**: IP address to bind
-- **🔌 port**: Listening port
-- **📁 root**: Web root
-- **🗺️ location blocks**: Route-specific rules
+### ⚡ Key Options
+- **server_name**: Friendly name for the server
+- **host**: IP binding
+- **port**: Listening port
+- **root**: Default document root
+- **location**: Fine-grained route handling
   - `allowed_methods`
-  - `cgi` handlers
-  - `auto_index` control
-  - `upload_store` directories
-- **📦 Redirection handling**
+  - `cgi` scripts
+  - `auto_index`
+  - `upload_store`
+  - `return` for **redirections**
 
 ---
 
 ## 💪 Challenges & Solutions
 
-### 🔥 Handling Event-driven I/O Without Threads
-**Solution**: Used `select()` for scalable multiplexed connection handling.
+### 🔥 Handling Event-driven I/O
+**Solution**: Built a custom `select()`-based event loop.
 
-### 🧩 Overcoming C++98 Limitations
-**Solution**: Built custom data structures and emphasized manual memory management.
+### 🧩 C++98 Constraints
+**Solution**: Developed custom data structures manually.
 
 ### ⚡ Robust HTTP Parsing
-**Solution**: Developed a finite-state machine parser supporting chunked encoding, multipart forms, and large requests.
+**Solution**: Built a finite-state machine parser to handle chunked, multipart, and large body parsing.
 
-### 🧪 Secure CGI Execution
-**Solution**: Sandbox execution with strict environment isolation for **PHP** and **Python** CGI scripts.
+### 🧪 Secure CGI Handling
+**Solution**: Isolated environment for safe PHP and Python execution.
 
-### 📁 Scalable File Uploads
-**Solution**: Stream uploads directly to disk instead of memory, avoiding DoS vulnerabilities.
+### 📁 Efficient File Uploads
+**Solution**: Streamed files directly to disk.
 
-### 🔄 Full HTTP Status Code Management
-**Solution**: Built a clean system to generate appropriate responses for every client error, server error, or redirection.
+### 🔄 Full HTTP Status Management
+**Solution**: Dynamically generated correct responses for every request outcome.
 
-### 🏗️ Dynamic Configuration System
-**Solution**: Wrote a parser that validates input and provides rich error feedback.
+### 🍪 Cookie-based Sessions
+**Solution**: Designed login systems based on HTTP cookies, managing secure authentication sessions.
+
+### 🏗️ Dynamic Configuration Parsing
+**Solution**: Built a resilient `.conf` parser from scratch.
 
 ---
 
@@ -223,51 +235,51 @@ server {
 
 - 📥 HTTP request parsing
 - 🔄 HTTP method implementation (GET, POST, DELETE)
-- ✅ HTTP Status Code management
-- 🔐 Secure session management
-- 📦 Robust content handling (Content-Length, Chunked Transfer, Multipart Boundary)
-- ⚡ Dynamic CGI (PHP + Python)
+- ✅ Full HTTP status code handling
+- 🔐 Login system with **cookie-based sessions**
+- 📦 Robust content handling (Content-Length, Chunked Transfer, Multipart Forms)
+- ⚡ Dynamic CGI execution (PHP + Python)
+- 🔀 Redirection management (301/302)
 
-**Key Contributions**:
-- Designed the HTTP parser based on a state machine
-- Implemented safe, efficient file upload system
-- Created full CGI integration for both PHP and Python
-- Developed complete status code handling system
-- Engineered session token system with expiration control
+**Main Contributions**:
+- Designed a full HTTP parser engine
+- Implemented secure session handling using cookies
+- Integrated CGI support for PHP and Python
+- Built a robust, modular redirection system
+- Developed the file upload subsystem
 
 ### 🏗️ Mohammed Al Morabit ([@mal-mora](https://github.com/simorabit))
 > *"The Architect"*
 
 - 🏢 Server multi-instance management
-- 📨 HTTP response generation
-- 🔌 Low-level socket programming
-- 🔄 Event-driven I/O core system
+- 📨 Response generation and formatting
+- 🔌 Low-level socket handling
+- 🔄 Event-driven core logic
 
 ### 🧪 Hicham Driouch ([@hidriuoc](https://github.com/paybat))
 > *"The Configuration Alchemist"*
 
 - ⚙️ Configuration file parsing
+- 🛣️ Routing and directory listing
 - 🔄 CGI execution system
-- 🛣️ Routing and directory indexing
 
 ---
 
 ## 🔮 Future Enhancements
 
-- 🔒 HTTPS support (SSL/TLS)
-- 🚀 WebSocket real-time communication
-- 🌐 Load balancing features
-- 📊 Logging & monitoring dashboard
-- 🧪 Unit and integration tests
-- 🚦 Advanced rate-limiting for DDoS protection
-- 🗄️ In-memory caching
-- 🔄 Reverse proxy mode
+- 🔒 HTTPS (SSL/TLS) support
+- 🚀 WebSocket server upgrades
+- 🌐 Reverse proxy features
+- 📊 Built-in logging and analytics
+- 🧪 Full unit and integration testing
+- 🛡️ DDoS protection with advanced rate limiting
+- 🗄️ Static file caching
 
 ---
 
 ## 📄 License
 
-This masterpiece is licensed under the **MIT License** — giving you full freedom to create, adapt, and share!
+This project is licensed under the **MIT License** — open-source, free, and ready to evolve!
 
 <div align="center">
   <img src="assets/end.png" alt="WebServ Footer" width="800">
