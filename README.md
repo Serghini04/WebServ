@@ -226,7 +226,7 @@ Browse to:
 ## 👨‍💻 The Dream Team
 
 <div align="center">
-  <img src="webservTeam.png" alt="WebServ Team" width="700">
+  <img src="assets/webservTeam.png" alt="WebServ Team" width="700">
 </div>
 
 ### 🧙‍♂️ Mehdi Serghini ([@Serghini04](https://github.com/Serghini04))
@@ -246,7 +246,7 @@ Browse to:
 - Developed complete status code handling system
 - Engineered session token system with expiration control
 
-### 🏗️ Mohammed Al Morabit ([@mal-mora](https://github.com/mal-mora))
+### 🏗️ Mohammed Al Morabit ([@mal-mora](https://github.com/simorabit))
 > *"The Architect"*
 
 - 🏢 Server multi-instance management
@@ -254,7 +254,7 @@ Browse to:
 - 🔌 Low-level socket programming
 - 🔄 Event-driven I/O core system
 
-### 🧪 Hicham Driouch ([@hidriuoc](https://github.com/hidriuoc))
+### 🧪 Hicham Driouch ([@hidriuoc](https://github.com/paybat))
 > *"The Configuration Alchemist"*
 
 - ⚙️ Configuration file parsing
@@ -281,7 +281,7 @@ Browse to:
 This masterpiece is licensed under the **MIT License** — giving you full freedom to create, adapt, and share!
 
 <div align="center">
-  <img src="https://github.com/Serghini04/WebServ/assets/end.png" alt="WebServ Footer" width="800">
+  <img src="assets/end.png" alt="WebServ Footer" width="800">
   
   ### Made with ❤️ and countless cups of ☕ by Mehdi Serghini & team
 </div>
