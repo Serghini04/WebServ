@@ -81,6 +81,10 @@ Key highlights:
 
 WebServ follows a clean **modular architecture** respecting **SOLID principles**:
 
+<div align="center">
+  <img src="assets/webservFlow.png" alt="WebServ Architecture" width="600">
+</div>
+
 - **Single Responsibility**: Each class does exactly one thing
 - **Open/Closed**: Extend features without modifying existing code
 - **Liskov Substitution**: Flexible interfaces
