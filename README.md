@@ -147,6 +147,7 @@ make
 <p align="center">
   <img src="assets/screenshot4.png" alt="WebServ Screenshot 4" width="600" />
 </p>
+
 ---
 
 ## 📝 Configuration
@@ -239,14 +240,6 @@ server {
 - 🔐 Login system with **cookie-based sessions**
 - 📦 Robust content handling (Content-Length, Chunked Transfer, Multipart Forms)
 - ⚡ Dynamic CGI execution (PHP + Python)
-- 🔀 Redirection management (301/302)
-
-**Main Contributions**:
-- Designed a full HTTP parser engine
-- Implemented secure session handling using cookies
-- Integrated CGI support for PHP and Python
-- Built a robust, modular redirection system
-- Developed the file upload subsystem
 
 ### 🏗️ Mohammed Al Morabit ([@mal-mora](https://github.com/simorabit))
 > *"The Architect"*
@@ -255,6 +248,7 @@ server {
 - 📨 Response generation and formatting
 - 🔌 Low-level socket handling
 - 🔄 Event-driven core logic
+- 🔀 Redirection management (301/302)
 
 ### 🧪 Hicham Driouch ([@hidriuoc](https://github.com/paybat))
 > *"The Configuration Alchemist"*
