@@ -1,7 +1,7 @@
 # 🚀 WebServ - Your Lightweight HTTP Server
 
 <div align="center">
-  <img src="https://github.com/Serghini04/WebServ/assets/intro.png" alt="WebServ Banner" width="800">
+  <img src="assets/intro.png" alt="WebServ Banner" width="800">
 
   ### *Power and simplicity in one elegant package*
   
@@ -226,7 +226,7 @@ Browse to:
 ## 👨‍💻 The Dream Team
 
 <div align="center">
-  <img src="https://github.com/Serghini04/WebServ/assets/webserv-team.png" alt="WebServ Team" width="700">
+  <img src="webservTeam.png" alt="WebServ Team" width="700">
 </div>
 
 ### 🧙‍♂️ Mehdi Serghini ([@Serghini04](https://github.com/Serghini04))
